@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include pflanzenfreund *.css
+recursive-include pflanzenfreund *.csv
+recursive-include pflanzenfreund *.html
+recursive-include pflanzenfreund *.ico
+recursive-include pflanzenfreund *.js
+recursive-include pflanzenfreund *.json
+recursive-include pflanzenfreund *.md
+recursive-include pflanzenfreund *.png
+recursive-include pflanzenfreund *.py
+recursive-include pflanzenfreund *.svg
+recursive-include pflanzenfreund *.txt
+recursive-exclude pflanzenfreund *.pyc
