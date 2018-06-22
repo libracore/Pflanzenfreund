@@ -1,0 +1,27 @@
+<nav class="navbar navbar-default navbar-main" style="padding-top: 0px;" role="navigation">
+		<div style="padding-bottom:15px; background: #f9f9f9; height: 40px;">
+			<div class="container hidden-xs" style="font-size: 1.5rem;">
+				{% include "templates/navbar/pflanzenfreund_navbar_top_items.html" %}
+			</div>
+		<div>
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand ellipsis" style="height:100%;"
+					 href="{{ url_prefix }}{{ home_page or "/"}}">
+					{{ brand() }}
+				</a>
+				<div class="dropdown">
+					<button id="hidden-dropdown" class="btn btn-default navbar-toggle dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<i class="octicon octicon-three-bars"></i>
+					</button>
+					{% include "templates/navbar/pflanzenfreund_dropdown_items.html" %}
+				</div>
+			</div>
+			
+		</div>
+		<div style="background-image: url('http://pflanzenfreund.ch/default-wAssets/img/hintergruende/weblication/wThumbnails/75b75f8444f03a2g59b4a6b9d3fe2943.jpg'); height: 45px;">
+			<div class="container hidden-xs" style="font-size: 2rem; color: white;">
+				{% include "templates/navbar/pflanzenfreund_navbar_bottom_items.html" %}
+			</div>
+		<div>
+</nav>

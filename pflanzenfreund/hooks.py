@@ -34,6 +34,17 @@ app_license = "AGPL"
 # Home Pages
 # ----------
 
+jenv = {
+	"methods": [
+		"navbar_items:pflanzenfreund.utils.get_navbar_items",
+		"brand:pflanzenfreund.utils.get_brand"
+		]
+}
+
+website_context = {
+	"base_template_path": "templates/pflanzenfreund_base.html"
+}
+
 # application home page (will override Website Settings)
 # home_page = "login"
 

@@ -1,0 +1,10 @@
+<ul class="nav navbar-nav navbar-right">
+	{%- for page in navbar_items('top') -%}
+		{% if not page.parent_label and page.right -%}
+			{% include "templates/navbar/pflanzenfreund_navbar_top_link.html" %}
+		{%- endif -%}
+	{%- endfor %}
+	<li style="padding-top:10px; padding-bottom:10px;"><button style="background-color: transparent; border: none;" onclick="$('#search-field').toggle();"><i class="fa fa-search"></i></button></li>
+	{% include "templates/navbar/pflanzenfreund_navbar_search.html" %}
+	{% include "templates/navbar/pflanzenfreund_navbar_login.html" %}
+</ul>
