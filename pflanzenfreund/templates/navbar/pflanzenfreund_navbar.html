@@ -1,5 +1,5 @@
 <nav class="navbar navbar-default navbar-main" style="padding-top: 0px;" role="navigation">
-		<div style="padding-bottom:15px; background: #f9f9f9; height: 40px;">
+		<div style="padding-bottom:15px; background: {{ navbar_color('top_bg') or 'transparent' }}; height: 40px;">
 			<div class="container hidden-xs" style="font-size: 1.5rem;">
 				{% include "templates/navbar/pflanzenfreund_navbar_top_items.html" %}
 			</div>
@@ -19,8 +19,8 @@
 			</div>
 			
 		</div>
-		<div style="background-image: url('http://pflanzenfreund.ch/default-wAssets/img/hintergruende/weblication/wThumbnails/75b75f8444f03a2g59b4a6b9d3fe2943.jpg'); height: 45px;">
-			<div class="container hidden-xs" style="font-size: 2rem; color: white;">
+		<div style="{% if navbar_color('bottom_bg') %}background: {{ navbar_color('bottom_bg') }}{% else %}background-image: url('http://pflanzenfreund.ch/default-wAssets/img/hintergruende/weblication/wThumbnails/75b75f8444f03a2g59b4a6b9d3fe2943.jpg'){% endif %}; height: 45px;">
+			<div class="container hidden-xs" style="font-size: 2rem; color: {{ navbar_color('bottom_link') or 'white' }};">
 				{% include "templates/navbar/pflanzenfreund_navbar_bottom_items.html" %}
 			</div>
 		<div>

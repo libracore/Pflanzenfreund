@@ -37,7 +37,8 @@ app_license = "AGPL"
 jenv = {
 	"methods": [
 		"navbar_items:pflanzenfreund.utils.get_navbar_items",
-		"brand:pflanzenfreund.utils.get_brand"
+		"brand:pflanzenfreund.utils.get_brand",
+		"navbar_color:pflanzenfreund.utils.get_navbar_color"
 		]
 }
 

@@ -68,3 +68,17 @@ def get_pflanzenfreund_settings():
 	
 def get_brand():
 	return "<img src='{0}' style='max-height:84px;width:auto;'>".format(get_pflanzenfreund_settings().brand)
+	
+def get_navbar_color(value):
+	if value == "top_bg":
+		return get_pflanzenfreund_settings().top_bg
+	if value == "top_link":
+		return get_pflanzenfreund_settings().top_link
+	if value == "top_link_hover":
+		return get_pflanzenfreund_settings().top_link_hover
+	if value == "bottom_bg":
+		return get_pflanzenfreund_settings().bottom_bg
+	if value == "bottom_link":
+		return get_pflanzenfreund_settings().bottom_link
+	if value == "bottom_link_hover":
+		return get_pflanzenfreund_settings().bottom_link_hover
