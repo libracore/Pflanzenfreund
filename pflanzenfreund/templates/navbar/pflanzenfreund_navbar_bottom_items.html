@@ -10,7 +10,7 @@
 <ul class="nav navbar-nav navbar-right">
 	{%- for page in navbar_items('bottom') -%}
 		{% if not page.parent_label and page.right -%}
-			{% include "templates/navbar/pflanzenfreund_navbar_link.html" %}
+			{% include "templates/navbar/pflanzenfreund_navbar_bottom_link.html" %}
 		{%- endif -%}
 	{%- endfor %}
 	{% if not only_static %}

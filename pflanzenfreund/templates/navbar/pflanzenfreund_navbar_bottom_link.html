@@ -1,7 +1,7 @@
 <li data-label='{{ page.label }}' {% if page.child_items %} class="dropdown dropdown-submenu"{% endif %}>
 	<a {% if not page.child_items -%} href="{{ (page.url or '')|abs_url }}" {%- endif %}
 		{% if page.child_items %} class="dropdown-toggle" onclick="return false;" data-toggle="dropdown"{% endif %}
-		{{ page.target or ''}} style="color: white;">
+		{{ page.target or ''}} style="color: {{ navbar_color('bottom_link') or 'white' }};">
 	{{ page.label }}
 	{%- if page.child_items -%}
 		<span class="caret"></span>
