@@ -62,12 +62,56 @@ def get_bottom_items(parentfield):
 					break
 	return bottom_items
 	
+def get_footer_items(parentfield):
+	all_footer_items = frappe.db.sql("""\
+		select * from `tabPflanzenfreund Footer Items`
+		where parent='Website Settings Pflanzenfreund' and parentfield= %s
+		order by idx asc""", parentfield, as_dict=1)
+
+	footer_items = [d for d in all_footer_items if not d['parent_label']]
+
+	# attach child items to top bar
+	for d in all_footer_items:
+		if d['parent_label']:
+			for t in footer_items:
+				if t['label']==d['parent_label']:
+					if not 'child_items' in t:
+						t['child_items'] = []
+					t['child_items'].append(d)
+					break
+	return footer_items
+
+def get_footer_social_items(parentfield):
+	all_footer_items = frappe.db.sql("""\
+		select * from `tabPflanzenfreund Footer Social Media`
+		where parent='Website Settings Pflanzenfreund' and parentfield= %s
+		order by idx asc""", parentfield, as_dict=1)
+
+	footer_items = [d for d in all_footer_items if not d['parent_label']]
+
+	# attach child items to top bar
+	for d in all_footer_items:
+		if d['parent_label']:
+			for t in footer_items:
+				if t['label']==d['parent_label']:
+					if not 'child_items' in t:
+						t['child_items'] = []
+					t['child_items'].append(d)
+					break
+	return footer_items
+
 def get_pflanzenfreund_settings():
 	pflanzenfreund_settings = frappe.get_doc("Website Settings Pflanzenfreund", "Website Settings Pflanzenfreund")
 	return pflanzenfreund_settings
 	
 def get_brand():
 	return "<img src='{0}' style='max-height:84px;width:auto;'>".format(get_pflanzenfreund_settings().brand)
+
+def get_footer_brand():
+	return "<img src='{0}' style='max-height:84px;width:auto;'>".format(get_pflanzenfreund_settings().footer_brand)
+
+def get_footer_description():
+	return get_pflanzenfreund_settings().footer_description
 	
 def get_navbar_color(value):
 	if value == "top_bg":
@@ -82,3 +126,13 @@ def get_navbar_color(value):
 		return get_pflanzenfreund_settings().bottom_link
 	if value == "bottom_link_hover":
 		return get_pflanzenfreund_settings().bottom_link_hover
+
+def get_footer_color(value):
+	if value == "footer_top_bg":
+		return get_pflanzenfreund_settings().footer_top_bg
+	if value == "footer_bottom_bg":
+		return get_pflanzenfreund_settings().footer_bottom_bg
+	if value == "footer_left_color":
+		return get_pflanzenfreund_settings().footer_left_color
+	if value == "social_color":
+		return get_pflanzenfreund_settings().social_color
