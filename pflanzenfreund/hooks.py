@@ -19,7 +19,7 @@ app_license = "AGPL"
 # app_include_js = "/assets/pflanzenfreund/js/pflanzenfreund.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/pflanzenfreund/css/pflanzenfreund.css"
+web_include_css = "/assets/pflanzenfreund/css/pflanzenfreund.css"
 # web_include_js = "/assets/pflanzenfreund/js/pflanzenfreund.js"
 
 # include js in page
@@ -137,3 +137,4 @@ website_context = {
 # 	"frappe.desk.doctype.event.event.get_events": "pflanzenfreund.event.get_events"
 # }
 
+fixtures = ["Custom Script"]

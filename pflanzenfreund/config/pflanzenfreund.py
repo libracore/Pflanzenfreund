@@ -9,8 +9,14 @@ def get_data():
 		"items": [
 		   {
 			   "type": "doctype",
+			   "name": "Website Settings",
+			   "label": _("General Settings"),
+			   "description": _("Setup Tools for the Extranet")
+		   },
+		   {
+			   "type": "doctype",
 			   "name": "Website Settings Pflanzenfreund",
-			   "label": _("Settings"),
+			   "label": _("Navbar and Footer Settings"),
 			   "description": _("Setup Tools for the Extranet")
 		   }
 		]
