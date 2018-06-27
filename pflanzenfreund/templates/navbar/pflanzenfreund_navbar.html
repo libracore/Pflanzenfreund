@@ -8,7 +8,7 @@
 			<div class="navbar-header">
 				<a class="navbar-brand ellipsis" style="height:100%;"
 					 href="{{ url_prefix }}{{ home_page or "/"}}">
-					{{ brand() }}
+					{% if brand() != "<img src='None' style='max-height:84px;width:auto;'>"%}{{ brand() }}{% else %}<img src='/assets/pflanzenfreund/images/Pflanzenfreund_Logo_RGB.png' style='max-height:84px;width:auto;'>{% endif %}
 				</a>
 				<div class="dropdown">
 					<button id="hidden-dropdown" class="btn btn-default navbar-toggle dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -19,7 +19,7 @@
 			</div>
 			
 		</div>
-		<div class="hidden-xs" style="{% if navbar_color('bottom_bg') %}background: {{ navbar_color('bottom_bg') }}{% else %}background-image: url('http://pflanzenfreund.ch/default-wAssets/img/hintergruende/weblication/wThumbnails/75b75f8444f03a2g59b4a6b9d3fe2943.jpg'){% endif %}; height: 45px;">
+		<div class="hidden-xs" style="{% if navbar_color('bottom_bg') %}background: {{ navbar_color('bottom_bg') }}{% else %}background-image: url('/assets/pflanzenfreund/images/pflanzenfreund_navbar_bottom.jpg'){% endif %}; height: 45px;">
 			<div class="container hidden-xs" style="font-size: 2rem;">
 				{% include "templates/navbar/pflanzenfreund_navbar_bottom_items.html" %}
 			</div>
