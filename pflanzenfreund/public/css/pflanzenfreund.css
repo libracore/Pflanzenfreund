@@ -1,0 +1,10 @@
+.btn {
+	background-color: #94B600;
+	border-color: #94B600;
+	color: white;
+}
+.btn:hover, .btn:active, .btn:focus {
+	background-color: transparent;
+	border-color: #94B600;
+	color: #94B600;
+}

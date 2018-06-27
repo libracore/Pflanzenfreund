@@ -11,6 +11,8 @@ app_color = "green"
 app_email = "info@libracore.com"
 app_license = "AGPL"
 
+after_install = "pflanzenfreund.install.after_install"
+
 # Includes in <head>
 # ------------------
 
@@ -19,7 +21,7 @@ app_license = "AGPL"
 # app_include_js = "/assets/pflanzenfreund/js/pflanzenfreund.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/pflanzenfreund/css/pflanzenfreund.css"
+web_include_css = "/assets/pflanzenfreund/css/pflanzenfreund.css"
 # web_include_js = "/assets/pflanzenfreund/js/pflanzenfreund.js"
 
 # include js in page
@@ -33,6 +35,27 @@ app_license = "AGPL"
 
 # Home Pages
 # ----------
+
+jenv = {
+	"methods": [
+		"navbar_items:pflanzenfreund.utils.get_navbar_items",
+		"brand:pflanzenfreund.utils.get_brand",
+		"navbar_color:pflanzenfreund.utils.get_navbar_color",
+		"get_footer_items:pflanzenfreund.utils.get_footer_items",
+		"get_footer_social_items:pflanzenfreund.utils.get_footer_social_items",
+		"footer_color:pflanzenfreund.utils.get_footer_color",
+		"footer_brand:pflanzenfreund.utils.get_footer_brand",
+		"footer_description:pflanzenfreund.utils.get_footer_description"
+		]
+}
+
+website_context = {
+	"base_template_path": "templates/pflanzenfreund_base.html"
+}
+
+# website_route_rules = [
+	# {"from_route": "/desk#modules/Website", "to_route": "/desk#modules/Pflanzenfreund"}
+# ]
 
 # application home page (will override Website Settings)
 # home_page = "login"
@@ -120,3 +143,4 @@ app_license = "AGPL"
 # 	"frappe.desk.doctype.event.event.get_events": "pflanzenfreund.event.get_events"
 # }
 
+fixtures = ["Custom Script"]
