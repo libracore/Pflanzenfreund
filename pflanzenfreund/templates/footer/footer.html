@@ -18,7 +18,7 @@
 				</div>
 				</div>
 			</div>
-			<div class="row footer-bottom-line" style="{% if footer_color('footer_bottom_bg') %}background-color: {{ footer_color('footer_bottom_bg') }}{% else %}background-image: url('http://pflanzenfreund.ch/default-wAssets/img/hintergruende/weblication/wThumbnails/75b75f8444f03a2g59b4a6b9d3fe2943.jpg'){% endif %}; margin-right: 0px; margin-left: 0px; margin-top: 0px;">
+			<div class="row footer-bottom-line" style="{% if footer_color('footer_bottom_bg') %}background-color: {{ footer_color('footer_bottom_bg') }}{% else %}background-image: url('/assets/pflanzenfreund/images/pflanzenfreund_navbar_bottom.jpg'){% endif %}; margin-right: 0px; margin-left: 0px; margin-top: 0px;">
 			<div class="container">
 				<div class="text-muted small col-sm-6 col-xs-12">
 					{#{% if copyright %}
@@ -28,7 +28,7 @@
 						{% if copyright %}<br>{% endif %}
 						{{ footer_address }}
 					{% endif %}#}
-					{{ footer_brand() }}
+					{% if footer_brand() != "<img src='None' style='max-height:84px;width:auto;'>"%}{{ footer_brand() }}{% else %}<img src='/assets/pflanzenfreund/images/Pflanzenfreund_Logo_neg.png' style='max-height:84px;width:auto;'>{% endif %}
 				</div>
 				{# powered #}
 				<div class="text-muted small col-sm-6 col-xs-12
