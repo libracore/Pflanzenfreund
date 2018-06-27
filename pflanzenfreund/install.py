@@ -6,6 +6,7 @@ from frappe.utils import update_progress_bar
 def after_install():
 	disable_website_manager()
 	set_permissions_for_pflanzenfreund_manager()
+	hide_module_webiste()
 	print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 	print('Installation of "Pflanzenfreund" successfull')
 	print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -29,5 +30,12 @@ def set_permissions_for_pflanzenfreund_manager():
 	i = 0
 	for doc in docs_for_permission:
 		frappe.permissions.add_permission(doc, "Pflanzenfreund Manager")
-		update_progress_bar('Define Permissions for "Pflanzenfreund Manager"', i, len(docs_for_permission))
+		update_progress_bar('Define Permissions', i, len(docs_for_permission))
 		i = i + 1
+
+def hide_module_webiste():
+	update_progress_bar('Hide Module "Website"', 0, 1)
+	sql_query = """UPDATE `tabModule Def`
+		SET `restrict_to_domain` = 'Non Profit'
+		WHERE `module_name` = 'Website'"""
+	frappe.db.sql(sql_query)
