@@ -37,11 +37,9 @@ def after_install():
 
 def check_if_pf_roles_exist(pf_roles):
 	for role in pf_roles:
-		if frappe.get_doc({'doctype': "Role", "role_name": "{0}".format(role)}):
-			
-		else:
+		if not frappe.get_doc({'doctype': "Role", "role_name": "{0}".format(role)}):
 			frappe.get_doc({'doctype': "Role", "role_name": "{0}".format(role)}).insert()
-	
+			
 def disable_roles_exepct_PF_roles(pf_roles):
 	roles = get_all_roles()
 	i = 0
