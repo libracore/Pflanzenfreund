@@ -36,8 +36,9 @@ def after_install():
 	success_message()
 
 def check_if_pf_roles_exist(pf_roles):
+	all_roles = get_all_roles()
 	for role in pf_roles:
-		if not frappe.get_doc({'doctype': "Role", "role_name": "{0}".format(role)}):
+		if not role in all_roles:
 			frappe.get_doc({'doctype': "Role", "role_name": "{0}".format(role)}).insert()
 			
 def disable_roles_exepct_PF_roles(pf_roles):
@@ -57,16 +58,19 @@ def disable_role(role):
 
 def set_permissions(docs_for_permission, role):
 	i = 0
+	print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+	print("Define permissions for:")
 	for doc in docs_for_permission:
 		frappe.permissions.add_permission(doc, role)
-		update_progress_bar('Define Permissions for "{0}"'.format(role), i, len(docs_for_permission))
+		update_progress_bar('"{0}"'.format(role), i, len(docs_for_permission))
 		i = i + 1
+	print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
 def hide_module_all_modules_exepct_pflanzenfreund():
 	modules = get_all_modules()
 	i = 0
 	for module in modules:
-		update_progress_bar('Hide Module "Website"', i, len(modules))
+		update_progress_bar('Hide Module "{0}"'.format(module[0]), i, len(modules))
 		if module[0] != "Pflanzenfreund":
 			sql_query = """UPDATE `tabModule Def`
 				SET `restrict_to_domain` = 'Non Profit'
