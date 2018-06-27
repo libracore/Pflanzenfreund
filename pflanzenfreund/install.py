@@ -41,7 +41,8 @@ def check_if_pf_roles_exist(pf_roles):
 		try:
 			frappe.get_doc({'doctype': "Role", "role_name": "{0}".format(role)}).insert()
 		except:
-			print("Role {0} already exist".format(role))
+			#print("Role {0} already exist".format(role))
+			pass
 
 def disable_roles_exepct_PF_roles(pf_roles):
 	roles = get_all_roles()
@@ -72,7 +73,7 @@ def hide_module_all_modules_exepct_pflanzenfreund():
 	modules = get_all_modules()
 	i = 0
 	for module in modules:
-		update_progress_bar('Hide Module "{0}"'.format(module[0]), i, len(modules))
+		update_progress_bar('Hide Module unused modules', i, len(modules))
 		if module[0] != "Pflanzenfreund":
 			sql_query = """UPDATE `tabModule Def`
 				SET `restrict_to_domain` = 'Non Profit'
