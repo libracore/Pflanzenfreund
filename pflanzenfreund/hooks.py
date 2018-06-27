@@ -11,6 +11,8 @@ app_color = "green"
 app_email = "info@libracore.com"
 app_license = "AGPL"
 
+after_install = "pflanzenfreund.install.after_install"
+
 # Includes in <head>
 # ------------------
 
@@ -50,6 +52,10 @@ jenv = {
 website_context = {
 	"base_template_path": "templates/pflanzenfreund_base.html"
 }
+
+# website_route_rules = [
+	# {"from_route": "/desk#modules/Website", "to_route": "/desk#modules/Pflanzenfreund"}
+# ]
 
 # application home page (will override Website Settings)
 # home_page = "login"
