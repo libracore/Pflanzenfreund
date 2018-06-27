@@ -4,10 +4,14 @@ import frappe
 from frappe.utils import update_progress_bar
 
 def after_install():
+	# define roles which not shall be deactivated
 	pf_roles = ["Administrator", "System Manager", "PF Administrator", "PF Website Manager", "PF Abo Verwalter"]
+	# check if all pf_roles exist. If not they will be created
 	check_if_pf_roles_exist(pf_roles)
+	# disable all roles execpt pf_roles
 	disable_roles_exepct_PF_roles(pf_roles)
 	
+	# define docs/set permissions for role PF Administrator
 	docs_for_permission = [
 		'Subscription', 'Sales Invoice', 'Payment Entry',
 		'Customer', 'Contact', 'Address',
@@ -18,6 +22,7 @@ def after_install():
 	]
 	set_permissions(docs_for_permission, "PF Administrator")
 	
+	# define docs/set permissions for role PF  Website Manager
 	docs_for_permission = [
 		'Website Settings', 'Website Theme', 'Website Script',
 		'Web Page', 'Web Form', 'Website Sidebar', 'Website Slideshow', 'Help Category',
@@ -26,13 +31,19 @@ def after_install():
 	]
 	set_permissions(docs_for_permission, "PF Website Manager")
 	
+	# define docs/set permissions for role PF Abo Verwalter
 	docs_for_permission = [
 		'Subscription', 'Sales Invoice', 'Payment Entry',
 		'Customer', 'Contact', 'Address'
 	]
 	set_permissions(docs_for_permission, "PF Abo Verwalter")
 	
-	hide_module_all_modules_exepct_pflanzenfreund()
+	# define modules which not shall be hidden
+	visible_modules = ["Pflanzenfreund"]
+	# hide all above not defined modules
+	hide_modules(visible_modules)
+	
+	#print success message
 	success_message()
 
 def check_if_pf_roles_exist(pf_roles):
@@ -69,12 +80,12 @@ def set_permissions(docs_for_permission, role):
 		i = i + 1
 	print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
-def hide_module_all_modules_exepct_pflanzenfreund():
+def hide_modules(visible_modules):
 	modules = get_all_modules()
 	i = 0
 	for module in modules:
 		update_progress_bar('Hide Module unused modules', i, len(modules))
-		if module[0] != "Pflanzenfreund":
+		if module[0] not in visible_modules:
 			sql_query = """UPDATE `tabModule Def`
 				SET `restrict_to_domain` = 'Non Profit'
 				WHERE `module_name` = '{0}'""".format(module[0])
