@@ -1,44 +1,36 @@
 <footer class="web-footer" style="padding: 0px;">
 	<section class="footer-links">
-		
-			<div class="row" style="background-color: {{ footer_color('footer_top_bg') }}; margin-right: 0px; margin-left: 0px;">
+		<div class="row GCM-Footer-Top" style="background-color: {{ footer_color('footer_top_bg') }};">
 			<div class="container">
 				<div class="col-sm-6 text-left">
 					{% if get_footer_items('footer_items') -%}
-					<div class="row">
-						{% include "templates/footer/footer_items.html" %}
-					</div>
+						<div class="row">
+							{% include "templates/footer/footer_items.html" %}
+						</div>
 					{% endif %}
 				</div>
-
 				<div class="col-sm-6 text-right">
 					{% block extension %}
 						{% include "templates/footer/footer_extension.html" %}
 					{% endblock %}
 				</div>
+			</div>
+		</div>
+			<div class="row footer-bottom-line GCM-Footer-Bottom" style="{% if footer_color('footer_bottom_bg') %}background-color: {{ footer_color('footer_bottom_bg') }}{% else %}background-image: url('/assets/pflanzenfreund/images/pflanzenfreund_navbar_bottom.jpg'){% endif %};">
+				<div class="container">
+					<div class="text-muted small col-sm-6 col-xs-12">
+						{% if footer_brand() != "<img src='None' style='max-height:84px;width:auto;'>"%}
+							{{ footer_brand() }}
+						{% else %}
+							<img src='/assets/pflanzenfreund/images/Pflanzenfreund_Logo_neg.png' style='max-height:84px;width:auto;'>
+						{% endif %}
+					</div>
+					<div class="text-muted small col-sm-6 col-xs-12 text-right footer-powered">
+						{{ footer_description() }}{#{% block powered %}
+							{% include "templates/footer/footer_powered.html" %}
+						{% endblock %}#}
+					</div>
 				</div>
 			</div>
-			<div class="row footer-bottom-line" style="{% if footer_color('footer_bottom_bg') %}background-color: {{ footer_color('footer_bottom_bg') }}{% else %}background-image: url('/assets/pflanzenfreund/images/pflanzenfreund_navbar_bottom.jpg'){% endif %}; margin-right: 0px; margin-left: 0px; margin-top: 0px;">
-			<div class="container">
-				<div class="text-muted small col-sm-6 col-xs-12">
-					{#{% if copyright %}
-						&copy; {{ copyright }}
-					{% endif %}
-					{% if footer_address %}
-						{% if copyright %}<br>{% endif %}
-						{{ footer_address }}
-					{% endif %}#}
-					{% if footer_brand() != "<img src='None' style='max-height:84px;width:auto;'>"%}{{ footer_brand() }}{% else %}<img src='/assets/pflanzenfreund/images/Pflanzenfreund_Logo_neg.png' style='max-height:84px;width:auto;'>{% endif %}
-				</div>
-				{# powered #}
-				<div class="text-muted small col-sm-6 col-xs-12
-					text-right footer-powered">
-					{{ footer_description() }}{#{% block powered %}
-						{% include "templates/footer/footer_powered.html" %}
-					{% endblock %}#}
-				</div>
-				</div>
-			</div>
-		
 	</section>
 </footer>
