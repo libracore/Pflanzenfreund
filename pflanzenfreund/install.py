@@ -35,7 +35,7 @@ def set_permissions_for_pflanzenfreund_manager():
 		'Help Category', 'Help Article'
 	]
 	for doc in docs_for_permission:
-		frappe.add_permission(doc, "Pflanzenfreund Manager"
+		frappe.permissions.add_permission(doc, "Pflanzenfreund Manager")
 	print("...Permissions defined...")
 	
 # def change_module_def():
