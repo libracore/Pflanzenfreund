@@ -8,3 +8,32 @@
 	border-color: #94B600;
 	color: #94B600;
 }
+.GCM-Footer-Top {
+	margin-right: 0px;
+	margin-left: 0px;
+}
+.GCM-Footer-Bottom {
+	margin-right: 0px;
+	margin-left: 0px;
+	margin-top: 0px;
+}
+.GCM-Dropdown-Right {
+	position: relative;
+	float: inline-end;
+}
+.GCM-Navbar-Top {
+	padding-top: 0px;
+}
+.GCM-Navbar-Top-1 {
+	padding-bottom: 15px;
+	height: 40px;
+}
+.GCM-Navbar-Top-2 {
+	font-size: 1.5rem;
+}
+.GCM-Navbar-Top-3 {
+	height:100%;
+}
+.GCM-Navbar-Top-4 {
+	font-size: 2rem;
+}

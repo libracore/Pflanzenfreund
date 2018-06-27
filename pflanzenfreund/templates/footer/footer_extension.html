@@ -1,26 +1,34 @@
 {% for page in get_footer_social_items('footer_social_media') %}
-<div class="col-sm-4 footer-group">
-	{% if not page.parent_label -%}
-		<div data-label='{{ page.label }}'>
-		<a {% if not page.child_items -%} href="{{ (page.url or '')|abs_url }}" {%- endif %}
-		{% if page.child_items %} onclick="return false;" {% endif %}
-		{{ page.target or ''}}>
-		{%- if page.child_items -%}
-			<span style="color: {{ footer_color('social_color') }};" class="footer-group-label footer-parent-item">{{ page.label }}<span>
-			</a>
-			<ul class="list-unstyled small">
-			{%- for child in page.child_items -%}
-				<li class="footer-child-item" data-label='{{ child.label }}'>
-					<a href="{{ child.url | abs_url }}"
-						{% if child.target %}target="_blank"{% endif %}>{{ child.label }}</a>
-				</li>
-			{%- endfor -%}
-			</ul>
-		{%- else -%}
-		<span style="color: {{ footer_color('social_color') }};" class="footer-group-label small">{{ page.label }}<span>
-		</a>
+	<div class="col-sm-4 footer-group">
+		{% if not page.parent_label -%}
+			<div data-label='{{ page.label }}'>
+				<a
+					{% if not page.child_items -%}
+						href="{{ (page.url or '')|abs_url }}"
+					{%- endif %}
+					{% if page.child_items %}
+						onclick="return false;"
+					{% endif %}
+					{{ page.target or ''}}
+				>
+				{%- if page.child_items -%}
+					<span style="color: {{ footer_color('social_color') }};" class="footer-group-label footer-parent-item">{{ page.label }}<span>
+					</a>
+					<ul class="list-unstyled small">
+						{%- for child in page.child_items -%}
+							<li class="footer-child-item" data-label='{{ child.label }}'>
+								<a href="{{ child.url | abs_url }}"
+									{% if child.target %}
+										target="_blank"
+									{% endif %}>{{ child.label }}</a>
+							</li>
+						{%- endfor -%}
+					</ul>
+				{%- else -%}
+					<span style="color: {{ footer_color('social_color') }};" class="footer-group-label small">{{ page.label }}<span>
+					</a>
+				{%- endif -%}
+			</div>
 		{%- endif -%}
-		</div>
-	{%- endif -%}
 	</div>
 {% endfor %}

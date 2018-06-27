@@ -1,4 +1,4 @@
-<ul class="dropdown-menu dropdown-menu-right" style="position: relative; float: inline-end;" aria-labelledby="hidden-dropdown">
+<ul class="dropdown-menu dropdown-menu-right GCM-Dropdown-Right" aria-labelledby="hidden-dropdown">
 {% if top_bar_items -%}
 	{%- for page in top_bar_items -%}
 		{% if not page.parent_label and not page.right -%}
@@ -13,6 +13,5 @@
 {%- endfor %}
 {% block navbar_right_extension %}{% endblock %}
 <li class="divider"></li>
-<!--{#{% include "templates/includes/navbar/navbar_search.html" %}#}-->
 {% include "templates/navbar/pflanzenfreund_dropdown_login.html" %}
 </ul>
