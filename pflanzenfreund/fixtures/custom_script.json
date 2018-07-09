@@ -1,20 +1,20 @@
 [
  {
-  "docstatus": 0,
-  "doctype": "Custom Script",
-  "dt": "Website Settings",
-  "modified": "2018-06-26 10:21:53.681881",
-  "name": "Website Settings-Client",
-  "script": "frappe.ui.form.on('Website Settings', {\n\trefresh: function(frm) {\n\t    cur_frm.set_df_property('brand','hidden','1');\n\t    cur_frm.set_df_property('top_bar','hidden','1');\n\t    cur_frm.set_df_property('footer','hidden','1');\n\t}\n});",
+  "docstatus": 0, 
+  "doctype": "Custom Script", 
+  "dt": "Website Settings", 
+  "modified": "2018-06-26 10:21:53.681881", 
+  "name": "Website Settings-Client", 
+  "script": "frappe.ui.form.on('Website Settings', {\n\trefresh: function(frm) {\n\t    cur_frm.set_df_property('brand','hidden','1');\n\t    cur_frm.set_df_property('top_bar','hidden','1');\n\t    cur_frm.set_df_property('footer','hidden','1');\n\t}\n});", 
   "script_type": "Client"
- },
+ }, 
  {
-  "docstatus": 0,
-  "doctype": "Custom Script",
-  "dt": "Portal Settings",
-  "modified": "2018-06-27 09:07:48.211364",
-  "name": "Portal Settings-Client",
-  "script": "frappe.ui.form.on('Portal Settings', {\n\trefresh: function(frm) {\n\t    if (cur_frm.doc.hide_standard_menu == '0') {\n\t      cur_frm.set_value('hide_standard_menu', '1');\n\t      cur_frm.save();\n\t    }\n\t    cur_frm.set_df_property('standard_menu_items','hidden','1');\n\t}\n});",
+  "docstatus": 0, 
+  "doctype": "Custom Script", 
+  "dt": "Portal Settings", 
+  "modified": "2018-06-27 09:07:48.211364", 
+  "name": "Portal Settings-Client", 
+  "script": "frappe.ui.form.on('Portal Settings', {\n\trefresh: function(frm) {\n\t    if (cur_frm.doc.hide_standard_menu == '0') {\n\t      cur_frm.set_value('hide_standard_menu', '1');\n\t      cur_frm.save();\n\t    }\n\t    cur_frm.set_df_property('standard_menu_items','hidden','1');\n\t}\n});", 
   "script_type": "Client"
  }
 ]
