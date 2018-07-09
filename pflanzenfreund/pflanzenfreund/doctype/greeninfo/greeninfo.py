@@ -62,9 +62,10 @@ def sync_greeninfo(config):
 
 def import_data(filename):
     # read input file
-    file = open(filename, "rU")
+    f = open(filename, "rU")
     # use 'ansi' encoding, not 'utf-8'
-    data = file.read().decode('ansi')
+    data = f.read().decode('ansi')
+    f.close()
     rows = data.split(ROW_SEPARATOR)
     print("Rows: {0}".format(len(rows)))
     # leave out header and start to import
@@ -81,7 +82,7 @@ def import_data(filename):
             matches_by_name = frappe.get_all("Customer", 
                 filters={
                     'greeninfo_id': 0, 
-                    'name': "{0} {1}".format(getfield(cells[ADRNR]), getfield(cells[ADRNR]))}, fields=['name'])
+                    'customer_name': "{0} {1}".format(getfield(cells[ADRNR]), getfield(cells[ADRNR]))}, fields=['name'])
             if matches_by_name:    
                 # matched customer by name and empty ID
                 update_customer(matches_by_name[0]['name'], cells)
@@ -96,7 +97,7 @@ def create_customer(cells):
     cus = frappe.get_doc(
         {
             "doctype":"Customer", 
-            "name": fullname,
+            "customer_name": fullname,
             "greeninfo_id": int(getfield(cells[ADRNR])),
             "description": getfield(cells[NBEZ1]),
             "company": getfield(cells[NBEZ2]),
@@ -117,6 +118,7 @@ def create_customer(cells):
         con = frappe.get_doc(
             {
                 "doctype":"Contact", 
+                "name": "{0} ({1})".format(fullname, getfield(cells[ADRNR])),
                 "greeninfo_id": int(getfield(cells[ADRNR])),
                 "first_name": getfield(cells[FNAME]),
                 "last_name": getfield(cells[NNAME]),
@@ -142,7 +144,8 @@ def create_customer(cells):
             adr = frappe.get_doc(
                 {
                     "doctype":"Address", 
-                    "address_title": fullname,
+                    "name": "{0} ({1})".format(fullname, getfield(cells[ADRNR])),
+                    "address_title": "{0} ({1})".format(fullname, getfield(cells[ADRNR])),
                     "address_line1": "{0} {1}".format(getfield(cells[STRAS]), getfield(cells[STRASNR])),
                     "city": getfield(cells[ORTBZ]),
                     "pincode": getfield(cells[PLZAL]),
@@ -186,11 +189,142 @@ def get_greeninfo_lanugage(language):
         return "D"
         
 def update_customer(name, cells):
-	
+    # get customer record
+    cus = frappe.get_doc("Customer", name)
+	# check last modification date
+    gi_last_modified_fields = getfield(cells[MUTDT]).split(".")
+    update = False
+    if gi_last_modified_fields[2] >= cus['modified'].year:
+        if gi_last_modified_fields[1] >= cus['modified'].month:
+            if gi_last_modified_fields[0] > cus['modified'].day:
+                update = True
+    if update:
+        fullname = "{0} {1}".format(getfield(cells[FNAME]), getfield(cells[NNAME]))
+        cus["customer_name"] = fullname
+        cus["greeninfo_id"] = int(getfield(cells[ADRNR]))
+        cus["description"] = getfield(cells[NBEZ1])
+        cus["company"] = getfield(cells[NBEZ2])
+        cus["lanugage"] = get_erp_language(getfield(cells[SPRCD]))
+        cus["code_05"] = getfield(cells[CODE05])
+        cus["code_06"] = getfield(cells[CODE06])
+        cus["code_07"] = getfield(cells[CODE07])
+        cus["code_08"] = getfield(cells[CODE08])
+        cus["karte"] = getfield(cells[KARTE])
+        cus["krsperre"] = getfield(cells[KRSPERRE])
+        try:
+            cus.save()
+        except:
+            add_log(_("Update customer failed"), _("Update failed for customer {0} {1} ({2})").format(
+                getfield(cells[FNAME]), getfield(cells[NNAME]), getfield(cells[ADRNR])))
+        else:
+            con_id = frappe.get_all("Dynamic Link", 
+                filters={'link_doctype': 'Customer', 'link_name': fullname, 'parenttype': 'Contact'},
+                fields=['parent'])
+            if con_id:
+                con = frappe.get_doc("Contact", con_id[0]['parent'])
+                con["greeninfo_id"] = int(getfield(cells[ADRNR])),
+                con["first_name"] = getfield(cells[FNAME]),
+                con["last_name"] = getfield(cells[NNAME]),
+                con["email_id"] = getfield(cells[EMAILADR]),
+                con["salutation"] = getfield(cells[ANRED]),
+                con["letter_salutation"] = getfield(cells[BRANRED]),
+                con["fax"] = getfield(cells[TELEF]),
+                con["phone"] = getfield(cells[TELEP]),
+                try:
+                    con.save()
+                except:
+                    add_log(_("Update contact failed"), _("Update failed for contact {0} {1} ({2})").format(
+                        getfield(cells[FNAME]), getfield(cells[NNAME]), getfield(cells[ADRNR])))
+                else:
+                    adr_id = frappe.get_all("Dynamic Link", 
+                        filters={'link_doctype': 'Customer', 'link_name': fullname, 'parenttype': 'Address'},
+                        fields=['parent'])
+                    if adr_id:
+                        adr = frappe.get_doc("Address", adr_id[0]['parent'])
+                        adr["address_title"] = fullname,
+                        adr["address_line1"] = "{0} {1}".format(getfield(cells[STRAS]), getfield(cells[STRASNR])),
+                        adr["city"] = getfield(cells[ORTBZ]),
+                        adr["pincode": getfield(cells[PLZAL]),
+                        adr["is_primary_address"] = 1,
+                        adr["is_shipping_address"] = 1,
+                        try:
+                            adr.save()
+                        except:
+                            add_log(_("Update address failed"), _("Update address for contact {0} {1} ({2})").format(
+                                getfield(cells[FNAME]), getfield(cells[NNAME]), getfield(cells[ADRNR])))
 	return
 		
 def export_data(filename):
-    pass
+    sql_query = """SELECT 
+        `tCus`.`greeninfo_id` AS `adrnr`,
+        `tCon`.`last_name` AS `nname`,
+        `tCon`.`first_name` AS `vname`,
+        `tCus`.`description` AS `nbez1`,
+        `tCus`.`company` AS `nbez2`,
+        `tAdr`.`address_line1` AS `str`,
+        `tAdr`.`pincode` AS `plzal`,
+        `tAdr`.`city` AS `ortbz`,
+        `tCon`.`salutation` AS `anred`,
+        `tCon`.`letter_salutation` AS `branred`,
+        `tCus`.`language` AS `language`,
+        `tCon`.`fax` AS `telef`,
+        `tCon`.`phone` AS `telep`,
+        `tCon`.`mobile_no` AS `natel`,
+        `tCon`.`email_id` AS `emailadr`,
+        `tCus`.`code_05` AS `code05`,
+        `tCus`.`code_06` AS `code06`,
+        `tCus`.`code_07` AS `code07`,
+        `tCus`.`code_08` AS `code08`,
+        `tCus`.`karte` AS `karte`,
+        `tCus`.`krsperre` AS `krsperre`,
+        `tCus`.`modified` AS `modified`        
+      FROM `tabCustomer` AS `tCus`
+      LEFT JOIN `tabDynamic Link` AS `tDL1` ON (`tCus`.`name` = `tDL1`.`link_name` AND `tDL1`.`parenttype` = "Contact")
+      LEFT JOIN `tabContact AS `tCon` ON (`tDL1`.`parent` = `tCon`.`name`)
+      LEFT JOIN `tabDynamic Link` AS `tDL2` ON (`tCus`.`name` = `tDL2`.`link_name` AND `tDL2`.`parenttype` = "Address")
+      LEFT JOIN `tabAddress AS `tAdr` ON (`tDL2`.`parent` = `tAdr`.`name`)"""
+    contacts = frappe.db.sql(sql_query, as_dict=True)
+    
+    # write output file
+    f = open(filename, "wU")
+    # write header line 
+    f.write("adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code06,code07,code08,karte,krsperre,mutdt")
+    # write content
+    for contact in contacts:
+        street_parts = contact['str'].split(" ")
+        if len(street_parts) == 1:
+            stras = contact['str']
+            strasnr = ""
+        else
+            stras = " ".join(street_parts[0:-1])
+            strasnr = street_parts[-1]
+        f.write("{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\",\"{21}\",{22}".format(
+            contact['adrnr'],
+            contact['nname'],
+            contact['vname'],
+            contact['nbez1'],
+            contact['nbez2'],
+            stras,
+            strasnr,
+            contact['plzal'],
+            contact['ortbz'],
+            contact['anred'],
+            contact['branred'],
+            get_greeninfo_lanugage(contact['language']),
+            contact['telef'],
+            contact['telep'],
+            contact['natel'],
+            contact['emailadr'],
+            contact['code05'],
+            contact['code06'],
+            contact['code07'],
+            contact['code08'],
+            contact['karte'],
+            contact['krsperre'],
+            "{0}.{1}.{2}".format(contact['modified'][8:9], contact['modified'][5:6], contact['modified'][0:3])))
+            
+    f.close()  
+    return
 
 # create a new log entry
 def add_log(title, message):
