@@ -62,3 +62,32 @@
     background-color: #f9f9f9;
     font-size: 20px;
 }
+#account-check input {
+  padding: 10px;
+  width: 100%;
+  font-size: 17px;
+  font-family: Raleway;
+  border: 1px solid #aaaaaa;
+}
+#account-check input.invalid {
+  background-color: #ffdddd;
+}
+#account-check .tab {
+  display: none;
+}
+#account-check .step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbbbbb;
+  border: none;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+}
+#account-check .step.active {
+  opacity: 1;
+}
+#account-check .step.finish {
+  background-color: #4CAF50;
+}
