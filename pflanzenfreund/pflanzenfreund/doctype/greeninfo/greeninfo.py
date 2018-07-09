@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2018, libracore and contributors
 # For license information, please see license.txt
+#
+# Test with
+#   bench execute pflanzenfreund.pflanzenfreund.doctype.greeninfo.greeninfo.import_data --kwargs "{'filename': '/mnt/share/testin.csv'}"
+#   bench execute pflanzenfreund.pflanzenfreund.doctype.greeninfo.greeninfo.export_data --kwargs "{'filename': '/mnt/share/testout.csv'}"
 
 # imports
 from __future__ import unicode_literals
@@ -63,8 +67,8 @@ def sync_greeninfo(config):
 def import_data(filename):
     # read input file
     f = open(filename, "rU")
-    # use 'ansi' encoding, not 'utf-8'
-    data = f.read().decode('ansi')
+    # use 'ansi'/'cp1252' encoding, not 'utf-8'
+    data = f.read().decode('cp1252')
     f.close()
     rows = data.split(ROW_SEPARATOR)
     print("Rows: {0}".format(len(rows)))
@@ -86,7 +90,7 @@ def import_data(filename):
             if matches_by_name:    
                 # matched customer by name and empty ID
                 update_customer(matches_by_name[0]['name'], cells)
-    		else:
+            else:
                 create_customer(cells)
 
     return
@@ -98,6 +102,9 @@ def create_customer(cells):
         {
             "doctype":"Customer", 
             "customer_name": fullname,
+            "customer_type": "Individual",
+            "customer_group": "All Customer Groups",
+            "territory": "All Territories",
             "greeninfo_id": int(getfield(cells[ADRNR])),
             "description": getfield(cells[NBEZ1]),
             "company": getfield(cells[NBEZ2]),
@@ -108,7 +115,7 @@ def create_customer(cells):
 			"code_08": getfield(cells[CODE08]),
 			"karte": getfield(cells[KARTE]),
 			"krsperre": getfield(cells[KRSPERRE]),
-        }
+        })
     try:
         cus.insert()
     except:
@@ -134,7 +141,7 @@ def create_customer(cells):
                         "link_name": fullname
                     }
                 ]
-            }
+            })
         try:
             con.insert()
         except:
@@ -157,7 +164,7 @@ def create_customer(cells):
                             "link_name": fullname
                         }
                     ]
-                }
+                })
             try:
                 adr.insert()
             except:
@@ -169,23 +176,23 @@ def get_erp_language(lang_code):
     l = lang_code.lower()
     if l == "d":
         return "de"
-    elif l = "e":
+    elif l == "e":
         return "en"
-    elif l = "f":
+    elif l == "f":
         return "fr"
-    elif l = "i":
+    elif l == "i":
         return "it"
     else:
         return "de"
         
 def get_greeninfo_lanugage(language):
-    if lanugage = "en":
+    if language == "en":
         return "E"
-    elif lanugage = "fr":
+    elif language == "fr":
         return "F"
-    elif lanugage = "it":
+    elif language == "it":
         return "I"
-    else
+    else:
         return "D"
         
 def update_customer(name, cells):
@@ -244,7 +251,7 @@ def update_customer(name, cells):
                         adr["address_title"] = fullname,
                         adr["address_line1"] = "{0} {1}".format(getfield(cells[STRAS]), getfield(cells[STRASNR])),
                         adr["city"] = getfield(cells[ORTBZ]),
-                        adr["pincode": getfield(cells[PLZAL]),
+                        adr["pincode"] = getfield(cells[PLZAL]),
                         adr["is_primary_address"] = 1,
                         adr["is_shipping_address"] = 1,
                         try:
@@ -252,7 +259,7 @@ def update_customer(name, cells):
                         except:
                             add_log(_("Update address failed"), _("Update address for contact {0} {1} ({2})").format(
                                 getfield(cells[FNAME]), getfield(cells[NNAME]), getfield(cells[ADRNR])))
-	return
+    return
 		
 def export_data(filename):
     sql_query = """SELECT 
@@ -280,25 +287,30 @@ def export_data(filename):
         `tCus`.`modified` AS `modified`        
       FROM `tabCustomer` AS `tCus`
       LEFT JOIN `tabDynamic Link` AS `tDL1` ON (`tCus`.`name` = `tDL1`.`link_name` AND `tDL1`.`parenttype` = "Contact")
-      LEFT JOIN `tabContact AS `tCon` ON (`tDL1`.`parent` = `tCon`.`name`)
+      LEFT JOIN `tabContact` AS `tCon` ON (`tDL1`.`parent` = `tCon`.`name`)
       LEFT JOIN `tabDynamic Link` AS `tDL2` ON (`tCus`.`name` = `tDL2`.`link_name` AND `tDL2`.`parenttype` = "Address")
-      LEFT JOIN `tabAddress AS `tAdr` ON (`tDL2`.`parent` = `tAdr`.`name`)"""
+      LEFT JOIN `tabAddress` AS `tAdr` ON (`tDL2`.`parent` = `tAdr`.`name`)"""
     contacts = frappe.db.sql(sql_query, as_dict=True)
     
     # write output file
-    f = open(filename, "wU")
+    f = open(filename, "w")
     # write header line 
-    f.write("adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code06,code07,code08,karte,krsperre,mutdt")
+    f.write("adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code06,code07,code08,karte,krsperre,mutdt\n")
     # write content
     for contact in contacts:
-        street_parts = contact['str'].split(" ")
-        if len(street_parts) == 1:
-            stras = contact['str']
+        try:
+            street_parts = contact['str'].split(" ")
+            if len(street_parts) == 1:
+                stras = contact['str']
+                strasnr = ""
+            else:
+                stras = " ".join(street_parts[0:-1])
+                strasnr = street_parts[-1]
+        except:
+            stras = ""
             strasnr = ""
-        else
-            stras = " ".join(street_parts[0:-1])
-            strasnr = street_parts[-1]
-        f.write("{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\",\"{21}\",{22}".format(
+        mod = str(contact['modified'])
+        line = "{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\",\"{21}\",{22}".format(
             contact['adrnr'],
             contact['nname'],
             contact['vname'],
@@ -321,7 +333,9 @@ def export_data(filename):
             contact['code08'],
             contact['karte'],
             contact['krsperre'],
-            "{0}.{1}.{2}".format(contact['modified'][8:9], contact['modified'][5:6], contact['modified'][0:3])))
+            "{0}.{1}.{2}".format(mod[8:10], mod[5:7], mod[0:4])
+          )
+        f.write(line + "\n")
             
     f.close()  
     return
