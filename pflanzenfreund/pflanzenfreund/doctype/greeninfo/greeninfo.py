@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: cp1252 -*-
 # Copyright (c) 2018, libracore and contributors
 # For license information, please see license.txt
 #
@@ -31,7 +31,7 @@ ANRED = 9				# contact.salutation
 BRANRED = 10			# contact.letter_salutation
 SPRCD = 11				# customer.language
 TELEF = 12				# contact.fax
-TELEPH = 13				# contact.phone
+TELEP = 13				# contact.phone
 NATEL = 14				# contact.mobile
 EMAILADR = 15			# contact.email
 CODE05 = 16				# customer.code_05
@@ -68,36 +68,36 @@ def import_data(filename):
     # read input file
     f = open(filename, "rU")
     # use 'ansi'/'cp1252' encoding, not 'utf-8'
-    data = f.read().decode('cp1252')
+    data = f.read()  # .decode('cp1252')
     f.close()
     rows = data.split(ROW_SEPARATOR)
-    print("Rows: {0}".format(len(rows)))
     # leave out header and start to import
     for i in range(1, len(rows)):
         # loop through all customers 
         cells = rows[i].split(CELL_SEPARATOR)
-        # check if customer exists by ID
-        matches_by_id = frappe.get_all("Customer", filters={'greeninfo_id': getfield(cells[ADRNR])}, fields=['name'])
-        if matches_by_id:
-            # found customer, update
-            update_customer(matches_by_id[0]['name'], cells)
-        else:
-            # no match found by ID, check name with 0 (ID not set)
-            matches_by_name = frappe.get_all("Customer", 
-                filters={
-                    'greeninfo_id': 0, 
-                    'customer_name': "{0} {1}".format(getfield(cells[ADRNR]), getfield(cells[ADRNR]))}, fields=['name'])
-            if matches_by_name:    
-                # matched customer by name and empty ID
-                update_customer(matches_by_name[0]['name'], cells)
+        if len(cells) >= 23:
+            # check if customer exists by ID
+            matches_by_id = frappe.get_all("Customer", filters={'greeninfo_id': get_field(cells[ADRNR])}, fields=['name'])
+            if matches_by_id:
+                # found customer, update
+                update_customer(matches_by_id[0]['name'], cells)
             else:
-                create_customer(cells)
+                # no match found by ID, check name with 0 (ID not set)
+                matches_by_name = frappe.get_all("Customer", 
+                    filters={
+                        'greeninfo_id': 0, 
+                        'customer_name': "{0} {1}".format(get_field(cells[ADRNR]), get_field(cells[ADRNR]))}, fields=['name'])
+                if matches_by_name:    
+                    # matched customer by name and empty ID
+                    update_customer(matches_by_name[0]['name'], cells)
+                else:
+                    create_customer(cells)
 
     return
 
 def create_customer(cells):
     # create record
-    fullname = "{0} {1}".format(getfield(cells[FNAME]), getfield(cells[NNAME]))
+    fullname = "{0} {1}".format(get_field(cells[VNAME]), get_field(cells[NNAME]))
     cus = frappe.get_doc(
         {
             "doctype":"Customer", 
@@ -105,71 +105,75 @@ def create_customer(cells):
             "customer_type": "Individual",
             "customer_group": "All Customer Groups",
             "territory": "All Territories",
-            "greeninfo_id": int(getfield(cells[ADRNR])),
-            "description": getfield(cells[NBEZ1]),
-            "company": getfield(cells[NBEZ2]),
-            "lanugage": get_erp_language(getfield(cells[SPRCD])),
-			"code_05": getfield(cells[CODE05]),
-			"code_06": getfield(cells[CODE06]),
-			"code_07": getfield(cells[CODE07]),
-			"code_08": getfield(cells[CODE08]),
-			"karte": getfield(cells[KARTE]),
-			"krsperre": getfield(cells[KRSPERRE]),
+            "greeninfo_id": int(get_field(cells[ADRNR])),
+            "description": get_field(cells[NBEZ1]),
+            "company": get_field(cells[NBEZ2]),
+            "language": get_erp_language(get_field(cells[SPRCD])),
+			"code_05": get_field(cells[CODE05]),
+			"code_06": get_field(cells[CODE06]),
+			"code_07": get_field(cells[CODE07]),
+			"code_08": get_field(cells[CODE08]),
+			"karte": get_field(cells[KARTE]),
+			"krsperre": get_field(cells[KRSPERRE]),
         })
     try:
-        cus.insert()
-    except:
-        add_log(_("Insert customer failed"), _("Insert failed for customer {0} {1} ({2})").format(
-            getfield(cells[FNAME]), getfield(cells[NNAME]), getfield(cells[ADRNR])))
+        new_customer = cus.insert()
+    except Exception as e:
+        add_log(_("Insert customer failed"), _("Insert failed for customer {0} {1} ({2}): {3}").format(
+            get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
     else:
+        if get_field(cells[VNAME]) == "":
+            first_name = "-"
+        else:
+            first_name = get_field(cells[VNAME])
         con = frappe.get_doc(
             {
                 "doctype":"Contact", 
-                "name": "{0} ({1})".format(fullname, getfield(cells[ADRNR])),
-                "greeninfo_id": int(getfield(cells[ADRNR])),
-                "first_name": getfield(cells[FNAME]),
-                "last_name": getfield(cells[NNAME]),
-                "email_id": getfield(cells[EMAILADR]),
-                "salutation": getfield(cells[ANRED]),
-                "letter_salutation": getfield(cells[BRANRED]),
-                "fax": getfield(cells[TELEF]),
-                "phone": getfield(cells[TELEP]),
-                "mobile_no": getfield(cells[NATEL]),
+                "name": "{0} ({1})".format(fullname, new_customer.name),
+                "greeninfo_id": int(get_field(cells[ADRNR])),
+                "first_name": first_name,
+                "last_name": get_field(cells[NNAME]),
+                "email_id": get_field(cells[EMAILADR]),
+                "salutation": get_field(cells[ANRED]),
+                "letter_salutation": get_field(cells[BRANRED]),
+                "fax": get_field(cells[TELEF]),
+                "phone": get_field(cells[TELEP]),
+                "mobile_no": get_field(cells[NATEL]),
                 "links": [
                     {
                         "link_doctype": "Customer",
-                        "link_name": fullname
+                        "link_name": new_customer.name
                     }
                 ]
             })
         try:
             con.insert()
-        except:
-            add_log(_("Insert contact failed"), _("Insert failed for contact {0} {1} ({2})").format(
-                getfield(cells[FNAME]), getfield(cells[NNAME]), getfield(cells[ADRNR])))
+        except Exception as e:
+            add_log(_("Insert contact failed"), _("Insert failed for contact {0} {1} ({2}): {3}").format(
+                get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
         else:
             adr = frappe.get_doc(
                 {
                     "doctype":"Address", 
-                    "name": "{0} ({1})".format(fullname, getfield(cells[ADRNR])),
-                    "address_title": "{0} ({1})".format(fullname, getfield(cells[ADRNR])),
-                    "address_line1": "{0} {1}".format(getfield(cells[STRAS]), getfield(cells[STRASNR])),
-                    "city": getfield(cells[ORTBZ]),
-                    "pincode": getfield(cells[PLZAL]),
+                    "name": "{0} ({1})".format(fullname, new_customer.name),
+                    "address_title": "{0} ({1})".format(fullname, new_customer.name),
+                    "address_line1": "{0} {1}".format(get_field(cells[STRAS]), get_field(cells[STRASNR])),
+                    "city": get_field(cells[ORTBZ]),
+                    "pincode": get_field(cells[PLZAL]),
                     "is_primary_address": 1,
                     "is_shipping_address": 1,
                     "links": [
                         {
                             "link_doctype": "Customer",
-                            "link_name": fullname
+                            "link_name": new_customer.name
                         }
                     ]
                 })
             try:
                 adr.insert()
-            except:
-                add_log(_("Insert address failed"), _("Insert failed for address {0} {1} ({2})").format(
-                    getfield(cells[FNAME]), getfield(cells[NNAME]), getfield(cells[ADRNR])))
+            except Exception as e:
+                add_log(_("Insert address failed"), _("Insert failed for address {0} {1} ({2}): {3}").format(
+                    get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
     return
 
 def get_erp_language(lang_code):
@@ -199,66 +203,71 @@ def update_customer(name, cells):
     # get customer record
     cus = frappe.get_doc("Customer", name)
 	# check last modification date
-    gi_last_modified_fields = getfield(cells[MUTDT]).split(".")
+    gi_last_modified_fields = get_field(cells[MUTDT]).split(".")
+    mod = str(cus.modified)
     update = False
-    if gi_last_modified_fields[2] >= cus['modified'].year:
-        if gi_last_modified_fields[1] >= cus['modified'].month:
-            if gi_last_modified_fields[0] > cus['modified'].day:
+    if int(gi_last_modified_fields[2]) >= int(mod[0:4]):
+        if int(gi_last_modified_fields[1]) >= int(mod[5:7]):
+            if int(gi_last_modified_fields[0]) > int(mod[8:10]):
                 update = True
     if update:
-        fullname = "{0} {1}".format(getfield(cells[FNAME]), getfield(cells[NNAME]))
+        fullname = "{0} {1}".format(get_field(cells[VNAME]), get_field(cells[NNAME]))
         cus["customer_name"] = fullname
-        cus["greeninfo_id"] = int(getfield(cells[ADRNR]))
-        cus["description"] = getfield(cells[NBEZ1])
-        cus["company"] = getfield(cells[NBEZ2])
-        cus["lanugage"] = get_erp_language(getfield(cells[SPRCD]))
-        cus["code_05"] = getfield(cells[CODE05])
-        cus["code_06"] = getfield(cells[CODE06])
-        cus["code_07"] = getfield(cells[CODE07])
-        cus["code_08"] = getfield(cells[CODE08])
-        cus["karte"] = getfield(cells[KARTE])
-        cus["krsperre"] = getfield(cells[KRSPERRE])
+        cus["greeninfo_id"] = int(get_field(cells[ADRNR]))
+        cus["description"] = get_field(cells[NBEZ1])
+        cus["company"] = get_field(cells[NBEZ2])
+        cus["language"] = get_erp_language(get_field(cells[SPRCD]))
+        cus["code_05"] = get_field(cells[CODE05])
+        cus["code_06"] = get_field(cells[CODE06])
+        cus["code_07"] = get_field(cells[CODE07])
+        cus["code_08"] = get_field(cells[CODE08])
+        cus["karte"] = get_field(cells[KARTE])
+        cus["krsperre"] = get_field(cells[KRSPERRE])
         try:
             cus.save()
-        except:
-            add_log(_("Update customer failed"), _("Update failed for customer {0} {1} ({2})").format(
-                getfield(cells[FNAME]), getfield(cells[NNAME]), getfield(cells[ADRNR])))
+        except Exception as e:
+            add_log(_("Update customer failed"), _("Update failed for customer {0} {1} ({2}): {3}").format(
+                get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
         else:
             con_id = frappe.get_all("Dynamic Link", 
-                filters={'link_doctype': 'Customer', 'link_name': fullname, 'parenttype': 'Contact'},
+                filters={'link_doctype': 'Customer', 'link_name': cus.name, 'parenttype': 'Contact'},
                 fields=['parent'])
             if con_id:
+                if get_field(cells[VNAME]) == "":
+                    first_name = "-"
+                else:
+                    first_name = get_field(cells[VNAME])
                 con = frappe.get_doc("Contact", con_id[0]['parent'])
-                con["greeninfo_id"] = int(getfield(cells[ADRNR])),
-                con["first_name"] = getfield(cells[FNAME]),
-                con["last_name"] = getfield(cells[NNAME]),
-                con["email_id"] = getfield(cells[EMAILADR]),
-                con["salutation"] = getfield(cells[ANRED]),
-                con["letter_salutation"] = getfield(cells[BRANRED]),
-                con["fax"] = getfield(cells[TELEF]),
-                con["phone"] = getfield(cells[TELEP]),
+                con["greeninfo_id"] = int(get_field(cells[ADRNR])),
+                con["first_name"] = first_name,
+                con["last_name"] = get_field(cells[NNAME]),
+                con["email_id"] = get_field(cells[EMAILADR]),
+                con["salutation"] = get_field(cells[ANRED]),
+                con["letter_salutation"] = get_field(cells[BRANRED]),
+                con["fax"] = get_field(cells[TELEF]),
+                con["phone"] = get_field(cells[TELEP]),
                 try:
                     con.save()
-                except:
-                    add_log(_("Update contact failed"), _("Update failed for contact {0} {1} ({2})").format(
-                        getfield(cells[FNAME]), getfield(cells[NNAME]), getfield(cells[ADRNR])))
+                except Exception as e:
+                    add_log(_("Update contact failed"), _("Update failed for contact {0} {1} ({2}): {3}").format(
+                        get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
                 else:
                     adr_id = frappe.get_all("Dynamic Link", 
-                        filters={'link_doctype': 'Customer', 'link_name': fullname, 'parenttype': 'Address'},
+                        filters={'link_doctype': 'Customer', 'link_name': cus.name, 'parenttype': 'Address'},
                         fields=['parent'])
                     if adr_id:
                         adr = frappe.get_doc("Address", adr_id[0]['parent'])
                         adr["address_title"] = fullname,
-                        adr["address_line1"] = "{0} {1}".format(getfield(cells[STRAS]), getfield(cells[STRASNR])),
-                        adr["city"] = getfield(cells[ORTBZ]),
-                        adr["pincode"] = getfield(cells[PLZAL]),
+                        adr["address_line1"] = "{0} {1}".format(get_field(cells[STRAS]), get_field(cells[STRASNR])),
+                        adr["city"] = get_field(cells[ORTBZ]),
+                        adr["pincode"] = get_field(cells[PLZAL]),
                         adr["is_primary_address"] = 1,
                         adr["is_shipping_address"] = 1,
                         try:
                             adr.save()
-                        except:
-                            add_log(_("Update address failed"), _("Update address for contact {0} {1} ({2})").format(
-                                getfield(cells[FNAME]), getfield(cells[NNAME]), getfield(cells[ADRNR])))
+                        except Exception as e:
+                            add_log(_("Update address failed"), _("Update address for contact {0} {1} ({2}): {3}").format(
+                                get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
     return
 		
 def export_data(filename):
@@ -351,3 +360,26 @@ def add_log(title, message):
 # removes the quotation marks from a cell
 def get_field(content):
 	return content.replace("\"", "")
+
+def test():
+    con = frappe.get_doc(
+        {
+            "doctype":"Contact", 
+            "name": "Lars",
+            "greeninfo_id": 123,
+            "first_name": "Lars",
+            "last_name": "M",
+            "email_id": "lars.mueller@libracore.com",
+            "salutation": "Herr",
+            "letter_salutation": "BlaBla",
+            "fax": "",
+            "phone": "052",
+            "mobile_no": "079",
+            "links": [
+                {
+                    "link_doctype": "Customer",
+                    "link_name": "Guest"
+                }
+            ]
+        })
+    con.insert()
