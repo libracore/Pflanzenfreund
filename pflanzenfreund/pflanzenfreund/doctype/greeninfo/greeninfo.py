@@ -12,10 +12,11 @@ import frappe
 from frappe.model.document import Document
 from frappe import _
 from frappe.utils.background_jobs import enqueue
+import codecs
 
 # Parser config
 ROW_SEPARATOR = "\n"
-CELL_SEPARATOR = ","
+CELL_SEPARATOR = "\t"
 
 # CSV column allocation
 ADRNR = 0				# greeninfo_id
@@ -66,11 +67,14 @@ def sync_greeninfo(config):
 
 def import_data(filename):
     # read input file
-    f = open(filename, "rU")
+    #f = open(filename, "r")
     # use 'ansi'/'cp1252' encoding, not 'utf-8'
-    data = f.read()  # .decode('cp1252')
+    #data = f.read()  # .decode('cp1252')
+    #f.close()
+    f = codecs.open(filename, 'rb', 'cp1252')
+    data = f.read()
     f.close()
-    rows = data.split(ROW_SEPARATOR)
+    rows = data.replace(",\"", "\t\"").replace("\",", "\"\t").split(ROW_SEPARATOR)
     # leave out header and start to import
     for i in range(1, len(rows)):
         # loop through all customers 
@@ -152,12 +156,16 @@ def create_customer(cells):
             add_log(_("Insert contact failed"), _("Insert failed for contact {0} {1} ({2}): {3}").format(
                 get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
         else:
+            if get_field(cells[STRAS]) == "":
+                address_line = "-"
+            else:
+                address_line = "{0} {1}".format(get_field(cells[STRAS]), get_field(cells[STRASNR]))
             adr = frappe.get_doc(
                 {
                     "doctype":"Address", 
                     "name": "{0} ({1})".format(fullname, new_customer.name),
                     "address_title": "{0} ({1})".format(fullname, new_customer.name),
-                    "address_line1": "{0} {1}".format(get_field(cells[STRAS]), get_field(cells[STRASNR])),
+                    "address_line1": address_line,
                     "city": get_field(cells[ORTBZ]),
                     "pincode": get_field(cells[PLZAL]),
                     "is_primary_address": 1,
@@ -174,6 +182,8 @@ def create_customer(cells):
             except Exception as e:
                 add_log(_("Insert address failed"), _("Insert failed for address {0} {1} ({2}): {3}").format(
                     get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
+    # write changes to db
+    frappe.db.commit()
     return
 
 def get_erp_language(lang_code):
@@ -256,9 +266,13 @@ def update_customer(name, cells):
                         filters={'link_doctype': 'Customer', 'link_name': cus.name, 'parenttype': 'Address'},
                         fields=['parent'])
                     if adr_id:
+                        if get_field(cells[STRAS]) == "":
+                            address_line = "-"
+                        else:
+                            address_line = "{0} {1}".format(get_field(cells[STRAS]), get_field(cells[STRASNR]))
                         adr = frappe.get_doc("Address", adr_id[0]['parent'])
                         adr["address_title"] = fullname,
-                        adr["address_line1"] = "{0} {1}".format(get_field(cells[STRAS]), get_field(cells[STRASNR])),
+                        adr["address_line1"] = address_line,
                         adr["city"] = get_field(cells[ORTBZ]),
                         adr["pincode"] = get_field(cells[PLZAL]),
                         adr["is_primary_address"] = 1,
@@ -268,6 +282,8 @@ def update_customer(name, cells):
                         except Exception as e:
                             add_log(_("Update address failed"), _("Update address for contact {0} {1} ({2}): {3}").format(
                                 get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
+    # write changes to db
+    frappe.db.commit()
     return
 		
 def export_data(filename):
