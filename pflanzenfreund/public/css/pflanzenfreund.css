@@ -37,3 +37,28 @@
 .GCM-Navbar-Top-4 {
 	font-size: 2rem;
 }
+.abo-price {
+    list-style-type: none;
+    border: 1px solid #eee;
+    margin: 0;
+    padding: 0;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+}
+.abo-price:hover {
+    box-shadow: 0 8px 12px 0 rgba(0,0,0,0.2)
+}
+.abo-price .abo-header {
+    background-image: url('/assets/pflanzenfreund/images/pflanzenfreund_navbar_bottom.jpg');
+    color: white;
+    font-size: 25px;
+}
+.abo-price li {
+    border-bottom: 1px solid #eee;
+    padding: 20px;
+    text-align: center;
+}
+.abo-price .abo-grey {
+    background-color: #f9f9f9;
+    font-size: 20px;
+}

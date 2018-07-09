@@ -1,0 +1,63 @@
+<h1>Abonnieren</h1>
+<div class="row">
+	<div class="col-sm-4">
+		<ul class="abo-price">
+			<li class="abo-header">Probe-Abo</li>
+			<li class="abo-grey">4 Ausgaben</li>
+			<li>Fr. 14.-</li>
+			<li>inklusive Porto</li>
+			<li class="abo-grey"><a href="
+				{% if frappe.user == "Guest" %}
+					/login#login
+				{% else %}
+					/order-probe-abo
+				{% endif %}" class="btn btn-primary">
+				{% if frappe.user == "Guest" %}
+					Login zum Bestellen
+				{% else %}
+					Bestellen
+				{% endif %}</a>
+			</li>
+		</ul>
+	</div>
+	<div class="col-sm-4">
+		<ul class="abo-price">
+			<li class="abo-header">Jahres-Abo</li>
+			<li class="abo-grey">12 Ausgaben</li>
+			<li>Fr. 42.-</li>
+			<li>inklusive Porto</li>
+			<li class="abo-grey"><a href="
+				{% if frappe.user == "Guest" %}
+					/login#login
+				{% else %}
+					/order-jahres-abo
+				{% endif %}" class="btn btn-primary">
+				{% if frappe.user == "Guest" %}
+					Login zum Bestellen
+				{% else %}
+					Bestellen
+				{% endif %}</a>
+			</li>
+		</ul>
+	</div>
+	<div class="col-sm-4">
+		<ul class="abo-price">
+			<li class="abo-header">Geschenk-Abo</li>
+			<li class="abo-grey">12 Ausgaben</li>
+			<li>Fr. 42.-</li>
+			<li>inklusive Porto</li>
+			<li class="abo-grey"><a href="
+				{% if frappe.user == "Guest" %}
+					/login#login
+				{% else %}
+					/order-geschenk-abo
+				{% endif %}" class="btn btn-primary">
+				{% if frappe.user == "Guest" %}
+					Login zum Bestellen
+				{% else %}
+					Bestellen
+				{% endif %}</a>
+			</li>
+		</ul>
+	</div>
+</div>
