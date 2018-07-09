@@ -69,9 +69,126 @@ def import_data(filename):
     print("Rows: {0}".format(len(rows)))
     # leave out header and start to import
     for i in range(1, len(rows)):
+        # loop through all customers 
         cells = rows[i].split(CELL_SEPARATOR)
+        # check if customer exists by ID
+        matches_by_id = frappe.get_all("Customer", filters={'greeninfo_id': getfield(cells[ADRNR])}, fields=['name'])
+        if matches_by_id:
+            # found customer, update
+            update_customer(matches_by_id[0]['name'], cells)
+        else:
+            # no match found by ID, check name with 0 (ID not set)
+            matches_by_name = frappe.get_all("Customer", 
+                filters={
+                    'greeninfo_id': 0, 
+                    'name': "{0} {1}".format(getfield(cells[ADRNR]), getfield(cells[ADRNR]))}, fields=['name'])
+            if matches_by_name:    
+                # matched customer by name and empty ID
+                update_customer(matches_by_name[0]['name'], cells)
+    		else:
+                create_customer(cells)
+
     return
+
+def create_customer(cells):
+    # create record
+    fullname = "{0} {1}".format(getfield(cells[FNAME]), getfield(cells[NNAME]))
+    cus = frappe.get_doc(
+        {
+            "doctype":"Customer", 
+            "name": fullname,
+            "greeninfo_id": int(getfield(cells[ADRNR])),
+            "description": getfield(cells[NBEZ1]),
+            "company": getfield(cells[NBEZ2]),
+            "lanugage": get_erp_language(getfield(cells[SPRCD])),
+			"code_05": getfield(cells[CODE05]),
+			"code_06": getfield(cells[CODE06]),
+			"code_07": getfield(cells[CODE07]),
+			"code_08": getfield(cells[CODE08]),
+			"karte": getfield(cells[KARTE]),
+			"krsperre": getfield(cells[KRSPERRE]),
+        }
+    try:
+        cus.insert()
+    except:
+        add_log(_("Insert customer failed"), _("Insert failed for customer {0} {1} ({2})").format(
+            getfield(cells[FNAME]), getfield(cells[NNAME]), getfield(cells[ADRNR])))
+    else:
+        con = frappe.get_doc(
+            {
+                "doctype":"Contact", 
+                "greeninfo_id": int(getfield(cells[ADRNR])),
+                "first_name": getfield(cells[FNAME]),
+                "last_name": getfield(cells[NNAME]),
+                "email_id": getfield(cells[EMAILADR]),
+                "salutation": getfield(cells[ANRED]),
+                "letter_salutation": getfield(cells[BRANRED]),
+                "fax": getfield(cells[TELEF]),
+                "phone": getfield(cells[TELEP]),
+                "mobile_no": getfield(cells[NATEL]),
+                "links": [
+                    {
+                        "link_doctype": "Customer",
+                        "link_name": fullname
+                    }
+                ]
+            }
+        try:
+            con.insert()
+        except:
+            add_log(_("Insert contact failed"), _("Insert failed for contact {0} {1} ({2})").format(
+                getfield(cells[FNAME]), getfield(cells[NNAME]), getfield(cells[ADRNR])))
+        else:
+            adr = frappe.get_doc(
+                {
+                    "doctype":"Address", 
+                    "address_title": fullname,
+                    "address_line1": "{0} {1}".format(getfield(cells[STRAS]), getfield(cells[STRASNR])),
+                    "city": getfield(cells[ORTBZ]),
+                    "pincode": getfield(cells[PLZAL]),
+                    "is_primary_address": 1,
+                    "is_shipping_address": 1,
+                    "links": [
+                        {
+                            "link_doctype": "Customer",
+                            "link_name": fullname
+                        }
+                    ]
+                }
+            try:
+                adr.insert()
+            except:
+                add_log(_("Insert address failed"), _("Insert failed for address {0} {1} ({2})").format(
+                    getfield(cells[FNAME]), getfield(cells[NNAME]), getfield(cells[ADRNR])))
+    return
+
+def get_erp_language(lang_code):
+    l = lang_code.lower()
+    if l == "d":
+        return "de"
+    elif l = "e":
+        return "en"
+    elif l = "f":
+        return "fr"
+    elif l = "i":
+        return "it"
+    else:
+        return "de"
+        
+def get_greeninfo_lanugage(language):
+    if lanugage = "en":
+        return "E"
+    elif lanugage = "fr":
+        return "F"
+    elif lanugage = "it":
+        return "I"
+    else
+        return "D"
+        
+def update_customer(name, cells):
 	
+	return
+		
 def export_data(filename):
     pass
 
