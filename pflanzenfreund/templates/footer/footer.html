@@ -1,6 +1,6 @@
 <footer class="web-footer" style="padding: 0px;">
 	<section class="footer-links">
-		<div class="row GCM-Footer-Top" style="background-color: {{ footer_color('footer_top_bg') }};">
+		<div class="row GCM-Footer-Top" style="background-color: #f9f9f9;">
 			<div class="container">
 				<div class="col-sm-6 text-left">
 					{% if get_footer_items('footer_items') -%}
@@ -16,7 +16,7 @@
 				</div>
 			</div>
 		</div>
-			<div class="row footer-bottom-line GCM-Footer-Bottom" style="{% if footer_color('footer_bottom_bg') %}background-color: {{ footer_color('footer_bottom_bg') }}{% else %}background-image: url('/assets/pflanzenfreund/images/pflanzenfreund_navbar_bottom.jpg'){% endif %};">
+			<div class="row footer-bottom-line GCM-Footer-Bottom" style="background-image: url('/assets/pflanzenfreund/images/pflanzenfreund_navbar_bottom.jpg');">
 				<div class="container">
 					<div class="text-muted small col-sm-6 col-xs-12">
 						{% if footer_brand() != "<img src='None' style='max-height:84px;width:auto;'>"%}

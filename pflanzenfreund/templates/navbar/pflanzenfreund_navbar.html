@@ -1,5 +1,5 @@
-<nav class="navbar navbar-default navbar-main GCM-Navbar-Top" style="" role="navigation">
-		<div class="hidden-xs GCM-Navbar-Top-1" style="background: {{ navbar_color('top_bg') or '#f9f9f9' }};">
+<nav class="navbar navbar-default navbar-main GCM-Navbar-Top" role="navigation">
+		<div class="hidden-xs GCM-Navbar-Top-1" style="background: #f9f9f9;">
 			<div class="container hidden-xs GCM-Navbar-Top-2">
 				{% include "templates/navbar/pflanzenfreund_navbar_top_items.html" %}
 			</div>
@@ -7,7 +7,7 @@
 		<div class="container">
 			<div class="navbar-header">
 				<a class="navbar-brand ellipsis GCM-Navbar-Top-3" href="{{ url_prefix }}{{ home_page or "/"}}">
-					{% if brand() != "<img src='None' style='max-height:84px;width:auto;'>"%}{{ brand() }}{% else %}<img src='/assets/pflanzenfreund/images/Pflanzenfreund_Logo_RGB.png' style='max-height:84px;width:auto;'>{% endif %}
+					{{ brand_html or "<img src='/assets/pflanzenfreund/images/Pflanzenfreund_Logo_RGB.png' style='max-height:84px;width:auto;'>" }}
 				</a>
 				<div class="dropdown">
 					<button id="hidden-dropdown" class="btn btn-default navbar-toggle dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -17,7 +17,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="hidden-xs" style="{% if navbar_color('bottom_bg') %}background: {{ navbar_color('bottom_bg') }}{% else %}background-image: url('/assets/pflanzenfreund/images/pflanzenfreund_navbar_bottom.jpg'){% endif %}; height: 45px;">
+		<div class="hidden-xs" style="background-image: url('/assets/pflanzenfreund/images/pflanzenfreund_navbar_bottom.jpg'); height: 45px;">
 			<div class="container hidden-xs GCM-Navbar-Top-4">
 				{% include "templates/navbar/pflanzenfreund_navbar_bottom_items.html" %}
 			</div>

@@ -12,7 +12,7 @@
 					{{ page.target or ''}}
 				>
 				{%- if page.child_items -%}
-					<span style="color: {{ footer_color('social_color') }};" class="footer-group-label footer-parent-item">{{ page.label }}<span>
+					<span class="footer-group-label footer-parent-item">{{ page.label }}<span>
 					</a>
 					<ul class="list-unstyled small">
 						{%- for child in page.child_items -%}
@@ -25,7 +25,7 @@
 						{%- endfor -%}
 					</ul>
 				{%- else -%}
-					<span style="color: {{ footer_color('social_color') }};" class="footer-group-label small">{{ page.label }}<span>
+					<span class="footer-group-label small">{{ page.label }}<span>
 					</a>
 				{%- endif -%}
 			</div>

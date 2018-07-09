@@ -4,6 +4,9 @@ import frappe
 from frappe.utils import update_progress_bar
 
 def after_install():
+	return True
+
+def _after_install():
 	# define roles which not shall be deactivated
 	pf_roles = ["Administrator", "System Manager", "PF Administrator", "PF Website Manager", "PF Abo Verwalter"]
 	# check if all pf_roles exist. If not they will be created
