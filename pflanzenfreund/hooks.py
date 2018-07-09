@@ -39,11 +39,8 @@ web_include_css = "/assets/pflanzenfreund/css/pflanzenfreund.css"
 jenv = {
 	"methods": [
 		"navbar_items:pflanzenfreund.utils.get_navbar_items",
-		"brand:pflanzenfreund.utils.get_brand",
-		"navbar_color:pflanzenfreund.utils.get_navbar_color",
 		"get_footer_items:pflanzenfreund.utils.get_footer_items",
 		"get_footer_social_items:pflanzenfreund.utils.get_footer_social_items",
-		"footer_color:pflanzenfreund.utils.get_footer_color",
 		"footer_brand:pflanzenfreund.utils.get_footer_brand",
 		"footer_description:pflanzenfreund.utils.get_footer_description"
 		]

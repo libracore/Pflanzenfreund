@@ -4,7 +4,7 @@ from frappe import _
 def get_data():
     return[
 	{
-		"label": _("Subscrition Administration"),
+		"label": _("Subscription Administration"),
 		"icon": "fa fa-bookmark",
 		"items": [
 			{
