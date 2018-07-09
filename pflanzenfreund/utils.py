@@ -10,9 +10,13 @@
 #
 from __future__ import unicode_literals
 import frappe, os, json
+from frappe import throw, _
 from frappe.website.doctype.website_settings.website_settings import get_website_settings
 from frappe.website.router import get_page_context
 from frappe.model.document import Document
+from frappe.utils import cint, flt, get_fullname, cstr
+from erpnext.shopping_cart.doctype.shopping_cart_settings.shopping_cart_settings import get_shopping_cart_settings
+from frappe.utils.nestedset import get_root_of
 
 def get_navbar_items(position):
 	if position == 'top':
@@ -110,3 +114,93 @@ def get_footer_brand():
 
 def get_footer_description():
 	return get_website_settings().address
+	
+def get_all_addresses():
+	party = get_party()
+	address_names = frappe.db.get_all('Dynamic Link', fields=('parent'),
+		filters=dict(parenttype='Address', link_doctype=party.doctype, link_name=party.name))
+	
+	return address_names
+
+def get_party(user=None):
+	if not user:
+		user = frappe.session.user
+
+	contact_name = frappe.db.get_value("Contact", {"email_id": user})
+	party = None
+
+	if contact_name:
+		contact = frappe.get_doc('Contact', contact_name)
+		if contact.links:
+			party_doctype = contact.links[0].link_doctype
+			party = contact.links[0].link_name
+
+	cart_settings = frappe.get_doc("Shopping Cart Settings")
+
+	debtors_account = ''
+
+	if cart_settings.enable_checkout:
+		debtors_account = get_debtors_account(cart_settings)
+
+	if party:
+		return frappe.get_doc(party_doctype, party)
+
+	else:
+		if not cart_settings.enabled:
+			frappe.local.flags.redirect_location = "/contact"
+			raise frappe.Redirect
+		customer = frappe.new_doc("Customer")
+		fullname = get_fullname(user)
+		customer.update({
+			"customer_name": fullname,
+			"customer_type": "Individual",
+			"customer_group": get_shopping_cart_settings().default_customer_group,
+			"territory": get_root_of("Territory")
+		})
+
+		if debtors_account:
+			customer.update({
+				"accounts": [{
+					"company": cart_settings.company,
+					"account": debtors_account
+				}]
+			})
+
+		customer.flags.ignore_mandatory = True
+		customer.insert(ignore_permissions=True)
+
+		contact = frappe.new_doc("Contact")
+		contact.update({
+			"first_name": fullname,
+			"email_id": user
+		})
+		contact.append('links', dict(link_doctype='Customer', link_name=customer.name))
+		contact.flags.ignore_mandatory = True
+		contact.insert(ignore_permissions=True)
+
+		return customer
+		
+def get_debtors_account(cart_settings):
+	payment_gateway_account_currency = \
+		frappe.get_doc("Payment Gateway Account", cart_settings.payment_gateway_account).currency
+
+	account_name = _("Debtors ({0})".format(payment_gateway_account_currency))
+
+	debtors_account_name = get_account_name("Receivable", "Asset", is_group=0,\
+		account_currency=payment_gateway_account_currency, company=cart_settings.company)
+
+	if not debtors_account_name:
+		debtors_account = frappe.get_doc({
+			"doctype": "Account",
+			"account_type": "Receivable",
+			"root_type": "Asset",
+			"is_group": 0,
+			"parent_account": get_account_name(root_type="Asset", is_group=1, company=cart_settings.company),
+			"account_name": account_name,
+			"currency": payment_gateway_account_currency
+		}).insert(ignore_permissions=True)
+
+		return debtors_account.name
+
+	else:
+		return debtors_account_name
