@@ -140,5 +140,17 @@ def get_data():
 			   "description": _("Setup Tools for KB")
 		   }
 		]
-	}
+	},
+	{
+		"label": _("Integration"),
+		"icon": "fa fa-leaf",
+		"items": [
+		   {
+			   "type": "doctype",
+			   "name": "GreenInfo",
+			   "label": _("GreenInfo"),
+			   "description": _("GreenInfo")
+		   }
+		]
+	}	
 ]
