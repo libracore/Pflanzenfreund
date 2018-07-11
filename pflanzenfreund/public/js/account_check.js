@@ -17,6 +17,8 @@ function showTab(n) {
 	document.getElementById("orderBtn").style.display = "inline";
   } else {
     document.getElementById("nextBtn").innerHTML = "Next";
+	document.getElementById("nextBtn").style.display = "inline";
+	document.getElementById("orderBtn").style.display = "none";
   }
   // ... and run a function that displays the correct step indicator:
   fixStepIndicator(n)
