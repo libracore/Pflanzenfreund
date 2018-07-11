@@ -3,11 +3,11 @@
 {% set act_user = frappe.get_doc('User', frappe.user) %}
 <!-- One "tab" for each step in the form: -->
 <div class="tab"><h2>General:</h2>
-  <p><input value="{{ act_user.first_name }}" placeholder="First name..." oninput="this.className = ''"></p>
-  <p><input value="{{ act_user.last_name }}" placeholder="Last name..." oninput="this.className = ''"></p>
-  <p><input value="{{ act_user.email }}" placeholder="E-mail..." oninput="this.className = ''"></p>
-  <p><input value="{{ act_user.phone }}" placeholder="Phone..." oninput="this.className = ''" data-leer="ok"></p>
-  <p><input value="{{ act_user.mobile_no }}" placeholder="Mobile..." oninput="this.className = ''"></p>
+  <p><input value="{% if act_user.first_name == None %}{% else %}{{ act_user.first_name }}{% endif %}" placeholder="First name..." oninput="this.className = ''"></p>
+  <p><input value="{% if act_user.last_name == None %}{% else %}{{ act_user.last_name }}{% endif %}" placeholder="Last name..." oninput="this.className = ''"></p>
+  <p><input value="{% if act_user.email == None %}{% else %}{{ act_user.email }}{% endif %}" placeholder="E-mail..." oninput="this.className = ''"></p>
+  <p><input value="{% if act_user.phone == None %}{% else %}{{ act_user.phone }}{% endif %}" placeholder="Phone..." oninput="this.className = ''" data-leer="ok"></p>
+  <p><input value="{% if act_user.mobile_no == None %}{% else %}{{ act_user.mobile_no }}{% endif %}" placeholder="Mobile..." oninput="this.className = ''"></p>
 </div>
 
 <div class="tab"><h2>Adressen:</h2>

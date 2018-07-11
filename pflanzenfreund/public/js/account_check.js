@@ -82,8 +82,12 @@ function fixStepIndicator(n) {
 
 
 function show_address(trigger) {
-	address_name = document.getElementById("user_shipping_address").value;
-	
+	if (trigger == "shipping") {
+		address_name = document.getElementById("user_shipping_address").value;
+	}
+	if (trigger == "billing") {
+		address_name = document.getElementById("user_billing_address").value;
+	}
 	frappe.call({
        method: "frappe.client.get",
        args: {
@@ -95,9 +99,15 @@ function show_address(trigger) {
             if (address) {
 				if (trigger == "shipping") {
 					var container = document.getElementById("placeholder_shipping");
+					while (container.firstChild) {
+						container.removeChild(container.firstChild);
+					}
 				}
 				if (trigger == "billing") {
 					var container = document.getElementById("placeholder_billing");
+					while (container.firstChild) {
+						container.removeChild(container.firstChild);
+					}
 				}
 				var sub_container = document.createElement("p");
 				sub_container.style.margin = "0px";
