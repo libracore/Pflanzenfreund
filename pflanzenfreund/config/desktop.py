@@ -7,7 +7,7 @@ def get_data():
 		{
 			"module_name": "Pflanzenfreund",
 			"color": "green",
-			"icon": "octicon octicon-book",
+			"icon": "fa fa-leaf",
 			"type": "module",
 			"label": _("Pflanzenfreund")
 		}
