@@ -1,3 +1,6 @@
+.hero-and-content {
+	min-height: calc(100vh - 315px);
+}
 .btn {
 	background-color: #94B600;
 	border-color: #94B600;
@@ -90,4 +93,26 @@
 }
 #account-check .step.finish {
   background-color: #4CAF50;
+}
+.footer-social-1 {
+	margin: 10px 10px 0 0;
+}
+.footer-social-2 {
+	background-color: #94B600;
+	border-radius: 50%;
+	height: 32px;
+	width: 32px;
+	display: inline-block;
+	text-align: center;
+}
+.footer-social-3 {
+	padding-top: 5px;
+	font-size: 20px;
+	color: white;
+}
+.footer-items-1 {
+	margin: 15px 10px 0 0;
+}
+.footer-social-3:hover {
+	color: black;
 }
