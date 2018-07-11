@@ -12,7 +12,9 @@ function showTab(n) {
     document.getElementById("prevBtn").style.display = "inline";
   }
   if (n == (x.length - 1)) {
-    document.getElementById("nextBtn").innerHTML = "Submit";
+    //document.getElementById("nextBtn").innerHTML = "Submit";
+	document.getElementById("nextBtn").style.display = "none";
+	document.getElementById("orderBtn").style.display = "inline";
   } else {
     document.getElementById("nextBtn").innerHTML = "Next";
   }
@@ -30,11 +32,11 @@ function nextPrev(n) {
   // Increase or decrease the current tab by 1:
   currentTab = currentTab + n;
   // if you have reached the end of the form... :
-  if (currentTab >= x.length) {
+ /*  if (currentTab >= x.length) {
     //...the form gets submitted:
     document.getElementById("regForm").submit();
     return false;
-  }
+  } */
   if (currentTab == 1) {
 	  show_address("shipping");
 	  show_address("billing");
@@ -125,25 +127,9 @@ function show_address(trigger) {
 
 
 
-function place_order() {
-		return frappe.call({
-			type: "POST",
-			method: "erpnext.shopping_cart.cart.place_order",
-			btn: this,
-			callback: function(r) {
-				if(r.exc) {
-					var msg = "";
-					if(r._server_messages) {
-						msg = JSON.parse(r._server_messages || []).join("<br>");
-					}
-
-					$("#cart-error")
-						.empty()
-						.html(msg || frappe._("Something went wrong!"))
-						.toggle(true);
-				} else {
-					window.location.href = "/orders/" + encodeURIComponent(r.message);
-				}
-			}
-		});
+function place_order(item_code, customer, shipping, billing) {
+		shipping = document.getElementById("user_shipping_address").value;
+		billing = document.getElementById("user_billing_address").value;
+		frappe.msgprint("Es wird eine Bestellung von "+item_code+", für den Kunden "+customer+" angelegt. Rechnungsadresse: "+billing+" / Lieferadresse: "+shipping);
+		return false;
 	}
