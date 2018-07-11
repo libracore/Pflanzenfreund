@@ -1,6 +1,13 @@
 {% for page in get_footer_social_items('footer_social_media') %}
-	<div class="col-sm-4 footer-group">
-		{% if not page.parent_label -%}
+	<div class="col-sm-4 footer-group pull-right">
+		<div class="footer-social-1">
+			<span class="footer-social-2"><a href="{{ page.url }}">{% if page.fa_icon %}<i class="{{ page.fa_icon }} footer-social-3"></i>{% else %}{{ page.label }}{% endif %}</a></span>
+		</div>
+		
+		
+		
+		
+		<!-- {#{% if not page.parent_label -%}
 			<div data-label='{{ page.label }}'>
 				<a
 					{% if not page.child_items -%}
@@ -29,6 +36,6 @@
 					</a>
 				{%- endif -%}
 			</div>
-		{%- endif -%}
+		{%- endif -%} #}-->
 	</div>
 {% endfor %}

@@ -35,6 +35,10 @@ function nextPrev(n) {
     document.getElementById("regForm").submit();
     return false;
   }
+  if (currentTab == 1) {
+	  show_address("shipping");
+	  show_address("billing");
+  }
   // Otherwise, display the correct tab:
   showTab(currentTab);
 }
@@ -116,6 +120,30 @@ function show_address(trigger) {
             }
        }
     });
-	
-	
 }
+
+
+
+
+function place_order() {
+		return frappe.call({
+			type: "POST",
+			method: "erpnext.shopping_cart.cart.place_order",
+			btn: this,
+			callback: function(r) {
+				if(r.exc) {
+					var msg = "";
+					if(r._server_messages) {
+						msg = JSON.parse(r._server_messages || []).join("<br>");
+					}
+
+					$("#cart-error")
+						.empty()
+						.html(msg || frappe._("Something went wrong!"))
+						.toggle(true);
+				} else {
+					window.location.href = "/orders/" + encodeURIComponent(r.message);
+				}
+			}
+		});
+	}
