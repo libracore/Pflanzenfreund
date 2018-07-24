@@ -316,89 +316,62 @@ def export_data(filename, mod_date="2000-01-01"):
     f.write("adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code06,code07,code08,karte,krsperre,mutdt\n")
     f.close()
 
-    page = 0
-    while True:
-        print("starting query...")
-        sql_query = """SELECT 
-            `tCus`.`greeninfo_id` AS `adrnr`,
-            `tCon`.`last_name` AS `nname`,
-            `tCon`.`first_name` AS `vname`,
-            `tCus`.`description` AS `nbez1`,
-            `tCus`.`company` AS `nbez2`,
-            `tAdr`.`address_line1` AS `str`,
-            `tAdr`.`pincode` AS `plzal`,
-            `tAdr`.`city` AS `ortbz`,
-            `tCon`.`salutation` AS `anred`,
-            `tCon`.`letter_salutation` AS `branred`,
-            `tCus`.`language` AS `language`,
-            `tCon`.`fax` AS `telef`,
-            `tCon`.`phone` AS `telep`,
-            `tCon`.`mobile_no` AS `natel`,
-            `tCon`.`email_id` AS `emailadr`,
-            `tCus`.`code_05` AS `code05`,
-            `tCus`.`code_06` AS `code06`,
-            `tCus`.`code_07` AS `code07`,
-            `tCus`.`code_08` AS `code08`,
-            `tCus`.`karte` AS `karte`,
-            `tCus`.`krsperre` AS `krsperre`,
-            `tCus`.`modified` AS `modified`
-          FROM `tabCustomer` AS `tCus`
-          LEFT JOIN `tabDynamic Link` AS `tDL1` ON (`tCus`.`name` = `tDL1`.`link_name` AND `tDL1`.`parenttype` = "Contact")
-          LEFT JOIN `tabContact` AS `tCon` ON (`tDL1`.`parent` = `tCon`.`name`)
-          LEFT JOIN `tabDynamic Link` AS `tDL2` ON (`tCus`.`name` = `tDL2`.`link_name` AND `tDL2`.`parenttype` = "Address")
-          LEFT JOIN `tabAddress` AS `tAdr` ON (`tDL2`.`parent` = `tAdr`.`name`)
-          WHERE `tCus`.`modified` >= '{0}'
-          LIMIT 1000 OFFSET {1}""".format(mod_date, page * 1000)
-        sql_query = """SELECT `name` FROM `tabCustomer`"""
-        contacts = frappe.db.sql(sql_query, as_dict=True)
-        page += 1
-        print("Contacts: {0}".format(len(contacts)))
-        if not contacts:
-            break
-        # append to output file
-        f = codecs.open(filename, "a", 'utf-8')
-        # write content
-        for contact in contacts:
-            try:
-                street_parts = contact['str'].split(" ")
-                if len(street_parts) == 1:
-                     stras = contact['str']
-                     strasnr = ""
-                else:
-                     stras = " ".join(street_parts[0:-1])
-                     strasnr = street_parts[-1]
-            except:
-                stras = ""
-                strasnr = ""
-            mod = str(contact['modified'])
-            line = "{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\",\"{21}\",{22}".format(
-                contact['adrnr'],
-                contact['nname'],
-                contact['vname'],
-                contact['nbez1'],
-                contact['nbez2'],
-                stras,
-                strasnr,
-                contact['plzal'],
-                contact['ortbz'],
-                contact['anred'],
-                contact['branred'],
-                get_greeninfo_lanugage(contact['language']),
-                contact['telef'],
-                contact['telep'],
-                contact['natel'],
-                contact['emailadr'],
-                contact['code05'],
-                contact['code06'],
-                contact['code07'],
-                contact['code08'],
-                contact['karte'],
-                contact['krsperre'],
-                "{0}.{1}.{2}".format(mod[8:10], mod[5:7], mod[0:4])
+    print("starting query...")
+    sql_query = """SELECT `name` FROM `tabCustomer`"""
+    contacts = frappe.db.sql(sql_query, as_dict=True)
+    print("Contacts: {0}".format(len(contacts)))
+    # append to output file
+    f = codecs.open(filename, "a", 'utf-8')
+    # write content
+    for contact_name in contacts:
+        print("Looking for {0}...".format(contact_name['name']))
+        customer = frappe.get_doc("Customer", contact_name['name'])
+        adr_link = frappe.get_all("Dynamic Link", filters={'link_name': contact_name['name'], 'parenttype': 'Address'}, fields=['parent'])
+        if adr_link:
+            address = frappe.get_doc("Address", adr_link[0]['parent'])
+        cnt_link = frappe.get_all("Dynamic Link", filters={'link_name': contact_name['name'], 'parenttype': 'Contact'}, fields=['parent'])
+        if cnt_link:
+            contact = frappe.get_doc("Contact", cnt_link[0]['parent'])
+        try:
+            street_parts = address.address_line1.split(" ")
+            if len(street_parts) == 1:
+                 stras = address.address_line1
+                 strasnr = ""
+            else:
+                 stras = " ".join(street_parts[0:-1])
+                 strasnr = street_parts[-1]
+        except:
+            stras = ""
+            strasnr = ""
+        mod = customer.modified
+        line = "{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\",\"{21}\",{22}".format(
+                customer.greeninfo_id or '',
+                contact.last_name or '',
+                contact.first_name or '',
+                customer.description or '',
+                customer.company or '',
+                stras or '',
+                strasnr or '',
+                address.pincode or '',
+                address.city or '',
+                contact.salutation or '',
+                contact.letter_salutation or '',
+                get_greeninfo_lanugage(customer.language),
+                contact.fax or '',
+                contact.phone or '',
+                contact.mobile_no or '',
+                contact.email_id or '',
+                customer.code_05 or '',
+                customer.code_06 or '',
+                customer.code_07 or '',
+                customer.code_08 or '',
+                customer.karte or '',
+                customer.krsperre or '',
+                "{0}.{1}.{2}".format(mod.day, mod.month, mod.year)
               )
-            print(line)
-            f.write(line + "\n")
-        f.close()  
+        print(line)
+        f.write(line + "\n")
+    f.close()  
     return
 
 # create a new log entry
