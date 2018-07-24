@@ -12,11 +12,13 @@ import frappe
 from frappe.model.document import Document
 from frappe import _
 from frappe.utils.background_jobs import enqueue
+import csv
 import codecs
 
 # Parser config
 ROW_SEPARATOR = "\n"
 CELL_SEPARATOR = "\t"
+CELL_ENCAPSULATION = "\""
 
 # CSV column allocation
 ADRNR = 0				# greeninfo_id
@@ -71,31 +73,40 @@ def import_data(filename):
     # use 'ansi'/'cp1252' encoding, not 'utf-8'
     #data = f.read()  # .decode('cp1252')
     #f.close()
-    f = codecs.open(filename, 'rb', 'cp1252')
-    data = f.read()
-    f.close()
-    rows = data.replace(",\"", "\t\"").replace("\",", "\"\t").split(ROW_SEPARATOR)
-    # leave out header and start to import
-    for i in range(1, len(rows)):
-        # loop through all customers 
-        cells = rows[i].split(CELL_SEPARATOR)
-        if len(cells) >= 23:
-            # check if customer exists by ID
-            matches_by_id = frappe.get_all("Customer", filters={'greeninfo_id': get_field(cells[ADRNR])}, fields=['name'])
-            if matches_by_id:
-                # found customer, update
-                update_customer(matches_by_id[0]['name'], cells)
-            else:
-                # no match found by ID, check name with 0 (ID not set)
-                matches_by_name = frappe.get_all("Customer", 
-                    filters={
-                        'greeninfo_id': 0, 
-                        'customer_name': "{0} {1}".format(get_field(cells[ADRNR]), get_field(cells[ADRNR]))}, fields=['name'])
-                if matches_by_name:    
-                    # matched customer by name and empty ID
-                    update_customer(matches_by_name[0]['name'], cells)
+    with open(filename, 'rb') as csvfile:
+        #reader = csv.reader(csvfile, delimiter=str(CELL_SEPARATOR), quotechar=str(CELL_ENCAPSULATION))
+        reader = csv.reader(csvfile, dialect='excel')
+        isfirst = True
+        for row in reader:
+            # leave out header and start to import
+            if isfirst:
+                isfirst = False
+                continue
+            # loop through all customers
+            print(row)
+            cells = row
+            print("cells: {0}".format(len(cells)))
+            if len(cells) >= 23:
+                # check if customer exists by ID
+                matches_by_id = frappe.get_all("Customer", filters={'greeninfo_id': get_field(cells[ADRNR])}, fields=['name'])
+                print("Customer: {0}".format(get_field(cells[ADRNR])))
+                if matches_by_id:
+                    # found customer, update
+                    print("updating...")
+                    update_customer(matches_by_id[0]['name'], cells)
                 else:
-                    create_customer(cells)
+                    # no match found by ID, check name with 0 (ID not set)
+                    matches_by_name = frappe.get_all("Customer",
+                        filters={
+                            'greeninfo_id': 0, 
+                            'customer_name': "{0} {1}".format(get_field(cells[ADRNR]), get_field(cells[ADRNR]))}, fields=['name'])
+                    if matches_by_name:
+                        # matched customer by name and empty ID
+                        print("updating by name")
+                        update_customer(matches_by_name[0]['name'], cells)
+                    else:
+                        print("creating...")
+                        create_customer(cells)
 
     return
 
@@ -198,7 +209,7 @@ def get_erp_language(lang_code):
         return "it"
     else:
         return "de"
-        
+
 def get_greeninfo_lanugage(language):
     if language == "en":
         return "E"
@@ -208,7 +219,7 @@ def get_greeninfo_lanugage(language):
         return "I"
     else:
         return "D"
-        
+
 def update_customer(name, cells):
     # get customer record
     cus = frappe.get_doc("Customer", name)
@@ -216,10 +227,16 @@ def update_customer(name, cells):
     gi_last_modified_fields = get_field(cells[MUTDT]).split(".")
     mod = str(cus.modified)
     update = False
-    if int(gi_last_modified_fields[2]) >= int(mod[0:4]):
-        if int(gi_last_modified_fields[1]) >= int(mod[5:7]):
-            if int(gi_last_modified_fields[0]) > int(mod[8:10]):
-                update = True
+    print("cells: {0}".format(str(cells)))
+    print("gi: {0}/{2}/{3} erp: {1}".format(get_field(cells[MUTDT]), mod, MUTDT, cells[MUTDT]))
+    try:
+        if int(gi_last_modified_fields[2]) >= int(mod[0:4]):
+            if int(gi_last_modified_fields[1]) >= int(mod[5:7]):
+                if int(gi_last_modified_fields[0]) > int(mod[8:10]):
+                    update = True
+    except Exception as e:
+        add_log(_("Invalid modification date"), _("Modification date of {0} ({1}) is invalid: {2}").format(
+            get_field(cells[ADRNR]), get_field(cells[MUTDT]), get_field(cells[ADRNR]), e))
     if update:
         fullname = "{0} {1}".format(get_field(cells[VNAME]), get_field(cells[NNAME]))
         cus["customer_name"] = fullname
@@ -285,84 +302,103 @@ def update_customer(name, cells):
     # write changes to db
     frappe.db.commit()
     return
-		
-def export_data(filename):
-    sql_query = """SELECT 
-        `tCus`.`greeninfo_id` AS `adrnr`,
-        `tCon`.`last_name` AS `nname`,
-        `tCon`.`first_name` AS `vname`,
-        `tCus`.`description` AS `nbez1`,
-        `tCus`.`company` AS `nbez2`,
-        `tAdr`.`address_line1` AS `str`,
-        `tAdr`.`pincode` AS `plzal`,
-        `tAdr`.`city` AS `ortbz`,
-        `tCon`.`salutation` AS `anred`,
-        `tCon`.`letter_salutation` AS `branred`,
-        `tCus`.`language` AS `language`,
-        `tCon`.`fax` AS `telef`,
-        `tCon`.`phone` AS `telep`,
-        `tCon`.`mobile_no` AS `natel`,
-        `tCon`.`email_id` AS `emailadr`,
-        `tCus`.`code_05` AS `code05`,
-        `tCus`.`code_06` AS `code06`,
-        `tCus`.`code_07` AS `code07`,
-        `tCus`.`code_08` AS `code08`,
-        `tCus`.`karte` AS `karte`,
-        `tCus`.`krsperre` AS `krsperre`,
-        `tCus`.`modified` AS `modified`        
-      FROM `tabCustomer` AS `tCus`
-      LEFT JOIN `tabDynamic Link` AS `tDL1` ON (`tCus`.`name` = `tDL1`.`link_name` AND `tDL1`.`parenttype` = "Contact")
-      LEFT JOIN `tabContact` AS `tCon` ON (`tDL1`.`parent` = `tCon`.`name`)
-      LEFT JOIN `tabDynamic Link` AS `tDL2` ON (`tCus`.`name` = `tDL2`.`link_name` AND `tDL2`.`parenttype` = "Address")
-      LEFT JOIN `tabAddress` AS `tAdr` ON (`tDL2`.`parent` = `tAdr`.`name`)"""
-    contacts = frappe.db.sql(sql_query, as_dict=True)
-    
+
+# Exports the contacts
+#
+# Parameters
+#  filename: target file name
+#  mod_date: only load data with modified date larger than this (reduce file size)
+def export_data(filename, mod_date="2000-01-01"):
+    print("prepare file...")
     # write output file
-    f = open(filename, "w")
-    # write header line 
+    f = codecs.open(filename, "w", 'utf-8')
+    # write header line
     f.write("adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code06,code07,code08,karte,krsperre,mutdt\n")
-    # write content
-    for contact in contacts:
-        try:
-            street_parts = contact['str'].split(" ")
-            if len(street_parts) == 1:
-                stras = contact['str']
+    f.close()
+
+    page = 0
+    while True:
+        print("starting query...")
+        sql_query = """SELECT 
+            `tCus`.`greeninfo_id` AS `adrnr`,
+            `tCon`.`last_name` AS `nname`,
+            `tCon`.`first_name` AS `vname`,
+            `tCus`.`description` AS `nbez1`,
+            `tCus`.`company` AS `nbez2`,
+            `tAdr`.`address_line1` AS `str`,
+            `tAdr`.`pincode` AS `plzal`,
+            `tAdr`.`city` AS `ortbz`,
+            `tCon`.`salutation` AS `anred`,
+            `tCon`.`letter_salutation` AS `branred`,
+            `tCus`.`language` AS `language`,
+            `tCon`.`fax` AS `telef`,
+            `tCon`.`phone` AS `telep`,
+            `tCon`.`mobile_no` AS `natel`,
+            `tCon`.`email_id` AS `emailadr`,
+            `tCus`.`code_05` AS `code05`,
+            `tCus`.`code_06` AS `code06`,
+            `tCus`.`code_07` AS `code07`,
+            `tCus`.`code_08` AS `code08`,
+            `tCus`.`karte` AS `karte`,
+            `tCus`.`krsperre` AS `krsperre`,
+            `tCus`.`modified` AS `modified`
+          FROM `tabCustomer` AS `tCus`
+          LEFT JOIN `tabDynamic Link` AS `tDL1` ON (`tCus`.`name` = `tDL1`.`link_name` AND `tDL1`.`parenttype` = "Contact")
+          LEFT JOIN `tabContact` AS `tCon` ON (`tDL1`.`parent` = `tCon`.`name`)
+          LEFT JOIN `tabDynamic Link` AS `tDL2` ON (`tCus`.`name` = `tDL2`.`link_name` AND `tDL2`.`parenttype` = "Address")
+          LEFT JOIN `tabAddress` AS `tAdr` ON (`tDL2`.`parent` = `tAdr`.`name`)
+          WHERE `tCus`.`modified` >= '{0}'
+          LIMIT 1000 OFFSET {1}""".format(mod_date, page * 1000)
+        sql_query = """SELECT `name` FROM `tabCustomer`"""
+        contacts = frappe.db.sql(sql_query, as_dict=True)
+        page += 1
+        print("Contacts: {0}".format(len(contacts)))
+        if not contacts:
+            break
+        # append to output file
+        f = codecs.open(filename, "a", 'utf-8')
+        # write content
+        for contact in contacts:
+            try:
+                street_parts = contact['str'].split(" ")
+                if len(street_parts) == 1:
+                     stras = contact['str']
+                     strasnr = ""
+                else:
+                     stras = " ".join(street_parts[0:-1])
+                     strasnr = street_parts[-1]
+            except:
+                stras = ""
                 strasnr = ""
-            else:
-                stras = " ".join(street_parts[0:-1])
-                strasnr = street_parts[-1]
-        except:
-            stras = ""
-            strasnr = ""
-        mod = str(contact['modified'])
-        line = "{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\",\"{21}\",{22}".format(
-            contact['adrnr'],
-            contact['nname'],
-            contact['vname'],
-            contact['nbez1'],
-            contact['nbez2'],
-            stras,
-            strasnr,
-            contact['plzal'],
-            contact['ortbz'],
-            contact['anred'],
-            contact['branred'],
-            get_greeninfo_lanugage(contact['language']),
-            contact['telef'],
-            contact['telep'],
-            contact['natel'],
-            contact['emailadr'],
-            contact['code05'],
-            contact['code06'],
-            contact['code07'],
-            contact['code08'],
-            contact['karte'],
-            contact['krsperre'],
-            "{0}.{1}.{2}".format(mod[8:10], mod[5:7], mod[0:4])
-          )
-        f.write(line + "\n")
-            
-    f.close()  
+            mod = str(contact['modified'])
+            line = "{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\",\"{21}\",{22}".format(
+                contact['adrnr'],
+                contact['nname'],
+                contact['vname'],
+                contact['nbez1'],
+                contact['nbez2'],
+                stras,
+                strasnr,
+                contact['plzal'],
+                contact['ortbz'],
+                contact['anred'],
+                contact['branred'],
+                get_greeninfo_lanugage(contact['language']),
+                contact['telef'],
+                contact['telep'],
+                contact['natel'],
+                contact['emailadr'],
+                contact['code05'],
+                contact['code06'],
+                contact['code07'],
+                contact['code08'],
+                contact['karte'],
+                contact['krsperre'],
+                "{0}.{1}.{2}".format(mod[8:10], mod[5:7], mod[0:4])
+              )
+            print(line)
+            f.write(line + "\n")
+        f.close()  
     return
 
 # create a new log entry
@@ -375,7 +411,14 @@ def add_log(title, message):
 
 # removes the quotation marks from a cell
 def get_field(content):
-	return content.replace("\"", "")
+    c = None
+    try:
+        c = content.decode('utf8')
+    except UnicodeDecodeError:
+        c = content.decode('latin1')
+    except:
+        c = content.decode('cp1252')
+    return c.replace("\"", "")
 
 def test():
     con = frappe.get_doc(
