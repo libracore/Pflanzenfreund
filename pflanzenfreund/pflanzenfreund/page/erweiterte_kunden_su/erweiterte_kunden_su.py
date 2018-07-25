@@ -8,7 +8,7 @@ from frappe import throw, _
 
 @frappe.whitelist()
 def get_all_infos():
-	customer_query = """SELECT cus.customer_name, cus.customer_name,  adr.address_line1, adr.pincode, adr.city
+	customer_query = """SELECT cus.name, cus.customer_name, cus.customer_name,  adr.address_line1, adr.pincode, adr.city
 		FROM ((`tabAddress` AS adr
 		INNER JOIN `tabDynamic Link` AS dyn ON adr.name = dyn.parent)
 		INNER JOIN `tabCustomer` AS cus ON dyn.link_name = cus.name)"""
@@ -16,7 +16,7 @@ def get_all_infos():
 	
 @frappe.whitelist()
 def get_filtered_infos(name, plz):
-	customer_query = """SELECT cus.customer_name, cus.customer_name,  adr.address_line1, adr.pincode, adr.city
+	customer_query = """SELECT cus.name, cus.customer_name, cus.customer_name,  adr.address_line1, adr.pincode, adr.city
 		FROM ((`tabAddress` AS adr
 		INNER JOIN `tabDynamic Link` AS dyn ON adr.name = dyn.parent)
 		INNER JOIN `tabCustomer` AS cus ON dyn.link_name = cus.name)
