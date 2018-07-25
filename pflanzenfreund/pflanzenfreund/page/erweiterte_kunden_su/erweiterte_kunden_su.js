@@ -20,7 +20,7 @@ frappe.erweiterte_kunden_su = {
 		me.body = $('<div></div>').appendTo(me.page.main);
 		var data = "";
 		$(frappe.render_template('erweiterte_kunden_su', data)).appendTo(me.body);
-		getContentForTable();
+		
 
 	},
 	run: function(page) {
@@ -200,3 +200,55 @@ function crateTableContentElement(name, address, pincode, city) {
 	tabelle.appendChild(tr);
 	
 }
+
+
+function loadAllData() {
+	frappe.confirm(
+		'Wollen Sie wirklich alle Daten laden?<br>Dies kann einige Zeit in Anspruch nehmen!',
+		function(){
+			openNav();
+			getContentForTable();
+			closeNav();
+		},
+		function(){
+			window.close();
+		}
+	);	
+}
+
+function loadPreFilterData() {
+	var name = document.getElementById("vorselektionierungNachnamen").value;
+	var plz = document.getElementById("vorselektionierungPostleitzahl").value;
+	if ((name == "") && (plz == "")) {
+		frappe.msgprint("Bitte treffen Sie zuerst eine Vorselektionierung", "Vorselektionierung fehlt");
+	} else {	
+		frappe.call({
+			method: 'pflanzenfreund.pflanzenfreund.page.erweiterte_kunden_su.erweiterte_kunden_su.get_filtered_infos',
+			args: {
+				'name': name,
+				'plz': plz
+			},
+			callback: function(r) {
+				if (r.message) {
+					//console.log(r.message);
+					createTableWithContent(r.message);
+					
+				} 
+			}
+		});
+	}
+}
+
+
+
+
+
+/* Open */
+function openNav() {
+    document.getElementById("myNav").style.display = "block";
+}
+
+/* Close */
+function closeNav() {
+    document.getElementById("myNav").style.display = "none";
+} 
