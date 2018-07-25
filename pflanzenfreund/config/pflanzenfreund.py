@@ -152,5 +152,17 @@ def get_data():
 			   "description": _("GreenInfo")
 		   }
 		]
-	}	
+	},
+	{
+		"label": _("Tools"),
+		"icon": "fa fa-wrench",
+		"items": [
+		   {
+			   "type": "page",
+			   "name": "erweiterte-kunden-su",
+			   "label": _("Erweiterte Kundensuche"),
+			   "description": _("Erweiterte Kunden Suche")
+		   }
+		]
+	}
 ]

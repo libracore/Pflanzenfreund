@@ -1,0 +1,22 @@
+{
+ "content": null, 
+ "creation": "2018-07-24 16:41:37.721333", 
+ "docstatus": 0, 
+ "doctype": "Page", 
+ "idx": 0, 
+ "modified": "2018-07-24 16:41:48.943274", 
+ "modified_by": "Administrator", 
+ "module": "Pflanzenfreund", 
+ "name": "erweiterte_kunden_su", 
+ "owner": "Administrator", 
+ "page_name": "Erweiterte Kunden Suche", 
+ "roles": [
+  {
+   "role": "All"
+  }
+ ], 
+ "script": null, 
+ "standard": "Yes", 
+ "style": null, 
+ "system_page": 0
+}
