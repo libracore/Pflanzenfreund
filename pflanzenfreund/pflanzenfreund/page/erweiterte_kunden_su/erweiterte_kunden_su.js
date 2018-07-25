@@ -159,11 +159,12 @@ function getContentForTable() {
 
 function createTableWithContent(datas) {
 	for (var i = 0; i < datas.length; i++) {
-		crateTableContentElement(datas[i]["customer_name"], datas[i]["address_line1"], datas[i]["pincode"], datas[i]["city"]);
+		crateTableContentElement(datas[i]["customer_name"], datas[i]["address_line1"], datas[i]["pincode"], datas[i]["city"], datas[i]["name"]);
 	}
+	closeNav();
 }
 
-function crateTableContentElement(name, address, pincode, city) {
+function crateTableContentElement(name, address, pincode, city, referenz) {
 	//console.log(name+" "+address+" "+pincode+" "+city);
 	var tabelle = document.getElementById("myTable");
 	
@@ -188,7 +189,7 @@ function crateTableContentElement(name, address, pincode, city) {
 	td_city.appendChild(td_city_txt);
 	
 	tr.onclick = function() { 
-		window.location = '/desk#Form/Customer/' + name;
+		window.location = '/desk#Form/Customer/' + referenz;
 	};
 	
 	tr.appendChild(td_first_name);
@@ -206,9 +207,7 @@ function loadAllData() {
 	frappe.confirm(
 		'Wollen Sie wirklich alle Daten laden?<br>Dies kann einige Zeit in Anspruch nehmen!',
 		function(){
-			openNav();
-			getContentForTable();
-			closeNav();
+			openNav("all");
 		},
 		function(){
 			window.close();
@@ -231,7 +230,7 @@ function loadPreFilterData() {
 			callback: function(r) {
 				if (r.message) {
 					//console.log(r.message);
-					createTableWithContent(r.message);
+					openNav(r.message);
 					
 				} 
 			}
@@ -244,8 +243,13 @@ function loadPreFilterData() {
 
 
 /* Open */
-function openNav() {
+function openNav(method) {
     document.getElementById("myNav").style.display = "block";
+	if (method == "all") {
+		getContentForTable();
+	} else {
+		createTableWithContent(method);
+	}
 }
 
 /* Close */
