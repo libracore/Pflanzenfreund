@@ -10,7 +10,17 @@ frappe.pages['erweiterte-kunden-su'].on_page_load = function(wrapper) {
 	
 	// add the application reference
 	frappe.breadcrumbs.add("Pflanzenfreund");
+
+	this.page.add_menu_item(__('Alle Daten Laden'), function() {
+		loadAllData();
+	});
+	this.page.add_menu_item(__('Add to Desktop'), function() {
+		frappe.add_to_desktop(this.report_name, null, this.report_name);
+	});
 }
+
+
+
 
 frappe.erweiterte_kunden_su = {
 	start: 0,
@@ -158,6 +168,12 @@ function getContentForTable() {
 }
 
 function createTableWithContent(datas) {
+	var tabelle = document.getElementById("myTable");
+
+	var rowCount = tabelle.rows.length;
+	for (var i = rowCount - 1; i > 0; i--) {
+		tabelle.deleteRow(i);
+	}
 	for (var i = 0; i < datas.length; i++) {
 		crateTableContentElement(datas[i]["customer_name"], datas[i]["address_line1"], datas[i]["pincode"], datas[i]["city"], datas[i]["name"]);
 	}
@@ -216,6 +232,7 @@ function loadAllData() {
 }
 
 function loadPreFilterData() {
+	openNav();
 	var name = document.getElementById("vorselektionierungNachnamen").value;
 	var plz = document.getElementById("vorselektionierungPostleitzahl").value;
 	if ((name == "") && (plz == "")) {
@@ -230,7 +247,7 @@ function loadPreFilterData() {
 			callback: function(r) {
 				if (r.message) {
 					//console.log(r.message);
-					openNav(r.message);
+					createTableWithContent(r.message);
 					
 				} 
 			}
@@ -243,7 +260,7 @@ function loadPreFilterData() {
 
 
 /* Open */
-function openNav(method) {
+function openNav(method=false) {
     document.getElementById("myNav").style.display = "block";
 	if (method == "all") {
 		getContentForTable();

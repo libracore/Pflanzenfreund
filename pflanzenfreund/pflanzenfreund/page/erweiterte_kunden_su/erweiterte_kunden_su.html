@@ -8,11 +8,12 @@
 			<div class="form-column col-sm-6">
 				<input type="text" id="vorselektionierungPostleitzahl" placeholder="Vorselektionierung nach Postleitzahl..">
 			</div>
-			<div class="form-column col-sm-6">
+			<div class="form-column col-sm-4">
+			</div>
+			<div class="form-column col-sm-4">
 				<button class="btn btn-sm btn-primary btn-block" onclick="loadPreFilterData()">Vorgefilterte Daten Laden</button>
 			</div>
-			<div class="form-column col-sm-6">
-				<button class="btn btn-sm btn-primary btn-block" onclick="loadAllData()">Alle Daten Laden</button>
+			<div class="form-column col-sm-4">
 			</div>
 		</div>
 		<div class="row">
@@ -37,7 +38,7 @@
 		</div>
 		<div class="row">
 			<div class="form-column col-sm-12">
-				<table id="myTable">
+				<table id="myTable" style="width: 100%;">
 					<tr class="header">
 						<th style="width:20%;">Vorname</th>
 						<th style="width:20%;">Nachname</th>

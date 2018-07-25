@@ -3,8 +3,9 @@
  "creation": "2018-07-24 16:41:37.721333", 
  "docstatus": 0, 
  "doctype": "Page", 
+ "icon": "fa fa-search", 
  "idx": 0, 
- "modified": "2018-07-24 16:41:48.943274", 
+ "modified": "2018-07-25 18:27:04.200451", 
  "modified_by": "Administrator", 
  "module": "Pflanzenfreund", 
  "name": "erweiterte-kunden-su", 
@@ -18,5 +19,6 @@
  "script": null, 
  "standard": "Yes", 
  "style": null, 
- "system_page": 0
+ "system_page": 0, 
+ "title": "Kundensuche+"
 }
