@@ -175,12 +175,12 @@ function createTableWithContent(datas) {
 		tabelle.deleteRow(i);
 	}
 	for (var i = 0; i < datas.length; i++) {
-		crateTableContentElement(datas[i]["customer_name"], datas[i]["address_line1"], datas[i]["pincode"], datas[i]["city"], datas[i]["name"]);
+		crateTableContentElement(datas[i]["first_name"], datas[i]["last_name"], datas[i]["address_line1"], datas[i]["pincode"], datas[i]["city"], datas[i]["name"]);
 	}
 	closeNav();
 }
 
-function crateTableContentElement(name, address, pincode, city, referenz) {
+function crateTableContentElement(first_name, last_name, address, pincode, city, referenz) {
 	//console.log(name+" "+address+" "+pincode+" "+city);
 	var tabelle = document.getElementById("myTable");
 	
@@ -192,8 +192,8 @@ function crateTableContentElement(name, address, pincode, city, referenz) {
 	var td_pincode = document.createElement("td");
 	var td_city = document.createElement("td");
 	
-	var td_first_name_txt = document.createTextNode(name);
-	var td_last_name_txt = document.createTextNode(name);
+	var td_first_name_txt = document.createTextNode(first_name);
+	var td_last_name_txt = document.createTextNode(last_name);
 	var td_address_txt = document.createTextNode(address);
 	var td_pincode_txt = document.createTextNode(pincode);
 	var td_city_txt = document.createTextNode(city);
