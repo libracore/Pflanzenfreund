@@ -223,7 +223,8 @@ function loadAllData() {
 	frappe.confirm(
 		'Wollen Sie wirklich alle Daten laden?<br>Dies kann einige Zeit in Anspruch nehmen!',
 		function(){
-			openNav("all");
+			openNav();
+			getContentForTable();
 		},
 		function(){
 			window.close();
@@ -232,12 +233,12 @@ function loadAllData() {
 }
 
 function loadPreFilterData() {
-	openNav();
 	var name = document.getElementById("vorselektionierungNachnamen").value;
 	var plz = document.getElementById("vorselektionierungPostleitzahl").value;
 	if ((name == "") && (plz == "")) {
 		frappe.msgprint("Bitte treffen Sie zuerst eine Vorselektionierung", "Vorselektionierung fehlt");
 	} else {	
+		openNav();
 		frappe.call({
 			method: 'pflanzenfreund.pflanzenfreund.page.erweiterte_kunden_su.erweiterte_kunden_su.get_filtered_infos',
 			args: {
@@ -260,16 +261,11 @@ function loadPreFilterData() {
 
 
 /* Open */
-function openNav(method=false) {
+function openNav() {
     document.getElementById("myNav").style.display = "block";
-	if (method == "all") {
-		getContentForTable();
-	} else {
-		createTableWithContent(method);
-	}
 }
 
 /* Close */
 function closeNav() {
     document.getElementById("myNav").style.display = "none";
-} 
+}
