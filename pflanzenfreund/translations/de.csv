@@ -1,7 +1,7 @@
 DocType: GreenInfo,Sync started. See log for details.,Synchronisation gestartet. Bitte beachten Sie die Details im Protokoll.
 DocType: GreenInfo,Sync,Synchronisation
-DocType: GreenInfo,Input file,Eingabedateu
-DocType: GreenInfo,Outpu file,Ausgabedatei
+DocType: GreenInfo,Input file,Eingabedatei
+DocType: GreenInfo,Output file,Ausgabedatei
 DocType: GreenInfo,Sync started,Synchronisation gestartet
 DocType: GreenInfo,Sync process started,Synchronisationsprozess wurde gestartet
 DocType: GreenInfo Sync Log,GreenInfo Sync Log,GreenInfo Synchronisationsprotokoll
