@@ -112,6 +112,8 @@ def create_customer(cells):
             "greeninfo_id": int(get_field(cells[ADRNR])),
             "description": get_field(cells[NBEZ1]),
             "company": get_field(cells[NBEZ2]),
+            "first_name": get_field(cells[VNAME]),
+            "last_name": get_field(cells[NNAME]),
             "language": get_erp_language(get_field(cells[SPRCD])),
 			"code_05": get_field(cells[CODE05]),
 			"code_06": get_field(cells[CODE06]),
@@ -223,6 +225,8 @@ def update_customer(name, cells):
     if update:
         fullname = "{0} {1}".format(get_field(cells[VNAME]), get_field(cells[NNAME]))
         cus["customer_name"] = fullname
+        cus["first_name"] = get_field(cells[VNAME])
+        cus["last_name"] = get_field(cells[NNAME])
         cus["greeninfo_id"] = int(get_field(cells[ADRNR]))
         cus["description"] = get_field(cells[NBEZ1])
         cus["company"] = get_field(cells[NBEZ2])
