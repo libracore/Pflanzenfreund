@@ -308,7 +308,7 @@ def update_customer(name, cells):
 def export_data(filename, mod_date="2000-01-01"):
     print("prepare file...")
     # write output file
-    f = codecs.open(filename, "w", 'utf-8')
+    f = codecs.open(filename, "w", 'cp1252')
     # write header line
     f.write("adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code06,code07,code08,karte,krsperre,mutdt\n")
     f.close()
@@ -318,7 +318,7 @@ def export_data(filename, mod_date="2000-01-01"):
     contacts = frappe.db.sql(sql_query, as_dict=True)
     print("Contacts: {0}".format(len(contacts)))
     # append to output file
-    f = codecs.open(filename, "a", 'utf-8')
+    f = codecs.open(filename, "a", 'cp1252')
     # write content
     for contact_name in contacts:
         print("Looking for {0}...".format(contact_name['name']))
@@ -341,10 +341,15 @@ def export_data(filename, mod_date="2000-01-01"):
             stras = ""
             strasnr = ""
         mod = customer.modified
+        first_name = contact.first_name
+        if not first_name:
+            first_name = ""
+        elif first_name == "-":
+            first_name = ""
         line = "{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\",\"{21}\",{22}".format(
                 customer.greeninfo_id or '',
                 contact.last_name or '',
-                contact.first_name or '',
+                first_name,
                 customer.description or '',
                 customer.company or '',
                 stras or '',
