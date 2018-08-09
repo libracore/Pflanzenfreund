@@ -304,7 +304,7 @@ def update_customer(name, cells):
 #
 # Parameters
 #  filename: target file name
-#  mod_date: only load data with modified date larger than this (reduce file size)
+#  mod_date: only load data with modified date equal or larger than this (reduce file size and increase speed)
 def export_data(filename, mod_date="2000-01-01"):
     print("prepare file...")
     # write output file
@@ -314,7 +314,18 @@ def export_data(filename, mod_date="2000-01-01"):
     f.close()
 
     print("starting query...")
-    sql_query = """SELECT `name` FROM `tabCustomer`"""
+    sql_query = """SELECT `tabCustomer`.`name`
+                   FROM `tabCustomer` 
+                   WHERE `tabCustomer`.`modified` >= '{date}'
+                   UNION SELECT `tblDL2`.`link_name`
+                   FROM `tabAddress` 
+                   LEFT JOIN `tabDynamic Link` As `tblDL2` ON `tblDL2`.`parent` = `tabAddress`.`name` AND `tblDL2`.`parenttype` = 'Address' AND `tblDL2`.`link_doctype` = 'Customer'
+                   WHERE `tabAddress`.`modified` >= '{date}'
+                   UNION SELECT `tblDL1`.`link_name`
+                   FROM `tabContact` 
+                   LEFT JOIN `tabDynamic Link` As `tblDL1` ON `tblDL1`.`parent` = `tabContact`.`name` AND `tblDL1`.`parenttype` = 'Contact' AND `tblDL1`.`link_doctype` = 'Customer'
+                   WHERE `tabContact`.`modified` >= '{date}';""".format(date=mod_date)
+
     contacts = frappe.db.sql(sql_query, as_dict=True)
     print("Contacts: {0}".format(len(contacts)))
     # append to output file
