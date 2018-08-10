@@ -38,12 +38,12 @@ TELEP = 13				# contact.phone
 NATEL = 14				# contact.mobile
 EMAILADR = 15			# contact.email
 CODE05 = 16				# customer.code_05
-CODE06 = 17				# customer.code_06
-CODE07 = 18				# customer.code_07
-CODE08 = 19				# customer.code_08
-KARTE = 20				# customer.karte
-KRSPERRE = 21			# customer.krsperre
-MUTDT = 22				# last modification date (dd.mm.yyyy)
+CODE06 = 17				# customer.code_06 (obsoleted, ex. 17)
+CODE07 = 17				# customer.code_07
+CODE08 = 19				# customer.code_08 (obsoleted, ex. 19)
+KARTE = 18				# customer.karte
+KRSPERRE = 19			# customer.krsperre
+MUTDT = 20				# last modification date (dd.mm.yyyy)
 
 class GreenInfo(Document):
     def sync(self):
@@ -81,7 +81,7 @@ def import_data(filename):
             print(row)
             cells = row
             print("cells: {0}".format(len(cells)))
-            if len(cells) >= 23:
+            if len(cells) >= 21:
                 # check if customer exists by ID
                 matches_by_id = frappe.get_all("Customer", filters={'greeninfo_id': get_field(cells[ADRNR])}, fields=['name'])
                 print("Customer: {0}".format(get_field(cells[ADRNR])))
@@ -310,7 +310,7 @@ def export_data(filename, mod_date="2000-01-01"):
     # write output file
     f = codecs.open(filename, "w", 'cp1252')
     # write header line
-    f.write("adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code06,code07,code08,karte,krsperre,mutdt\n")
+    f.write("adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code07,karte,krsperre,mutdt\n")
     f.close()
 
     print("starting query...")
@@ -357,7 +357,7 @@ def export_data(filename, mod_date="2000-01-01"):
             first_name = ""
         elif first_name == "-":
             first_name = ""
-        line = "{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\",\"{21}\",{22}".format(
+        line = "{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\"".format(
                 customer.greeninfo_id or '',
                 contact.last_name or '',
                 first_name,
@@ -375,9 +375,7 @@ def export_data(filename, mod_date="2000-01-01"):
                 contact.mobile_no or '',
                 contact.email_id or '',
                 customer.code_05 or '',
-                customer.code_06 or '',
                 customer.code_07 or '',
-                customer.code_08 or '',
                 customer.karte or '',
                 customer.krsperre or '',
                 "{0}.{1}.{2}".format(mod.day, mod.month, mod.year)
