@@ -237,14 +237,16 @@ def update_customer(name, cells):
     if update:
         fullname = "{0} {1}".format(get_field(cells[VNAME]), get_field(cells[NNAME]))
         cus["customer_name"] = fullname
+        cus["first_name"] = get_field(cells[VNAME])
+        cus["last_name"] = get_field(cells[NNAME])
         cus["greeninfo_id"] = int(get_field(cells[ADRNR]))
         cus["description"] = get_field(cells[NBEZ1])
         cus["company"] = get_field(cells[NBEZ2])
         cus["language"] = get_erp_language(get_field(cells[SPRCD]))
         cus["code_05"] = get_field(cells[CODE05])
-        cus["code_06"] = get_field(cells[CODE06])
+        #cus["code_06"] = get_field(cells[CODE06])
         cus["code_07"] = get_field(cells[CODE07])
-        cus["code_08"] = get_field(cells[CODE08])
+        #cus["code_08"] = get_field(cells[CODE08])
         cus["karte"] = get_field(cells[KARTE])
         cus["krsperre"] = get_field(cells[KRSPERRE])
         try:
