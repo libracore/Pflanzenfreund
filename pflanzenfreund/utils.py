@@ -117,10 +117,14 @@ def get_footer_description():
 	
 def get_all_addresses():
 	party = get_party()
+	#query = """SELECT `name` FROM `tabDynamic Link` WHERE `parenttype` = 'Address' AND `link_name` = '{0}'""".format(party.name)
+	#address_names = frappe.db.sql(query)
 	address_names = frappe.db.get_all('Dynamic Link', fields=('parent'),
 		filters=dict(parenttype='Address', link_doctype=party.doctype, link_name=party.name))
-	
 	return address_names
+	
+def get_address_details(address_name):
+	return frappe.get_doc("Address", address_name)
 
 def get_party(user=None):
 	if not user:
@@ -143,6 +147,7 @@ def get_party(user=None):
 		debtors_account = get_debtors_account(cart_settings)
 
 	if party:
+		update_customer = update_existing_customer(contact.links[0].link_name)
 		return frappe.get_doc(party_doctype, party)
 
 	else:
@@ -151,8 +156,12 @@ def get_party(user=None):
 			raise frappe.Redirect
 		customer = frappe.new_doc("Customer")
 		fullname = get_fullname(user)
+		first_name = frappe.db.get_value("User", user, "first_name")
+		last_name = frappe.db.get_value("User", user, "last_name")
 		customer.update({
 			"customer_name": fullname,
+			"first_name": first_name,
+			"last_name": last_name,
 			"customer_type": "Individual",
 			"customer_group": get_shopping_cart_settings().default_customer_group,
 			"territory": get_root_of("Territory")
@@ -179,6 +188,34 @@ def get_party(user=None):
 		contact.insert(ignore_permissions=True)
 
 		return customer
+		
+	
+def update_existing_customer(link):
+	user = frappe.session.user
+	first_name = frappe.db.get_value("User", user, "first_name")
+	last_name = frappe.db.get_value("User", user, "last_name")
+	customer = frappe.get_doc("Customer", link)
+	customer.update({
+			"first_name": first_name,
+			"last_name": last_name,
+			"customer_name": first_name +" "+ last_name
+		})
+	customer.flags.ignore_mandatory = True
+	customer.save(ignore_permissions=True)
+	frappe.db.commit()
+
+@frappe.whitelist()
+def update_general_infos_of_existing_customer(first_name, last_name, phone, mobile_no):
+	user = frappe.session.user
+	query = """UPDATE `tabUser`
+		SET `first_name` = '{0}', `last_name` = '{1}', `full_name` = '{0} {1}', `phone` = '{2}', `mobile_no` = '{3}'
+		WHERE `name` = '{4}'""".format(first_name, last_name, phone, mobile_no, user)
+	frappe.db.sql(query)
+	contact_name = frappe.db.get_value("Contact", {"email_id": user})
+	contact = frappe.get_doc('Contact', contact_name)
+	party = contact.links[0].link_name
+	update_existing_customer(party)
+	return party
 		
 def get_debtors_account(cart_settings):
 	payment_gateway_account_currency = \

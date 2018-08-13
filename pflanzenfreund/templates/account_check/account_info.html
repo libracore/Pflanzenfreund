@@ -2,38 +2,86 @@
 <h1>Überprüfung Kontoinformationen:</h1>
 {% set act_user = frappe.get_doc('User', frappe.user) %}
 <!-- One "tab" for each step in the form: -->
-<div class="tab"><h2>General:</h2>
-  <p><input value="{% if act_user.first_name == None %}{% else %}{{ act_user.first_name }}{% endif %}" placeholder="First name..." oninput="this.className = ''"></p>
-  <p><input value="{% if act_user.last_name == None %}{% else %}{{ act_user.last_name }}{% endif %}" placeholder="Last name..." oninput="this.className = ''"></p>
-  <p><input value="{% if act_user.email == None %}{% else %}{{ act_user.email }}{% endif %}" placeholder="E-mail..." oninput="this.className = ''"></p>
-  <p><input value="{% if act_user.phone == None %}{% else %}{{ act_user.phone }}{% endif %}" placeholder="Phone..." oninput="this.className = ''" data-leer="ok"></p>
-  <p><input value="{% if act_user.mobile_no == None %}{% else %}{{ act_user.mobile_no }}{% endif %}" placeholder="Mobile..." oninput="this.className = ''"></p>
+<div class="tab"><h2>Allgemein:</h2>
+  <p><input id="inp_first_name" value="{% if act_user.first_name == None %}{% else %}{{ act_user.first_name }}{% endif %}" placeholder="First name..." oninput="this.className = ''"></p>
+  <p><input id="inp_last_name" value="{% if act_user.last_name == None %}{% else %}{{ act_user.last_name }}{% endif %}" placeholder="Last name..." oninput="this.className = ''"></p>
+  <p><input value="{% if act_user.email == None %}{% else %}{{ act_user.email }}{% endif %}" placeholder="E-mail..." oninput="this.className = ''" readonly></p>
+  <p><input id="inp_phone" value="{% if act_user.phone == None %}{% else %}{{ act_user.phone }}{% endif %}" placeholder="Phone..." oninput="this.className = ''" data-leer="ok"></p>
+  <p><input id="inp_mobile" value="{% if act_user.mobile_no == None %}{% else %}{{ act_user.mobile_no }}{% endif %}" placeholder="Mobile..." oninput="this.className = ''"></p>
 </div>
 
-<div class="tab"><h2>Adressen:</h2>
-<p><b>Lieferadresse:</b></p>
-<select class="form-control" id="user_shipping_address">
-	{% for address in get_all_addresses() %}
-		<option onclick="show_address('shipping')">{{ address.parent }}</option>
-	{% endfor %}
-</select>
-<p id="placeholder_shipping"></p>
-<p><b>Rechnungsadresse:</b></p>
-<select class="form-control" id="user_billing_address">
-	{% for address in get_all_addresses() %}
-		<option onclick="show_address('billing')">{{ address.parent }}</option>
-	{% endfor %}
-</select>
-<p id="placeholder_billing"></p>
-<p></p>
-<p>Ihre Adresse ist nicht dabei, oder ist sie nicht korrekt? Kein Problem - <a href="/addresses">hier können Sie eine neue erstellen oder bestehende ändern.</a></p>
+<div class="tab"><h2>Verfügbare Adressen:</h2>
+<div class="row">
+
+<div class="col-sm-8">
+ <button class="accordion"><i class="fa fa-plus"></i> Lieferadressen</button>
+<div class="panel">
+  <div id="shipping-adressen">
+	<div class="row">
+		{% for address in get_all_addresses() %}
+		{% set address_details = get_address_details(address.parent) %}
+		<div class="col-sm-4">
+		<div class="shipping-addresscard" id="shipping-{{ address.parent }}" onclick="selectaddress('shipping-{{ address.parent }}', 'shipping')" data-addressname = "{{ address.parent }}">
+			<div class="addresscontainer">
+				<p>{{ address_details.address_line1 or '' }}<br>{{ address_details.address_line2 or '' }}<br>{{ address_details.city or '' }}<br>{{ address_details.pincode or '' }}</p>
+			</div>
+		</div> 
+		</div>
+		{% endfor %}
+	</div>
+	</div>
+</div>
+
+<button class="accordion"><i class="fa fa-plus"></i> Rechnungsadressen</button>
+<div class="panel">
+  <div id="billing-adressen">
+	<div class="row">
+		{% for address in get_all_addresses() %}
+		{% set address_details = get_address_details(address.parent) %}
+		<div class="col-sm-4">
+		<div class="billing-addresscard" id="billing-{{ address.parent }}" onclick="selectaddress('billing-{{ address.parent }}', 'billing')" data-addressname = "{{ address.parent }}">
+			<div class="addresscontainer">
+				<p>{{ address_details.address_line1 or '' }}<br>{{ address_details.address_line2 or '' }}<br>{{ address_details.city or '' }}<br>{{ address_details.pincode or '' }}</p>
+			</div>
+		</div> 
+		</div>
+		{% endfor %}
+	</div>
+	</div>
+</div>
+
+
+	<!--{# <p><b>Lieferadresse:</b></p>
+	<select class="form-control" id="user_shipping_address">
+		{% for address in get_all_addresses() %}
+			<option onclick="show_address('shipping')">{{ address.parent }}</option>
+		{% endfor %}
+	</select>
+	<p id="placeholder_shipping"></p>
+	<p><b>Rechnungsadresse:</b></p>
+	<select class="form-control" id="user_billing_address">
+		{% for address in get_all_addresses() %}
+			<option onclick="show_address('billing')">{{ address.parent }}</option>
+		{% endfor %}
+	</select>
+	<p id="placeholder_billing"></p>
+	<p></p>
+	<p>Ihre Adresse ist nicht dabei, oder ist sie nicht korrekt? Kein Problem - <a href="/addresses">hier können Sie eine neue erstellen oder bestehende ändern.</a></p> #}-->
+</div>
+<div class="col-sm-4">
+	<div id="shipping-adresse"><b>Ausgewählte Lieferadresse:</b><div></div></div>
+	<p id="keineShippingAdresse">Keine Adresse ausgewählt</p><br>
+	<div id="billing-adresse"><b>Ausgewählte Rechnungsadresse:</b><div></div></div>
+	<p id="keineBillingAdresse">Keine Adresse ausgewählt</p>
+</div>
+</div>
 </div>
 
 <div style="overflow:auto;">
   <div style="float:right;">
-    <button class="btn btn-primary" type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
-    <button class="btn btn-primary" type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
-	<button class="btn btn-primary" style="display: none;" type="button" id="orderBtn" onclick="place_order('{{ order_code }}', '{{ act_user.first_name }} {{ act_user.last_name }}')">Place Order</button>
+    <button class="btn btn-primary" type="button" id="prevBtn" onclick="nextPrev(-1)">Zurück</button>
+    <button class="btn btn-primary" type="button" id="nextBtn" onclick="nextPrev(1)">Weiter</button>
+	<button class="btn btn-primary" style="display: none;" type="button" id="orderBtn" onclick="place_order('{{ order_code }}', '{{ act_user.first_name }} {{ act_user.last_name }}')">Bestellen</button>
   </div>
 </div>
 
