@@ -67,7 +67,9 @@ def sync_greeninfo(config):
     import_data(input_file)
     return
 
-def import_data(filename):
+def import_data(filename, force_update=False):
+    if force_update == "True" or force_update == 1:
+        force_update = True
     # read input file
     with open(filename, 'rb') as csvfile:
         reader = csv.reader(csvfile, dialect='excel')
@@ -88,7 +90,7 @@ def import_data(filename):
                 if matches_by_id:
                     # found customer, update
                     print("updating...")
-                    update_customer(matches_by_id[0]['name'], cells)
+                    update_customer(matches_by_id[0]['name'], cells, force_update)
                 else:
                     # no match found by ID, check name with 0 (ID not set)
                     matches_by_name = frappe.get_all("Customer",
@@ -217,36 +219,41 @@ def get_greeninfo_lanugage(language):
     else:
         return "D"
 
-def update_customer(name, cells):
+def update_customer(name, cells, force=False):
     # get customer record
     cus = frappe.get_doc("Customer", name)
-	# check last modification date
+    # check last modification date
     gi_last_modified_fields = get_field(cells[MUTDT]).split(".")
     mod = str(cus.modified)
     update = False
     print("cells: {0}".format(str(cells)))
-    print("gi: {0}/{2}/{3} erp: {1}".format(get_field(cells[MUTDT]), mod, MUTDT, cells[MUTDT]))
-    try:
-        if int(gi_last_modified_fields[2]) >= int(mod[0:4]):
-            if int(gi_last_modified_fields[1]) >= int(mod[5:7]):
-                if int(gi_last_modified_fields[0]) > int(mod[8:10]):
-                    update = True
-    except Exception as e:
-        add_log(_("Invalid modification date"), _("Modification date of {0} ({1}) is invalid: {2}").format(
-            get_field(cells[ADRNR]), get_field(cells[MUTDT]), get_field(cells[ADRNR]), e))
+    if force:
+        update = True
+    else:
+        print("gi: {0}/{2}/{3} erp: {1}".format(get_field(cells[MUTDT]), mod, MUTDT, cells[MUTDT]))
+        try:
+            if int(gi_last_modified_fields[2]) >= int(mod[0:4]):
+                if int(gi_last_modified_fields[1]) >= int(mod[5:7]):
+                    if int(gi_last_modified_fields[0]) > int(mod[8:10]):
+                        update = True
+        except Exception as e:
+            add_log(_("Invalid modification date"), _("Modification date of {0} ({1}) is invalid: {2}").format(
+                get_field(cells[ADRNR]), get_field(cells[MUTDT]), get_field(cells[ADRNR]), e))
     if update:
         fullname = "{0} {1}".format(get_field(cells[VNAME]), get_field(cells[NNAME]))
-        cus["customer_name"] = fullname
-        cus["greeninfo_id"] = int(get_field(cells[ADRNR]))
-        cus["description"] = get_field(cells[NBEZ1])
-        cus["company"] = get_field(cells[NBEZ2])
-        cus["language"] = get_erp_language(get_field(cells[SPRCD]))
-        cus["code_05"] = get_field(cells[CODE05])
-        cus["code_06"] = get_field(cells[CODE06])
-        cus["code_07"] = get_field(cells[CODE07])
-        cus["code_08"] = get_field(cells[CODE08])
-        cus["karte"] = get_field(cells[KARTE])
-        cus["krsperre"] = get_field(cells[KRSPERRE])
+        cus.customer_name = fullname
+        cus.first_name = get_field(cells[VNAME])
+        cus.last_name = get_field(cells[NNAME])
+        cus.greeninfo_id = int(get_field(cells[ADRNR]))
+        cus.description = get_field(cells[NBEZ1])
+        cus.company = get_field(cells[NBEZ2])
+        cus.language = get_erp_language(get_field(cells[SPRCD]))
+        cus.code_05 = get_field(cells[CODE05])
+        #cus["code_06"] = get_field(cells[CODE06])
+        cus.code_07 = get_field(cells[CODE07])
+        #cus["code_08"] = get_field(cells[CODE08])
+        cus.karte = get_field(cells[KARTE])
+        cus.krsperre = get_field(cells[KRSPERRE])
         try:
             cus.save()
         except Exception as e:
@@ -262,14 +269,14 @@ def update_customer(name, cells):
                 else:
                     first_name = get_field(cells[VNAME])
                 con = frappe.get_doc("Contact", con_id[0]['parent'])
-                con["greeninfo_id"] = int(get_field(cells[ADRNR])),
-                con["first_name"] = first_name,
-                con["last_name"] = get_field(cells[NNAME]),
-                con["email_id"] = get_field(cells[EMAILADR]),
-                con["salutation"] = get_field(cells[ANRED]),
-                con["letter_salutation"] = get_field(cells[BRANRED]),
-                con["fax"] = get_field(cells[TELEF]),
-                con["phone"] = get_field(cells[TELEP]),
+                con.greeninfo_id = int(get_field(cells[ADRNR])),
+                con.first_name = first_name,
+                con.last_name = get_field(cells[NNAME]),
+                con.email_id = get_field(cells[EMAILADR]),
+                con.salutation = get_field(cells[ANRED]),
+                con.letter_salutation = get_field(cells[BRANRED]),
+                con.fax = get_field(cells[TELEF]),
+                con.phone = get_field(cells[TELEP]),
                 try:
                     con.save()
                 except Exception as e:
@@ -285,12 +292,12 @@ def update_customer(name, cells):
                         else:
                             address_line = "{0} {1}".format(get_field(cells[STRAS]), get_field(cells[STRASNR]))
                         adr = frappe.get_doc("Address", adr_id[0]['parent'])
-                        adr["address_title"] = fullname,
-                        adr["address_line1"] = address_line,
-                        adr["city"] = get_field(cells[ORTBZ]),
-                        adr["pincode"] = get_field(cells[PLZAL]),
-                        adr["is_primary_address"] = 1,
-                        adr["is_shipping_address"] = 1,
+                        adr.address_title = fullname,
+                        adr.address_line1 = address_line,
+                        adr.city = get_field(cells[ORTBZ]),
+                        adr.pincode = get_field(cells[PLZAL]),
+                        adr.is_primary_address = 1,
+                        adr.is_shipping_address = 1,
                         try:
                             adr.save()
                         except Exception as e:
