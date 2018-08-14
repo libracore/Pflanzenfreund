@@ -7,12 +7,12 @@
 			<li>Fr. 14.-</li>
 			<li>inklusive Porto</li>
 			<li class="abo-grey"><a href="
-				{% if frappe.user == "Guest" %}
+				{% if frappe.session.user == "Guest" %}
 					/login#login
 				{% else %}
 					/order-probe-abo
 				{% endif %}" class="btn btn-primary">
-				{% if frappe.user == "Guest" %}
+				{% if frappe.session.user == "Guest" %}
 					Login zum Bestellen
 				{% else %}
 					Bestellen
@@ -27,12 +27,12 @@
 			<li>Fr. 42.-</li>
 			<li>inklusive Porto</li>
 			<li class="abo-grey"><a href="
-				{% if frappe.user == "Guest" %}
+				{% if frappe.session.user == "Guest" %}
 					/login#login
 				{% else %}
 					/order-jahres-abo
 				{% endif %}" class="btn btn-primary">
-				{% if frappe.user == "Guest" %}
+				{% if frappe.session.user == "Guest" %}
 					Login zum Bestellen
 				{% else %}
 					Bestellen
@@ -47,12 +47,12 @@
 			<li>Fr. 42.-</li>
 			<li>inklusive Porto</li>
 			<li class="abo-grey"><a href="
-				{% if frappe.user == "Guest" %}
+				{% if frappe.session.user == "Guest" %}
 					/login#login
 				{% else %}
 					/order-geschenk-abo
 				{% endif %}" class="btn btn-primary">
-				{% if frappe.user == "Guest" %}
+				{% if frappe.session.user == "Guest" %}
 					Login zum Bestellen
 				{% else %}
 					Bestellen
