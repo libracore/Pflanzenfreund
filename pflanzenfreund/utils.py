@@ -17,6 +17,7 @@ from frappe.model.document import Document
 from frappe.utils import cint, flt, get_fullname, cstr
 from erpnext.shopping_cart.doctype.shopping_cart_settings.shopping_cart_settings import get_shopping_cart_settings
 from frappe.utils.nestedset import get_root_of
+from frappe import utils
 
 def get_navbar_items(position):
 	if position == 'top':
@@ -241,3 +242,56 @@ def get_debtors_account(cart_settings):
 
 	else:
 		return debtors_account_name
+
+@frappe.whitelist()
+def place_order_probe(customer="CUST-00007", shipping="Zuhause-Billing", billing="Zuhause-Billing"):
+	sales_order = frappe.new_doc("Sales Order")
+	sales_order.update({
+		"customer": customer,
+		"customer_address": billing,
+		"shipping_address_name": shipping,
+		"delivery_date": utils.today(),
+		"items": [{
+			"item_code": "Probe-Abo",
+			"qty": "1"
+		}]
+	})
+	sales_order.flags.ignore_mandatory = True
+	sales_order.save(ignore_permissions=True)
+	sales_order.submit()
+	frappe.db.commit()
+	create_invoice(customer, billing, shipping, sales_order)
+	
+def create_invoice(customer, billing, shipping, sales_order):
+	sales_invoice = frappe.new_doc("Sales Invoice")
+	sales_invoice.update({
+		"customer": customer,
+		"customer_address": billing,
+		"shipping_address_name": shipping,
+		"delivery_date": utils.today(),
+		"items": [{
+			"item_code": "Probe-Abo",
+			"qty": "1",
+			"sales_order": sales_order.name
+		}]
+	})
+	sales_invoice.flags.ignore_mandatory = True
+	sales_invoice.save(ignore_permissions=True)
+	sales_invoice.submit()
+	frappe.db.commit()
+	create_subscription(sales_invoice)
+	
+def create_subscription(sales_invoice):
+	subscription = frappe.new_doc("Subscription")
+	subscription.update({
+		"reference_doctype": "Sales Invoice",
+		"reference_document": sales_invoice.name,
+		"start_date": utils.today(),
+		"submit_on_creation": 1,
+		"frequency": "Yearly",
+		"repeat_on_day": "0"
+	})
+	subscription.flags.ignore_mandatory = True
+	subscription.save(ignore_permissions=True)
+	subscription.submit()
+	frappe.db.commit()

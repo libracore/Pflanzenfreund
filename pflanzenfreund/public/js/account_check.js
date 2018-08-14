@@ -208,12 +208,12 @@ function addBilling(toCln) {
 }
 
 
-function place_order(item_code, customer) {
-	update_customer_details(item_code, customer);
+function place_order(item_code) {
+	update_customer_details(item_code);
 }
 	
 	
-function update_customer_details(item_code, customer) {
+function update_customer_details(item_code) {
 	var first_name = document.getElementById("inp_first_name").value;
 	var last_name = document.getElementById("inp_last_name").value;
 	var mobile = document.getElementById("inp_mobile").value;
@@ -233,7 +233,9 @@ function update_customer_details(item_code, customer) {
 				shipping = document.getElementById("shipping-adresse").children[1].dataset.addressname;
 				billing = document.getElementById("billing-adresse").children[1].dataset.addressname;
 				customer = response.message;
-				frappe.msgprint("Es wird eine Bestellung von "+item_code+", für den Kunden "+customer+" angelegt. Rechnungsadresse: "+billing+" / Lieferadresse: "+shipping);
+				if (item_code == "Probe-Abo") {
+					place_order_probe(customer, shipping, billing);
+				}
 			} else {
 				frappe.msgprint("Bitte zuerst Liefer- und Rechnungsadresse auswählen!");
 			}
@@ -241,7 +243,21 @@ function update_customer_details(item_code, customer) {
 	   }
 	});
 }
-	
+
+function place_order_probe(customer, shipping, billing) {
+	frappe.call({
+	   method: "pflanzenfreund.utils.place_order_probe",
+	   args: {
+			"customer": customer,
+			"shipping": shipping,
+			"billing": billing
+	   },
+	   callback: function(response) {
+			frappe.msgprint("Die Bestellung des Probe-Abos wurde erfolgreich platziert.");
+			setTimeout(function(){ window.location = "/abonnieren"; }, 1000);
+	   }
+	});
+}
 	
 	
 	
