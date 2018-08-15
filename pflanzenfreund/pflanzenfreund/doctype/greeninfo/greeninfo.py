@@ -44,6 +44,7 @@ CODE08 = 19				# customer.code_08 (obsoleted, ex. 19)
 KARTE = 18				# customer.karte
 KRSPERRE = 19			# customer.krsperre
 MUTDT = 20				# last modification date (dd.mm.yyyy)
+KONDI = 21				# payment terms
 
 class GreenInfo(Document):
     def sync(self):
@@ -83,7 +84,7 @@ def import_data(filename, force_update=False):
             print(row)
             cells = row
             print("cells: {0}".format(len(cells)))
-            if len(cells) >= 21:
+            if len(cells) >= 22:
                 # check if customer exists by ID
                 matches_by_id = frappe.get_all("Customer", filters={'greeninfo_id': get_field(cells[ADRNR])}, fields=['name'])
                 print("Customer: {0}".format(get_field(cells[ADRNR])))
@@ -123,12 +124,13 @@ def create_customer(cells):
             "first_name": get_field(cells[VNAME]),
             "last_name": get_field(cells[NNAME]),
             "language": get_erp_language(get_field(cells[SPRCD])),
-			"code_05": get_field(cells[CODE05]),
-			"code_06": get_field(cells[CODE06]),
-			"code_07": get_field(cells[CODE07]),
-			"code_08": get_field(cells[CODE08]),
-			"karte": get_field(cells[KARTE]),
-			"krsperre": get_field(cells[KRSPERRE]),
+            "code_05": get_field(cells[CODE05]),
+            "code_06": get_field(cells[CODE06]),
+            "code_07": get_field(cells[CODE07]),
+            "code_08": get_field(cells[CODE08]),
+            "karte": get_field(cells[KARTE]),
+            "krsperre": get_field(cells[KRSPERRE]),
+            "payment_terms": get_field(cells[KONDI])
         })
     try:
         new_customer = cus.insert()
@@ -254,6 +256,7 @@ def update_customer(name, cells, force=False):
         #cus["code_08"] = get_field(cells[CODE08])
         cus.karte = get_field(cells[KARTE])
         cus.krsperre = get_field(cells[KRSPERRE])
+        cus.payment_terms = get_field(cell[KONDI])
         try:
             cus.save()
         except Exception as e:
@@ -317,7 +320,7 @@ def export_data(filename, mod_date="2000-01-01"):
     # write output file
     f = codecs.open(filename, "w", 'cp1252')
     # write header line
-    f.write("adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code07,karte,krsperre,mutdt\n")
+    f.write("adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code07,karte,krsperre,mutdt,kondi\n")
     f.close()
 
     print("starting query...")
@@ -364,7 +367,7 @@ def export_data(filename, mod_date="2000-01-01"):
             first_name = ""
         elif first_name == "-":
             first_name = ""
-        line = "{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\"".format(
+        line = "{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\",\"{21}\"".format(
                 customer.greeninfo_id or '',
                 contact.last_name or '',
                 first_name,
@@ -385,7 +388,8 @@ def export_data(filename, mod_date="2000-01-01"):
                 customer.code_07 or '',
                 customer.karte or '',
                 customer.krsperre or '',
-                "{0}.{1}.{2}".format(mod.day, mod.month, mod.year)
+                "{0}.{1}.{2}".format(mod.day, mod.month, mod.year),
+                customer.payment_terms
               )
         print(line)
         f.write(line + "\n")
