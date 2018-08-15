@@ -256,7 +256,7 @@ def update_customer(name, cells, force=False):
         #cus["code_08"] = get_field(cells[CODE08])
         cus.karte = get_field(cells[KARTE])
         cus.krsperre = get_field(cells[KRSPERRE])
-        cus.payment_terms = get_field(cell[KONDI])
+        cus.payment_terms = get_field(cells[KONDI])
         try:
             cus.save()
         except Exception as e:
