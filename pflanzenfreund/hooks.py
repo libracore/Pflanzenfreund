@@ -44,7 +44,8 @@ jenv = {
 		"footer_brand:pflanzenfreund.utils.get_footer_brand",
 		"footer_description:pflanzenfreund.utils.get_footer_description",
 		"get_all_addresses:pflanzenfreund.utils.get_all_addresses",
-		"get_address_details:pflanzenfreund.utils.get_address_details"
+		"get_address_details:pflanzenfreund.utils.get_address_details",
+		"get_logged_in_user:pflanzenfreund.utils.get_logged_in_user"
 		]
 }
 

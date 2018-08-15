@@ -295,3 +295,6 @@ def create_subscription(sales_invoice):
 	subscription.save(ignore_permissions=True)
 	subscription.submit()
 	frappe.db.commit()
+	
+def get_logged_in_user():
+	return frappe.session.user
