@@ -21,30 +21,30 @@ CELL_SEPARATOR = "\t"
 CELL_ENCAPSULATION = "\""
 
 # CSV column allocation
-ADRNR = 0				# greeninfo_id
-NNAME = 1				# contact.last_name
-VNAME = 2				# contact.first_name
-NBEZ1 = 3				# customer.description
-NBEZ2 = 4				# customer.company
-STRAS = 5				# address.address_line1
-STRASNR = 6				# address.address_line1
-PLZAL = 7				# address.pin_code
-ORTBZ = 8				# address.city
-ANRED = 9				# contact.salutation
-BRANRED = 10			# contact.letter_salutation
-SPRCD = 11				# customer.language
-TELEF = 12				# contact.fax
-TELEP = 13				# contact.phone
-NATEL = 14				# contact.mobile
-EMAILADR = 15			# contact.email
-CODE05 = 16				# customer.code_05
-CODE06 = 17				# customer.code_06 (obsoleted, ex. 17)
-CODE07 = 17				# customer.code_07
-CODE08 = 19				# customer.code_08 (obsoleted, ex. 19)
-KARTE = 18				# customer.karte
-KRSPERRE = 19			# customer.krsperre
-MUTDT = 20				# last modification date (dd.mm.yyyy)
-KONDI = 21				# payment terms
+ADRNR = 0                # greeninfo_id
+NNAME = 1                # contact.last_name
+VNAME = 2                # contact.first_name
+NBEZ1 = 3                # customer.description
+NBEZ2 = 4                # customer.company
+STRAS = 5                # address.address_line1
+STRASNR = 6                # address.address_line1
+PLZAL = 7                # address.pin_code
+ORTBZ = 8                # address.city
+ANRED = 9                # contact.salutation
+BRANRED = 10            # contact.letter_salutation
+SPRCD = 11                # customer.language
+TELEF = 12                # contact.fax
+TELEP = 13                # contact.phone
+NATEL = 14                # contact.mobile
+EMAILADR = 15            # contact.email
+CODE05 = 16                # customer.code_05
+CODE06 = 17                # customer.code_06 (obsoleted, ex. 17)
+CODE07 = 17                # customer.code_07
+CODE08 = 19                # customer.code_08 (obsoleted, ex. 19)
+KARTE = 18                # customer.karte
+KRSPERRE = 19            # customer.krsperre
+MUTDT = 20                # last modification date (dd.mm.yyyy)
+KONDI = 21                # payment terms
 
 class GreenInfo(Document):
     def sync(self):
@@ -105,25 +105,24 @@ def import_data(filename, force_update=False):
                     else:
                         print("creating...")
                         create_customer(cells)
-
     return
 
 def get_full_name(cells):
-	return "{0} {1}".format(get_field(cells[VNAME]), get_field(cells[NNAME]))
+    return "{0} {1}".format(get_field(cells[VNAME]), get_field(cells[NNAME]))
 
 def get_first_name(cells):
-	if get_field(cells[VNAME]) == "":
-		first_name = "-"
-	else:
-		first_name = get_field(cells[VNAME])
-	return first_name
+    if get_field(cells[VNAME]) == "":
+        first_name = "-"
+    else:
+        first_name = get_field(cells[VNAME])
+    return first_name
 
 def get_address_line(cells):
-	if get_field(cells[STRAS]) == "":
-		address_line = "-"
-	else:
-		address_line = "{0} {1}".format(get_field(cells[STRAS]), get_field(cells[STRASNR]))
-	return address_line
+    if get_field(cells[STRAS]) == "":
+        address_line = "-"
+    else:
+        address_line = "{0} {1}".format(get_field(cells[STRAS]), get_field(cells[STRASNR]))
+    return address_line
 
 def create_customer(cells):
     # create record
@@ -156,71 +155,71 @@ def create_customer(cells):
             get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
     else:
         create_constact(cells, new_customer.name)
-		create_address(cells, new_customer.name)
+        create_address(cells, new_customer.name)
     # write changes to db
     frappe.db.commit()
     return
 
 def create_constact(cells, customer):
-	try:
-		fullname = get_full_name(cells)
-		if get_field(cells[VNAME]) == "":
+    try:
+        fullname = get_full_name(cells)
+        if get_field(cells[VNAME]) == "":
             first_name = "-"
         else:
             first_name = get_field(cells[VNAME])
-		con = frappe.get_doc(
-			{
-				"doctype":"Contact", 
-				"name": "{0} ({1})".format(fullname, customer),
-				"greeninfo_id": int(get_field(cells[ADRNR])),
-				"first_name": get_first_name(cells),
-				"last_name": get_field(cells[NNAME]),
-				"email_id": get_field(cells[EMAILADR]),
-				"salutation": get_field(cells[ANRED]),
-				"letter_salutation": get_field(cells[BRANRED]),
-				"fax": get_field(cells[TELEF]),
-				"phone": get_field(cells[TELEP]),
-				"mobile_no": get_field(cells[NATEL]),
-				"links": [
-					{
-						"link_doctype": "Customer",
-						"link_name": customer
-					}
-				]
-			})
-		new_contact = con.insert()
-		return new_contact
-	except Exception as e:
+        con = frappe.get_doc(
+            {
+                "doctype":"Contact", 
+                "name": "{0} ({1})".format(fullname, customer),
+                "greeninfo_id": int(get_field(cells[ADRNR])),
+                "first_name": get_first_name(cells),
+                "last_name": get_field(cells[NNAME]),
+                "email_id": get_field(cells[EMAILADR]),
+                "salutation": get_field(cells[ANRED]),
+                "letter_salutation": get_field(cells[BRANRED]),
+                "fax": get_field(cells[TELEF]),
+                "phone": get_field(cells[TELEP]),
+                "mobile_no": get_field(cells[NATEL]),
+                "links": [
+                    {
+                        "link_doctype": "Customer",
+                        "link_name": customer
+                    }
+                ]
+            })
+        new_contact = con.insert()
+        return new_contact
+    except Exception as e:
         add_log(_("Insert contact failed"), _("Insert failed for contact {0} {1} ({2}): {3}").format(
             get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
-		return None
+        return None
 
 def create_address(cells, customer):
-	try:
-		adr = frappe.get_doc(
-			{
-				"doctype":"Address", 
-				"name": "{0} ({1})".format(fullname, new_customer.name),
-				"address_title": "{0} ({1})".format(fullname, new_customer.name),
-				"address_line1": get_address_line(cells),
-				"city": get_field(cells[ORTBZ]),
-				"pincode": get_field(cells[PLZAL]),
-				"is_primary_address": 1,
-				"is_shipping_address": 1,
-				"links": [
-					{
-						"link_doctype": "Customer",
-						"link_name": new_customer.name
-					}
-				]
-			})
-		new_adr = adr.insert()
-		return new_adr
-	except Exception as e:
-		add_log(_("Insert address failed"), _("Insert failed for address {0} {1} ({2}): {3}").format(
-			get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
-		return None
-	
+    try:
+        adr = frappe.get_doc(
+            {
+                "doctype":"Address", 
+                "name": "{0} ({1})".format(fullname, new_customer.name),
+                "address_title": "{0} ({1})".format(fullname, new_customer.name),
+                "address_line1": get_address_line(cells),
+                "city": get_field(cells[ORTBZ]),
+                "pincode": get_field(cells[PLZAL]),
+                "is_primary_address": 1,
+                "is_shipping_address": 1,
+                "links": [
+                    {
+                        "link_doctype": "Customer",
+                        "link_name": new_customer.name
+                    }
+                ]
+            })
+        new_adr = adr.insert()
+        return new_adr
+    except Exception as e:
+        add_log(_("Insert address failed"), _("Insert failed for address {0} {1} ({2}): {3}").format(
+            get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
+        return None
+    
 def get_erp_language(lang_code):
     l = lang_code.lower()
     if l == "d":
@@ -290,7 +289,7 @@ def update_customer(name, cells, force=False):
                 filters={'link_doctype': 'Customer', 'link_name': cus.name, 'parenttype': 'Contact'},
                 fields=['parent'])
             if con_id:
-				# update contact
+                # update contact
                 con = frappe.get_doc("Contact", con_id[0]['parent'])
                 con.greeninfo_id = int(get_field(cells[ADRNR])),
                 con.first_name = get_first_name(cells),
@@ -306,33 +305,33 @@ def update_customer(name, cells, force=False):
                     add_log(_("Update contact failed"), _("Update failed for contact {0} {1} ({2}): {3}").format(
                         get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
                     ield(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
-			else:
-				# no contact available, create
-				try:
-					create_contact
-			adr_id = frappe.get_all("Dynamic Link", 
-					filters={'link_doctype': 'Customer', 'link_name': cus.name, 'parenttype': 'Address'},
-					fields=['parent'])
-			if adr_id:
-				if get_field(cells[STRAS]) == "":
-					address_line = "-"
-				else:
-					address_line = "{0} {1}".format(get_field(cells[STRAS]), get_field(cells[STRASNR]))
-				adr = frappe.get_doc("Address", adr_id[0]['parent'])
-				adr.address_title = fullname,
-				adr.address_line1 = get_address_line(cells),
-				adr.city = get_field(cells[ORTBZ]),
-				adr.pincode = get_field(cells[PLZAL]),
-				adr.is_primary_address = 1,
-				adr.is_shipping_address = 1,
-				try:
-					adr.save()
-				except Exception as e:
-					add_log(_("Update address failed"), _("Update address for contact {0} {1} ({2}): {3}").format(
-						get_f
-			else:
-				# address not found, create
-				create_address(cells, 
+            else:
+                # no contact available, create
+                try:
+                    create_contact
+            adr_id = frappe.get_all("Dynamic Link", 
+                    filters={'link_doctype': 'Customer', 'link_name': cus.name, 'parenttype': 'Address'},
+                    fields=['parent'])
+            if adr_id:
+                if get_field(cells[STRAS]) == "":
+                    address_line = "-"
+                else:
+                    address_line = "{0} {1}".format(get_field(cells[STRAS]), get_field(cells[STRASNR]))
+                adr = frappe.get_doc("Address", adr_id[0]['parent'])
+                adr.address_title = fullname,
+                adr.address_line1 = get_address_line(cells),
+                adr.city = get_field(cells[ORTBZ]),
+                adr.pincode = get_field(cells[PLZAL]),
+                adr.is_primary_address = 1,
+                adr.is_shipping_address = 1,
+                try:
+                    adr.save()
+                except Exception as e:
+                    add_log(_("Update address failed"), _("Update address for contact {0} {1} ({2}): {3}").format(
+                        get_f
+            else:
+                # address not found, create
+                create_address(cells, 
     # write changes to db
     frappe.db.commit()
     return
