@@ -154,13 +154,13 @@ def create_customer(cells):
         add_log(_("Insert customer failed"), _("Insert failed for customer {0} {1} ({2}): {3}").format(
             get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
     else:
-        create_constact(cells, new_customer.name)
+        create_contact(cells, new_customer.name)
         create_address(cells, new_customer.name)
     # write changes to db
     frappe.db.commit()
     return
 
-def create_constact(cells, customer):
+def create_contact(cells, customer):
     try:
         fullname = get_full_name(cells)
         if get_field(cells[VNAME]) == "":
@@ -196,11 +196,12 @@ def create_constact(cells, customer):
 
 def create_address(cells, customer):
     try:
+        fullname = get_full_name(cells)
         adr = frappe.get_doc(
             {
                 "doctype":"Address", 
-                "name": "{0} ({1})".format(fullname, new_customer.name),
-                "address_title": "{0} ({1})".format(fullname, new_customer.name),
+                "name": "{0} ({1})".format(fullname, customer),
+                "address_title": "{0} ({1})".format(fullname, customer),
                 "address_line1": get_address_line(cells),
                 "city": get_field(cells[ORTBZ]),
                 "pincode": get_field(cells[PLZAL]),
@@ -209,7 +210,7 @@ def create_address(cells, customer):
                 "links": [
                     {
                         "link_doctype": "Customer",
-                        "link_name": new_customer.name
+                        "link_name": customer
                     }
                 ]
             })
@@ -291,24 +292,22 @@ def update_customer(name, cells, force=False):
             if con_id:
                 # update contact
                 con = frappe.get_doc("Contact", con_id[0]['parent'])
-                con.greeninfo_id = int(get_field(cells[ADRNR])),
-                con.first_name = get_first_name(cells),
-                con.last_name = get_field(cells[NNAME]),
-                con.email_id = get_field(cells[EMAILADR]),
-                con.salutation = get_field(cells[ANRED]),
-                con.letter_salutation = get_field(cells[BRANRED]),
-                con.fax = get_field(cells[TELEF]),
-                con.phone = get_field(cells[TELEP]),
+                con.greeninfo_id = int(get_field(cells[ADRNR]))
+                con.first_name = get_first_name(cells)
+                con.last_name = get_field(cells[NNAME]) or ''
+                con.email_id = get_field(cells[EMAILADR]) or ''
+                con.salutation = get_field(cells[ANRED]) or ''
+                con.letter_salutation = get_field(cells[BRANRED]) or ''
+                con.fax = get_field(cells[TELEF]) or ''
+                con.phone = get_field(cells[TELEP]) or ''
                 try:
                     con.save()
                 except Exception as e:
                     add_log(_("Update contact failed"), _("Update failed for contact {0} {1} ({2}): {3}").format(
                         get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
-                    ield(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
             else:
                 # no contact available, create
-                try:
-                    create_contact
+                create_contact(cells, cus.name)
             adr_id = frappe.get_all("Dynamic Link", 
                     filters={'link_doctype': 'Customer', 'link_name': cus.name, 'parenttype': 'Address'},
                     fields=['parent'])
@@ -318,20 +317,20 @@ def update_customer(name, cells, force=False):
                 else:
                     address_line = "{0} {1}".format(get_field(cells[STRAS]), get_field(cells[STRASNR]))
                 adr = frappe.get_doc("Address", adr_id[0]['parent'])
-                adr.address_title = fullname,
-                adr.address_line1 = get_address_line(cells),
-                adr.city = get_field(cells[ORTBZ]),
-                adr.pincode = get_field(cells[PLZAL]),
-                adr.is_primary_address = 1,
-                adr.is_shipping_address = 1,
+                adr.address_title = fullname
+                adr.address_line1 = get_address_line(cells) or ''
+                adr.city = get_field(cells[ORTBZ]) or ''
+                adr.pincode = get_field(cells[PLZAL]) or ''
+                adr.is_primary_address = 1
+                adr.is_shipping_address = 1
                 try:
                     adr.save()
                 except Exception as e:
                     add_log(_("Update address failed"), _("Update address for contact {0} {1} ({2}): {3}").format(
-                        get_f
+                        get_field(cells[VNAME]), get_field(cells[NNAME]), get_field(cells[ADRNR]), e))
             else:
                 # address not found, create
-                create_address(cells, 
+                create_address(cells, cus.name)
     # write changes to db
     frappe.db.commit()
     return
