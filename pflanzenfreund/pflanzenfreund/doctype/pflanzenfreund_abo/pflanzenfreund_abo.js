@@ -3,7 +3,24 @@
 
 frappe.ui.form.on('Pflanzenfreund Abo', {
 	refresh: function(frm) {
-
+		frm.set_query('customer_address', function(doc) {
+			return {
+				query: 'frappe.contacts.doctype.address.address.address_query',
+				filters: {
+					link_doctype: 'Customer',
+					link_name: doc.customer
+				}
+			};
+		});
+		frm.set_query('donee_address', function(doc) {
+			return {
+				query: 'frappe.contacts.doctype.address.address.address_query',
+				filters: {
+					link_doctype: 'Customer',
+					link_name: doc.customer
+				}
+			};
+		});
 	},
 	onload: function(frm) {
 		cur_frm.set_value('start_date', getStartDate());
