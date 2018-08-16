@@ -21,30 +21,31 @@ CELL_SEPARATOR = "\t"
 CELL_ENCAPSULATION = "\""
 
 # CSV column allocation
-ADRNR = 0                # greeninfo_id
-NNAME = 1                # contact.last_name
-VNAME = 2                # contact.first_name
-NBEZ1 = 3                # customer.description
-NBEZ2 = 4                # customer.company
-STRAS = 5                # address.address_line1
-STRASNR = 6                # address.address_line1
-PLZAL = 7                # address.pin_code
-ORTBZ = 8                # address.city
-ANRED = 9                # contact.salutation
-BRANRED = 10            # contact.letter_salutation
+ADRNR = 0                 # greeninfo_id
+NNAME = 1                 # contact.last_name
+VNAME = 2                 # contact.first_name
+NBEZ1 = 3                 # customer.description
+NBEZ2 = 4                 # customer.company
+STRAS = 5                 # address.address_line1
+STRASNR = 6               # address.address_line1
+PLZAL = 7                 # address.pin_code
+ORTBZ = 8                 # address.city
+ANRED = 9                 # contact.salutation
+BRANRED = 10              # contact.letter_salutation
 SPRCD = 11                # customer.language
 TELEF = 12                # contact.fax
 TELEP = 13                # contact.phone
 NATEL = 14                # contact.mobile
-EMAILADR = 15            # contact.email
-CODE05 = 16                # customer.code_05
-CODE06 = 17                # customer.code_06 (obsoleted, ex. 17)
-CODE07 = 17                # customer.code_07
-CODE08 = 19                # customer.code_08 (obsoleted, ex. 19)
+EMAILADR = 15             # contact.email
+CODE05 = 16               # customer.code_05
+CODE06 = 17               # customer.code_06 (obsoleted, ex. 17)
+CODE07 = 17               # customer.code_07
+CODE08 = 19               # customer.code_08 (obsoleted, ex. 19)
 KARTE = 18                # customer.karte
-KRSPERRE = 19            # customer.krsperre
+KRSPERRE = 19             # customer.krsperre
 MUTDT = 20                # last modification date (dd.mm.yyyy)
 KONDI = 21                # payment terms
+DLAND = 22                # country
 
 class GreenInfo(Document):
     def sync(self):
@@ -84,7 +85,7 @@ def import_data(filename, force_update=False):
             print(row)
             cells = row
             print("cells: {0}".format(len(cells)))
-            if len(cells) >= 22:
+            if len(cells) >= 23:
                 # check if customer exists by ID
                 matches_by_id = frappe.get_all("Customer", filters={'greeninfo_id': get_field(cells[ADRNR])}, fields=['name'])
                 print("Customer: {0}".format(get_field(cells[ADRNR])))
@@ -123,6 +124,16 @@ def get_address_line(cells):
     else:
         address_line = "{0} {1}".format(get_field(cells[STRAS]), get_field(cells[STRASNR]))
     return address_line
+
+def get_country_from_dland(dland):
+    if not dland or dland == "":
+        return "Schweiz"
+    else:
+        countries = frappe.get_all('Country', filters={'code':dland.lower()}, fields=['name'])
+        if countries:
+            return countries[0]['name']
+        else:
+            return "Schweiz"
 
 def create_customer(cells):
     # create record
@@ -207,6 +218,7 @@ def create_address(cells, customer):
                 "pincode": get_field(cells[PLZAL]),
                 "is_primary_address": 1,
                 "is_shipping_address": 1,
+                "country": get_country_from_dland(getfield(cells[DLAND])),
                 "links": [
                     {
                         "link_doctype": "Customer",
@@ -323,6 +335,7 @@ def update_customer(name, cells, force=False):
                 adr.pincode = get_field(cells[PLZAL]) or ''
                 adr.is_primary_address = 1
                 adr.is_shipping_address = 1
+                adr.country = get_country_from_dland(getfield(cells[DLAND]))
                 try:
                     adr.save()
                 except Exception as e:
@@ -345,7 +358,7 @@ def export_data(filename, mod_date="2000-01-01"):
     # write output file
     f = codecs.open(filename, "w", 'cp1252')
     # write header line
-    f.write("adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code07,karte,krsperre,mutdt,kondi\n")
+    f.write("adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code07,karte,krsperre,mutdt,kondi,dland\n")
     f.close()
 
     print("starting query...")
@@ -392,7 +405,12 @@ def export_data(filename, mod_date="2000-01-01"):
             first_name = ""
         elif first_name == "-":
             first_name = ""
-        line = "{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\",\"{21}\"".format(
+        country = frappe.get_value("Country", address.country, "code")
+        if country:
+            country = country.upper()
+        else:
+            country = "CH"
+        line = "{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\",\"{21}\",\"{22}\"".format(
                 customer.greeninfo_id or '',
                 contact.last_name or '',
                 first_name,
@@ -414,7 +432,8 @@ def export_data(filename, mod_date="2000-01-01"):
                 customer.karte or '',
                 customer.krsperre or '',
                 "{0}.{1}.{2}".format(mod.day, mod.month, mod.year),
-                customer.payment_terms
+                customer.payment_terms,
+                country
               )
         print(line)
         f.write(line + "\n")
