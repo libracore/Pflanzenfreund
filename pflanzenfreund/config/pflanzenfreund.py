@@ -9,7 +9,7 @@ def get_data():
 		"items": [
 			{
 			   "type": "doctype",
-			   "name": "Subscription",
+			   "name": "Pflanzenfreund Abo",
 			   "label": _("Subscription"),
 			   "description": _("Administration")
 		   },

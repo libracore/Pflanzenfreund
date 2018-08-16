@@ -1,11 +1,11 @@
 [
  {
-  "docstatus": 0,
-  "doctype": "Custom Script",
-  "dt": "Portal Settings",
-  "modified": "2018-06-27 09:07:48.211364",
-  "name": "Portal Settings-Client",
-  "script": "frappe.ui.form.on('Portal Settings', {\n\trefresh: function(frm) {\n\t    if (cur_frm.doc.hide_standard_menu == '0') {\n\t      cur_frm.set_value('hide_standard_menu', '1');\n\t      cur_frm.save();\n\t    }\n\t    cur_frm.set_df_property('standard_menu_items','hidden','1');\n\t}\n});",
+  "docstatus": 0, 
+  "doctype": "Custom Script", 
+  "dt": "Portal Settings", 
+  "modified": "2018-06-27 09:07:48.211364", 
+  "name": "Portal Settings-Client", 
+  "script": "frappe.ui.form.on('Portal Settings', {\n\trefresh: function(frm) {\n\t    if (cur_frm.doc.hide_standard_menu == '0') {\n\t      cur_frm.set_value('hide_standard_menu', '1');\n\t      cur_frm.save();\n\t    }\n\t    cur_frm.set_df_property('standard_menu_items','hidden','1');\n\t}\n});", 
   "script_type": "Client"
  }, 
  {
@@ -15,6 +15,15 @@
   "modified": "2018-07-27 11:14:01.822313", 
   "name": "Customer-Client", 
   "script": "frappe.ui.form.on(\"Customer\", {\n\tbefore_save: function(frm) {\n\t\tif (cur_frm.doc.customer_type == \"Company\") {\n\t\t\tcur_frm.set_df_property('customer_name','reqd','1');\n\t\t\tcur_frm.set_df_property('first_name','reqd','0');\n\t\t\tcur_frm.set_df_property('last_name','reqd','0');\n\t\t\tcur_frm.set_value('first_name', cur_frm.doc.customer_name);\n\t\t\tcur_frm.set_value('last_name', cur_frm.doc.customer_name);\n\t\t}\n\t\tif (cur_frm.doc.customer_type == \"Individual\") {\n\t\t\tvar fullname = cur_frm.doc.first_name + ' ' + cur_frm.doc.last_name;\n\t\t\tcur_frm.set_value('customer_name', fullname);\n\t\t}\n\t}\n});", 
+  "script_type": "Client"
+ }, 
+ {
+  "docstatus": 0, 
+  "doctype": "Custom Script", 
+  "dt": "Sales Invoice", 
+  "modified": "2018-08-16 16:56:37.528529", 
+  "name": "Sales Invoice-Client", 
+  "script": "frappe.ui.form.on('Sales Invoice', {\n\tonload: function(frm) {\n\t\tif (frm.doc.__islocal) {\n\t\t\tif (cur_frm.doc.pflanzenfreund_abo) {\n\t\t\t\tfrappe.call({\n\t\t\t\t\t\"method\": \"frappe.client.get\",\n\t\t\t\t\t\"args\": {\n\t\t\t\t\t\t\t\"doctype\": \"Pflanzenfreund Abo\",\n\t\t\t\t\t\t\t\"name\": cur_frm.doc.pflanzenfreund_abo\n\t\t\t\t\t},\n\t\t\t\t\t\"callback\": function(response) {\n\t\t\t\t\t\tvar abo = response.message;\n\t\t\t\t\t\tif (abo) {\n\t\t\t\t\t\t\tcur_frm.set_value('customer', abo.customer);\n\t\t\t\t\t\t\tcur_frm.set_value('customer_address', abo.customer_address);\n\t\t\t\t\t\t\tif (abo.abo_type == \"Geschenk-Abo\"){\n\t\t\t\t\t\t\t\tcur_frm.set_value('shipping_address_name', abo.donee_address);\n\t\t\t\t\t\t\t\tconsole.log(\"ich bin geschenkt\");\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\tcur_frm.set_value('shipping_address_name', abo.customer_address);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\taddItem(frm, abo.abo_type)\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t}\n\t\t}\n\t}\n});\n\nfunction addItem(frm, item) {\n\tif ((item != \"Probe-Abo\")&&(item != \"Geschenk-Abo\")){\n\t\titem = \"Jahres-Abo\";\n\t}\n\t\n\tvar child = cur_frm.add_child('items');\n\tfrappe.model.set_value(child.doctype, child.name, 'item_code', item);\n\tfrappe.model.set_value(child.doctype, child.name, 'qty', 1);\n\tcur_frm.refresh_field('items');\n}", 
   "script_type": "Client"
  }
 ]
