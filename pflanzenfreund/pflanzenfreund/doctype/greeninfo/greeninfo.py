@@ -218,7 +218,7 @@ def create_address(cells, customer):
                 "pincode": get_field(cells[PLZAL]),
                 "is_primary_address": 1,
                 "is_shipping_address": 1,
-                "country": get_country_from_dland(getfield(cells[DLAND])),
+                "country": get_country_from_dland(get_field(cells[DLAND])),
                 "links": [
                     {
                         "link_doctype": "Customer",
@@ -335,7 +335,7 @@ def update_customer(name, cells, force=False):
                 adr.pincode = get_field(cells[PLZAL]) or ''
                 adr.is_primary_address = 1
                 adr.is_shipping_address = 1
-                adr.country = get_country_from_dland(getfield(cells[DLAND]))
+                adr.country = get_country_from_dland(get_field(cells[DLAND]))
                 try:
                     adr.save()
                 except Exception as e:
