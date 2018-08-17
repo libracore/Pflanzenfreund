@@ -6,10 +6,9 @@ import frappe
 
 def execute(filters=None):
 	columns, data = [], []
-	
+	year = getYearFromString(filters.year+"-01-01")
 	columns = ["Abo Typ::200", "Customer:Link/Customer:200", "Donee:Link/Customer:200", "Beginn:Date:200", "End:Date:200"]
-	
-	if not filters:
+	if not filters.edition:
 		data = frappe.db.sql("""SELECT
 				`abo_type`,
 				`customer`,
@@ -17,7 +16,8 @@ def execute(filters=None):
 				`start_date`,
 				`end_date`
 				FROM `tabPflanzenfreund Abo`
-				WHERE `docstatus` = '1'""", as_list = True)
+				WHERE `docstatus` = '1'
+				AND (YEAR(`end_date`) >= {0} OR `end_date` IS NULL)""".format(year), as_list = True)
 				
 		chart_data_ = frappe.db.sql("""SELECT
 									SUM(`winter_ed`),
@@ -31,8 +31,8 @@ def execute(filters=None):
 									SUM(`oct_ed`),
 									SUM(`nov_ed`)
 									FROM `tabPflanzenfreund Abo`
-									WHERE (YEAR(`end_date`) >= YEAR(CURDATE()) OR `end_date` IS NULL)
-									AND `docstatus` = '1'""", as_list = True)
+									WHERE (YEAR(`end_date`) >= {0} OR `end_date` IS NULL)
+									AND `docstatus` = '1'""".format(year), as_list = True)
 		chart=get_chart_data(data, chart_data=chart_data_)
 	else:
 		edition = getEDcode(filters.edition)
@@ -44,17 +44,18 @@ def execute(filters=None):
 				`end_date`
 				FROM `tabPflanzenfreund Abo`
 				WHERE `{0}` = '1'
-				AND `docstatus` = '1'""".format(edition), as_list = True)
+				AND `docstatus` = '1'
+				AND (YEAR(`end_date`) >= {1} OR `end_date` IS NULL)""".format(edition, year), as_list = True)
 				
 		_chart_data = {"Jahres-Abo":"", "Probe-Abo":"", "Geschenk-Abo":"", "Gratis-Abo":"", "VIP-Abo":"", "Kundenkarten-Abo (KK)":"", "Kunden-Abo (OK)":""}
 		for key in _chart_data:
 			_chart_data[key] = frappe.db.sql("""SELECT
 										COUNT(`{0}`)
 										FROM `tabPflanzenfreund Abo`
-										WHERE (YEAR(`end_date`) >= YEAR(CURDATE()) OR `end_date` IS NULL)
+										WHERE (YEAR(`end_date`) >= {2} OR `end_date` IS NULL)
 										AND `{0}` = '1'
 										AND `abo_type` = '{1}'
-										AND `docstatus` = '1'""".format(edition, key), as_list = True)[0]
+										AND `docstatus` = '1'""".format(edition, key, year), as_list = True)[0]
 		chart=get_chart_data(data, filtered_chart_data=_chart_data)
 	return columns, data, None, chart
 
@@ -105,3 +106,8 @@ def getEDcode(edition):
 	if edition == "November":
 		edition = "nov_ed"
 	return edition
+	
+def getYearFromString(raw_year):
+	from datetime import datetime
+	dt = datetime.strptime(raw_year, '%Y-%m-%d')
+	return dt.year
