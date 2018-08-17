@@ -864,7 +864,7 @@
  "issingle": 0, 
  "istable": 0, 
  "max_attachments": 0, 
- "modified": "2018-08-16 21:20:38.284839", 
+ "modified": "2018-08-17 09:18:43.953605", 
  "modified_by": "Administrator", 
  "module": "Pflanzenfreund", 
  "name": "Pflanzenfreund Abo", 
@@ -874,7 +874,7 @@
   {
    "amend": 0, 
    "apply_user_permissions": 0, 
-   "cancel": 0, 
+   "cancel": 1, 
    "create": 1, 
    "delete": 1, 
    "email": 1, 
@@ -888,7 +888,7 @@
    "role": "System Manager", 
    "set_user_permissions": 0, 
    "share": 1, 
-   "submit": 0, 
+   "submit": 1, 
    "write": 1
   }
  ], 

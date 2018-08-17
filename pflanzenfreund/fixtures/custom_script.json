@@ -12,9 +12,9 @@
   "docstatus": 0, 
   "doctype": "Custom Script", 
   "dt": "Customer", 
-  "modified": "2018-07-27 11:14:01.822313", 
+  "modified": "2018-08-17 09:44:30.760555", 
   "name": "Customer-Client", 
-  "script": "frappe.ui.form.on(\"Customer\", {\n\tbefore_save: function(frm) {\n\t\tif (cur_frm.doc.customer_type == \"Company\") {\n\t\t\tcur_frm.set_df_property('customer_name','reqd','1');\n\t\t\tcur_frm.set_df_property('first_name','reqd','0');\n\t\t\tcur_frm.set_df_property('last_name','reqd','0');\n\t\t\tcur_frm.set_value('first_name', cur_frm.doc.customer_name);\n\t\t\tcur_frm.set_value('last_name', cur_frm.doc.customer_name);\n\t\t}\n\t\tif (cur_frm.doc.customer_type == \"Individual\") {\n\t\t\tvar fullname = cur_frm.doc.first_name + ' ' + cur_frm.doc.last_name;\n\t\t\tcur_frm.set_value('customer_name', fullname);\n\t\t}\n\t}\n});", 
+  "script": "frappe.ui.form.on(\"Customer\", {\n\tbefore_save: function(frm) {\n\t\tif (cur_frm.doc.customer_type == \"Company\") {\n\t\t\tcur_frm.set_df_property('customer_name','reqd','1');\n\t\t\tcur_frm.set_df_property('first_name','reqd','0');\n\t\t\tcur_frm.set_df_property('last_name','reqd','0');\n\t\t\tcur_frm.set_value('first_name', cur_frm.doc.customer_name);\n\t\t\tcur_frm.set_value('last_name', cur_frm.doc.customer_name);\n\t\t}\n\t\tif (cur_frm.doc.customer_type == \"Individual\") {\n\t\t\tvar fullname = cur_frm.doc.first_name + ' ' + cur_frm.doc.last_name;\n\t\t\tcur_frm.set_value('customer_name', fullname);\n\t\t}\n\t},\n\trefresh: function(frm) {\n\t\tfrm.add_custom_button(__(\"Make Pflanzenfreund Abo\"), function() {\n\t\t\tmake_abo(frm);\n\t\t});\n\t}\n});\n\nfunction make_abo(frm) {\n\tfrappe.call({\n\t\tmethod: 'pflanzenfreund.pflanzenfreund.doctype.pflanzenfreund_abo.pflanzenfreund_abo.create_abo',\n\t\targs: {\n\t\t\tcustomer: cur_frm.doc.name\n\t\t},\n\t\tcallback: function(r) {\n\t\t\tif(r.message) {\n\t\t\t\twindow.location.href=\"/desk#Form/Pflanzenfreund Abo/\"+r.message;\n\t\t\t} \n\t\t}\n\t});\n}", 
   "script_type": "Client"
  }, 
  {

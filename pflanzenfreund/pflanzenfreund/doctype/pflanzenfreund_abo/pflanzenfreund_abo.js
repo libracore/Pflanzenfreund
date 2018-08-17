@@ -78,18 +78,21 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 			if ((count != 3)) {
 				frappe.msgprint("Please choose <b>3 editions</b> for Kundenkarten-Abo (KK)", "Kundenkarten-Abo (KK) Info");
 				frappe.validated=false;
+				console.log("Abo: Kundenkarten-Abo (KK) / count: "+count);
 			} else {
 				frappe.validated=true;
 			}
 		} else if (cur_frm.doc.abo_type == "Probe-Abo") {
 			if ((count != 4)) {
 				frappe.validated=false;
+				console.log("Abo: Probe-Abo / count: "+count);
 			} else {
 				frappe.validated=true;
 			}
 		} else if (cur_frm.doc.abo_type == "Kunden-Abo (OK)") {
 			if ((count != 2)) {
 				frappe.validated=false;
+				console.log("Abo: Kunden-Abo (OK) / count: "+count);
 			} else {
 				frappe.validated=true;
 			}
@@ -97,6 +100,7 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 			if ((count != 10)) {
 				frappe.msgprint("Please choose <b>all editions</b>", "Abo Info");
 				frappe.validated=false;
+				console.log("Abo: rest / count: "+count);
 			} else {
 				frappe.validated=true;
 			}
