@@ -10,7 +10,7 @@ import frappe
 from frappe.utils.password import check_password
 
 # API function for external authentication
-frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=True)
 def check_credentials(user, password):
 	if not user or not password:
 		frappe.throw("Please provide credentials")
