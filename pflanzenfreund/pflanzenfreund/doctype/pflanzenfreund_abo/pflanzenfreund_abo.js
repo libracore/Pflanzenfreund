@@ -68,6 +68,14 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 			cur_frm.set_value('end_date', '');
 			chooseAllEditions();
 			setAllEditionsReadOnly();
+			if (cur_frm.doc.abo_type == "Geschenk-Abo") {
+				var start = cur_frm.doc.start_date;
+				var month = start.split("-")[1];
+				var day = start.split("-")[2];
+				var end = (parseInt((new Date()).getFullYear()) + 1) + "-" + month + "-" + day;
+				var text = "<div>Sie erhalten als Geschenk für die Periode " + cur_frm.doc.start_date + " bis " + end + " ein Abonnement des<br><b>SCHWEIZERISCHEN PFLANZENFREUNDES</b><br> die illustrierte Monatszeitschrift für jeden Gartenbesitzer.</div>"
+				cur_frm.set_value('donee_text', text);
+			}
 		}
 	},
 	validate: function(frm) {
