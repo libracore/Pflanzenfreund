@@ -20,16 +20,18 @@ def execute(filters=None):
 				AND (YEAR(`end_date`) >= {0} OR `end_date` IS NULL)""".format(year), as_list = True)
 				
 		chart_data_ = frappe.db.sql("""SELECT
-									SUM(`winter_ed`),
+									SUM(`jan_ed`),
 									SUM(`feb_ed`),
 									SUM(`mar_ed`),
 									SUM(`apr_ed`),
 									SUM(`may_ed`),
 									SUM(`jun_ed`),
-									SUM(`summer_ed`),
+									SUM(`jul_ed`),
+									SUM(`aug_ed`),
 									SUM(`sept_ed`),
 									SUM(`oct_ed`),
-									SUM(`nov_ed`)
+									SUM(`nov_ed`),
+									SUM(`dec_ed`)
 									FROM `tabPflanzenfreund Abo`
 									WHERE (YEAR(`end_date`) >= {0} OR `end_date` IS NULL)
 									AND `docstatus` = '1'""".format(year), as_list = True)
@@ -61,7 +63,7 @@ def execute(filters=None):
 
 def get_chart_data(data, chart_data=False, filtered_chart_data=False):
 	if not filtered_chart_data:
-		labels = ["Winter", "February", "March", "April", "May", "June", "Summer", "September", "October", "November"]#[period.key for period in period_list]
+		labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]#[period.key for period in period_list]
 	else:
 		labels = ["Jahres-Abo", "Probe-Abo", "Geschenk-Abo", "Gratis-Abo", "VIP-Abo", "Kundenkarten-Abo (KK)", "Kunden-Abo (OK)"]
 	datasets = []
@@ -85,8 +87,8 @@ def get_chart_data(data, chart_data=False, filtered_chart_data=False):
 	return chart
 	
 def getEDcode(edition):
-	if edition == "Winter":
-		edition = "winter_ed"
+	if edition == "January":
+		edition = "jan_ed"
 	if edition == "February":
 		edition = "feb_ed"
 	if edition == "March":
@@ -97,14 +99,18 @@ def getEDcode(edition):
 		edition = "may_ed"
 	if edition == "June":
 		edition = "jun_ed"
-	if edition == "Summer":
-		edition = "summer_ed"
+	if edition == "July":
+		edition = "jul_ed"
+	if edition == "August":
+		edition = "aug_ed"
 	if edition == "September":
 		edition = "sept_ed"
 	if edition == "October":
 		edition = "oct_ed"
 	if edition == "November":
 		edition = "nov_ed"
+	if edition == "December":
+		edition = "dec_ed"
 	return edition
 	
 def getYearFromString(raw_year):

@@ -8,7 +8,7 @@ frappe.query_reports["Pflanzenfreund Druckauftrag"] = {
 			fieldname: "edition",
 			label: __("Edition"),
 			fieldtype: "Select",
-			options: ["", "Winter", "February", "March", "April", "May", "June", "Summer", "September", "October", "November"]
+			options: ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 		},
 		{
 			fieldname: "year",
