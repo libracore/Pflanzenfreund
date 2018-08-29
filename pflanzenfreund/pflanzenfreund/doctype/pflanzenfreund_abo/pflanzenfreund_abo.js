@@ -23,9 +23,11 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 		});
 	},
 	onload: function(frm) {
-		cur_frm.set_value('start_date', getStartDate());
-		chooseAllEditions();
-		setAllEditionsReadOnly();
+		if (frm.doc.__islocal){
+			cur_frm.set_value('start_date', getStartDate());
+			chooseAllEditions();
+			setAllEditionsReadOnly();
+		}
 	},
 	abo_type: function(frm) {
 		var enddate = new Date();
