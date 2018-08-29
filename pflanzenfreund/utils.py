@@ -298,3 +298,16 @@ def create_subscription(sales_invoice):
 	
 def get_logged_in_user():
 	return frappe.session.user
+	
+	
+def import_existing_abo():
+	query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '1  A' LIMIT 5"""
+	customers = frappe.db.sql(query, as_list = True)
+	for customer in customers:
+		abo = frappe.new_doc("Pflanzenfreund Abo")
+		abo.update({
+			"customer": customer[0]
+		})
+		abo.flags.ignore_mandatory = True
+		abo.save(ignore_permissions=True)
+		frappe.db.commit()

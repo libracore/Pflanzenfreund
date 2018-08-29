@@ -143,4 +143,4 @@ website_context = {
 # 	"frappe.desk.doctype.event.event.get_events": "pflanzenfreund.event.get_events"
 # }
 
-fixtures = ["Custom Field", "Custom Script"]
+fixtures = ["Custom Field"]
