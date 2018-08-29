@@ -301,7 +301,7 @@ def get_logged_in_user():
 	
 	
 def import_existing_abo():
-	query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '8KK1' LIMIT 1"""
+	query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '9OK3'"""
         customers = frappe.db.sql(query, as_list = True)
         count = 0
         for customer in customers:
@@ -310,18 +310,20 @@ def import_existing_abo():
                 abo.update({
                         "customer": customer[0],
                         "customer_address": address[0],
-                        "abo_type": "Kundenkarten-Abo (KK)",
+                        "abo_type": "Kunden-Abo (OK)",
                         "start_date": "2018-01-01",
-                        "winter_ed": 1,
+                        "jan_ed": 0,
                         "feb_ed": 0,
                         "mar_ed": 0,
-                        "apr_ed": 1,
-                        "may_ed": 0,
+                        "apr_ed": 0,
+                        "may_ed": 1,
                         "jun_ed": 0,
-                        "summer_ed": 1,
+                        "jul_ed": 0,
+			"aug_ed": 0,
                         "sept_ed": 0,
-                        "oct_ed": 1,
-                        "nov_ed": 0
+                        "oct_ed": 0,
+                        "nov_ed": 1,
+			"dec_ed": 0
                 })
                 abo.flags.ignore_mandatory = True
                 abo.save(ignore_permissions=True)
