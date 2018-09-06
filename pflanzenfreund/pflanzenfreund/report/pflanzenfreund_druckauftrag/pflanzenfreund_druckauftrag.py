@@ -7,17 +7,33 @@ import frappe
 def execute(filters=None):
 	columns, data = [], []
 	year = getYearFromString(filters.year+"-01-01")
-	columns = ["Abo Typ::200", "Customer:Link/Customer:200", "Donee:Link/Customer:200", "Beginn:Date:200", "End:Date:200"]
+	columns = ["Abo Typ::140", "Beginn:Date:60", "End:Date:60", "Customer:Link/Customer:50", "Customer Name::110", "C-Addr Line 1::50", "C-Addr Line 2::50", "C-Pincode::50", "C-City::50", "C-Country::50", "Donee:Link/Customer:50", "Donee Name::110", "Address Line 1::50", "Address Line 2::50", "Pincode::50", "City::50", "Country::50"]
 	if not filters.edition:
 		data = frappe.db.sql("""SELECT
-				`abo_type`,
-				`customer`,
-				`donee`,
-				`start_date`,
-				`end_date`
-				FROM `tabPflanzenfreund Abo`
-				WHERE `docstatus` = '1'
-				AND (YEAR(`end_date`) >= {0} OR `end_date` IS NULL)""".format(year), as_list = True)
+				t1.`abo_type`,
+				t1.`start_date`,
+				t1.`end_date`,
+				t1.`customer`,
+				t2.`customer_name`,
+				t4.`address_line1`,
+				t4.`address_line2`,
+				t4.`pincode`,
+				t4.`city`,
+				t4.`country`,
+				t1.`donee`,
+				t3.`customer_name`,
+				t5.`address_line1`,
+				t5.`address_line2`,
+				t5.`pincode`,
+				t5.`city`,
+				t5.`country`
+				FROM ((((`tabPflanzenfreund Abo` AS t1
+				LEFT JOIN `tabCustomer` AS t2 ON t1.`customer` = t2.`name`)
+				LEFT JOIN `tabCustomer` AS t3 ON t1.`donee` = t3.`name`)
+				LEFT JOIN `tabAddress` AS t4 ON t1.`customer_address` = t4.`name`)
+				LEFT JOIN `tabAddress` AS t5 ON t1.`donee_address` = t5.`name`)
+				WHERE t1.`docstatus` = '1'
+				AND (YEAR(t1.`end_date`) >= {0} OR t1.`end_date` IS NULL)""".format(year), as_list = True)
 				
 		chart_data_ = frappe.db.sql("""SELECT
 									SUM(`jan_ed`),
@@ -39,15 +55,31 @@ def execute(filters=None):
 	else:
 		edition = getEDcode(filters.edition)
 		data = frappe.db.sql("""SELECT
-				`abo_type`,
-				`customer`,
-				`donee`,
-				`start_date`,
-				`end_date`
-				FROM `tabPflanzenfreund Abo`
-				WHERE `{0}` = '1'
-				AND `docstatus` = '1'
-				AND (YEAR(`end_date`) >= {1} OR `end_date` IS NULL)""".format(edition, year), as_list = True)
+				t1.`abo_type`,
+				t1.`start_date`,
+				t1.`end_date`,
+				t1.`customer`,
+				t2.`customer_name`,
+				t4.`address_line1`,
+				t4.`address_line2`,
+				t4.`pincode`,
+				t4.`city`,
+				t4.`country`,
+				t1.`donee`,
+				t3.`customer_name`,
+				t5.`address_line1`,
+				t5.`address_line2`,
+				t5.`pincode`,
+				t5.`city`,
+				t5.`country`
+				FROM ((((`tabPflanzenfreund Abo` AS t1
+				LEFT JOIN `tabCustomer` AS t2 ON t1.`customer` = t2.`name`)
+				LEFT JOIN `tabCustomer` AS t3 ON t1.`donee` = t3.`name`)
+				LEFT JOIN `tabAddress` AS t4 ON t1.`customer_address` = t4.`name`)
+				LEFT JOIN `tabAddress` AS t5 ON t1.`donee_address` = t5.`name`)
+				WHERE t1.`{0}` = '1'
+				AND t1.`docstatus` = '1'
+				AND (YEAR(t1.`end_date`) >= {1} OR t1.`end_date` IS NULL)""".format(edition, year), as_list = True)
 				
 		_chart_data = {"Jahres-Abo":"", "Probe-Abo":"", "Geschenk-Abo":"", "Gratis-Abo":"", "VIP-Abo":"", "Kundenkarten-Abo (KK)":"", "Kunden-Abo (OK)":""}
 		for key in _chart_data:
