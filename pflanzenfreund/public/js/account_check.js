@@ -2,6 +2,7 @@ var currentTab = 0; // Current tab is set to be the first tab (0)
 showTab(currentTab); // Display the current tab
 
 function showTab(n) {
+  try {
   // This function will display the specified tab of the form ...
   var x = document.getElementsByClassName("tab");
   x[n].style.display = "block";
@@ -22,6 +23,7 @@ function showTab(n) {
   }
   // ... and run a function that displays the correct step indicator:
   fixStepIndicator(n)
+  } catch(err) {}
 }
 
 function nextPrev(n) {
