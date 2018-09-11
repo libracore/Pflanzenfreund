@@ -50,6 +50,7 @@ var currenttabGeschenkGeschenk = 0; // Current tabGeschenk is set to be the firs
 showtabGeschenkGeschenk(currenttabGeschenkGeschenk); // Display the current tabGeschenk
 
 function showtabGeschenkGeschenk(n) {
+  try {
   // This function will display the specified tabGeschenk of the form ...
   var x = document.getElementsByClassName("tabGeschenk");
   x[n].style.display = "block";
@@ -77,6 +78,7 @@ function showtabGeschenkGeschenk(n) {
   }
   // ... and run a function that displays the correct stepGeschenk indicator:
   fixstepGeschenkIndicatorGeschenk(n)
+  } catch(err) {}
 }
 
 function nextPrevGeschenk(n) {
