@@ -40,7 +40,7 @@ EMAILADR = 15             # contact.email
 CODE05 = 16               # customer.code_05
 CODE06 = 17               # customer.code_06 (obsoleted, ex. 17)
 CODE07 = 17               # customer.code_07
-CODE08 = 19               # customer.code_08 (obsoleted, ex. 19)
+CODE08 = 23               # customer.code_08 (obsoleted, ex. 19)
 KARTE = 18                # customer.karte
 KRSPERRE = 19             # customer.krsperre
 MUTDT = 20                # last modification date (dd.mm.yyyy)
@@ -138,6 +138,10 @@ def get_country_from_dland(dland):
 def create_customer(cells):
     # create record
     fullname = get_full_name(cells)
+    try:
+        code08 = get_field(cells[CODE08])
+    except:
+        code08 = ""
     cus = frappe.get_doc(
         {
             "doctype":"Customer", 
@@ -152,9 +156,9 @@ def create_customer(cells):
             "last_name": get_field(cells[NNAME]),
             "language": get_erp_language(get_field(cells[SPRCD])),
             "code_05": get_field(cells[CODE05]),
-            "code_06": get_field(cells[CODE06]),
+            #"code_06": get_field(cells[CODE06]),
             "code_07": get_field(cells[CODE07]),
-            "code_08": get_field(cells[CODE08]),
+            "code_08": code08,
             "karte": get_field(cells[KARTE]),
             "krsperre": get_field(cells[KRSPERRE]),
             "payment_terms": get_field(cells[KONDI])
