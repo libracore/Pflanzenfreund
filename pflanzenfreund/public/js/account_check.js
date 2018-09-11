@@ -171,20 +171,36 @@ function removeAllSelectetAddresses(cluster) {
 
 function clearShipping() {
 	try {
-		var element = document.getElementById("shipping-adresse").children[1];
+		if (getCookie("abotype") != "Geschenk-Abo") {
+			var element = document.getElementById("shipping-adresse").children[1];
+		} else {
+			var element = document.getElementById("shipping-adresse-Geschenk").children[1];
+		}
 		element.parentNode.removeChild(element);
 		
-		var placeholder = document.getElementById("keineShippingAdresse");
+		if (getCookie("abotype") != "Geschenk-Abo") {
+			var placeholder = document.getElementById("keineShippingAdresse");
+		} else {
+			var placeholder = document.getElementById("keineShippingAdresse-Geschenk");
+		}
 		placeholder.className = placeholder.className.replace(" hidden", "");
 	} catch {}
 }
 
 function clearBilling() {
 	try {
-		var element = document.getElementById("billing-adresse").children[1];
+		if (getCookie("abotype") != "Geschenk-Abo") {
+			var element = document.getElementById("billing-adresse").children[1];
+		} else {
+			var element = document.getElementById("billing-adresse-Geschenk").children[1];
+		}
 		element.parentNode.removeChild(element);
 		
-		var placeholder = document.getElementById("keineBillingAdresse");
+		if (getCookie("abotype") != "Geschenk-Abo") {
+			var placeholder = document.getElementById("keineBillingAdresse");
+		} else {
+			var placeholder = document.getElementById("keineBillingAdresse-Geschenk");
+		}
 		placeholder.className = placeholder.className.replace(" hidden", "");
 	} catch {}
 }
@@ -192,32 +208,106 @@ function clearBilling() {
 function addShipping(toCln) {
 	var itm = document.getElementById(toCln);
 	var cln = itm.cloneNode(true);
-	document.getElementById("shipping-adresse").appendChild(cln); 
+	if (getCookie("abotype") != "Geschenk-Abo") {
+		document.getElementById("shipping-adresse").appendChild(cln); 
+	} else {
+		document.getElementById("shipping-adresse-Geschenk").appendChild(cln); 
+	}
 	
-	var placeholder = document.getElementById("keineShippingAdresse");
+	if (getCookie("abotype") != "Geschenk-Abo") {
+		var placeholder = document.getElementById("keineShippingAdresse");
+	} else {
+		var placeholder = document.getElementById("keineShippingAdresse-Geschenk");
+	}
 	placeholder.className += " hidden";
 }
 
 function addBilling(toCln) {
 	var itm = document.getElementById(toCln);
 	var cln = itm.cloneNode(true);
-	document.getElementById("billing-adresse").appendChild(cln); 
+	if (getCookie("abotype") != "Geschenk-Abo") {
+		document.getElementById("billing-adresse").appendChild(cln);
+	} else {
+		document.getElementById("billing-adresse-Geschenk").appendChild(cln);
+	}
 	
-	var placeholder = document.getElementById("keineBillingAdresse");
+	if (getCookie("abotype") != "Geschenk-Abo") {
+		var placeholder = document.getElementById("keineBillingAdresse");
+	} else {
+		var placeholder = document.getElementById("keineBillingAdresse-Geschenk");
+	}
 	placeholder.className += " hidden";
 }
 
 
-function place_order(item_code) {
-	update_customer_details(item_code);
+function place_order() {
+	var item_code = getCookie("abotype");
+	if (item_code != "Geschenk-Abo") {
+		update_customer_details(item_code);
+	} else {
+		check_if_donee_exist(item_code);
+	}
+}
+
+function check_if_donee_exist(item_code) {
+	var first_name = document.getElementById("inp_first_name_donee").value;
+	var last_name = document.getElementById("inp_last_name_donee").value;
+	var mobile = document.getElementById("inp_mobile_donee").value;
+	var phone = document.getElementById("inp_phone_donee").value;
+	var street = document.getElementById("inp_street_donee").value;
+	var plz = document.getElementById("inp_plz_donee").value;
+	var ort = document.getElementById("inp_ort_donee").value;
+	var email = document.getElementById("inp_email_donee").value;
+	frappe.call({
+	   method: "pflanzenfreund.utils.check_if_donee_exist",
+	   args: {
+			"email": email,
+			"street": street,
+			"city": ort,
+			"plz": plz,
+			"first_name": first_name,
+			"last_name": last_name,
+			"phone": phone,
+			"mobile": mobile
+	   },
+	   callback: function(response) {
+			update_customer_details(item_code, response.message.name);
+	   }
+	});
+}
+
+function testtest() {
+	
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
 }
 	
-	
-function update_customer_details(item_code) {
-	var first_name = document.getElementById("inp_first_name").value;
-	var last_name = document.getElementById("inp_last_name").value;
-	var mobile = document.getElementById("inp_mobile").value;
-	var phone = document.getElementById("inp_phone").value;
+function update_customer_details(item_code, donee) {
+	if (item_code != "Geschenk-Abo") {
+		var first_name = document.getElementById("inp_first_name").value;
+		var last_name = document.getElementById("inp_last_name").value;
+		var mobile = document.getElementById("inp_mobile").value;
+		var phone = document.getElementById("inp_phone").value;
+	} else {
+		var first_name = document.getElementById("geschenk_inp_first_name").value;
+		var last_name = document.getElementById("geschenk_inp_last_name").value;
+		var mobile = document.getElementById("geschenk_inp_mobile").value;
+		var phone = document.getElementById("geschenk_inp_phone").value;
+	}
 	frappe.call({
 	   method: "pflanzenfreund.utils.update_general_infos_of_existing_customer",
 	   args: {
@@ -227,14 +317,31 @@ function update_customer_details(item_code) {
 			"mobile_no": mobile
 	   },
 	   callback: function(response) {
-			var billing_placeholder = document.getElementById("keineBillingAdresse");
-			var shipping_placeholder = document.getElementById("keineShippingAdresse");
+			var customer = response.message;
+			if (item_code != "Geschenk-Abo") {
+				var billing_placeholder = document.getElementById("keineBillingAdresse");
+				var shipping_placeholder = document.getElementById("keineShippingAdresse");
+			} else {
+				var billing_placeholder = document.getElementById("keineBillingAdresse-Geschenk");
+				var shipping_placeholder = document.getElementById("keineShippingAdresse-Geschenk");
+			}
 			if ((billing_placeholder.classList.contains("hidden")) && (shipping_placeholder.classList.contains("hidden"))) {
-				shipping = document.getElementById("shipping-adresse").children[1].dataset.addressname;
-				billing = document.getElementById("billing-adresse").children[1].dataset.addressname;
-				customer = response.message;
-				if (item_code == "Probe-Abo") {
-					place_order_probe(customer, shipping, billing);
+				if (item_code != "Geschenk-Abo") {
+					shipping = document.getElementById("shipping-adresse").children[1].dataset.addressname;
+					billing = document.getElementById("billing-adresse").children[1].dataset.addressname;
+					place_order_abo(customer, shipping, billing, item_code, "");
+				} else {
+					billing = document.getElementById("billing-adresse-Geschenk").children[1].dataset.addressname;
+					frappe.call({
+					   method: "pflanzenfreund.utils.get_donee_address",
+					   args: {
+							"donee": donee
+					   },
+					   callback: function(r) {
+							shipping = r.message;
+							place_order_abo(customer, shipping, billing, item_code, donee);
+					   }
+					});
 				}
 			} else {
 				frappe.msgprint("Bitte zuerst Liefer- und Rechnungsadresse auswählen!");
@@ -244,16 +351,21 @@ function update_customer_details(item_code) {
 	});
 }
 
-function place_order_probe(customer, shipping, billing) {
+function place_order_abo(customer, shipping, billing, abo, donee) {
 	frappe.call({
-	   method: "pflanzenfreund.utils.place_order_probe",
+	   method: "pflanzenfreund.utils.place_order_abo",
 	   args: {
 			"customer": customer,
 			"shipping": shipping,
-			"billing": billing
+			"billing": billing,
+			"abo": abo,
+			"donee": donee
 	   },
 	   callback: function(response) {
-			frappe.msgprint("Die Bestellung des Probe-Abos wurde erfolgreich platziert.");
+			frappe.msgprint("Die Bestellung des " + abo + "s wurde erfolgreich platziert.");
+			if (abo != "Geschenk-Abo") {
+				document.getElementById("orderModal").style.width = "0%";
+			}
 			setTimeout(function(){ window.location = "/abonnieren"; }, 1000);
 	   }
 	});
@@ -268,7 +380,17 @@ for (i = 0; i < acc.length; i++) {
     acc[i].addEventListener("click", function() {
         /* Toggle between adding and removing the "active" class,
         to highlight the button that controls the panel */
-        this.classList.toggle("active");
+        var acc2 = document.getElementsByClassName("accordion");
+		var i2;
+
+		for (i2 = 0; i2 < acc2.length; i2++) {
+			acc2[i2].className = acc2[i2].className.replace(" active", "");
+			var panel2 = acc2[i2].nextElementSibling;
+			if (panel2.style.display === "block") {
+				panel2.style.display = "none";
+			}
+		}
+		this.classList.toggle("active");
 
         /* Toggle between hiding and showing the active panel */
         var panel = this.nextElementSibling;

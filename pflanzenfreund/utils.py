@@ -244,42 +244,198 @@ def get_debtors_account(cart_settings):
 		return debtors_account_name
 
 @frappe.whitelist()
-def place_order_probe(customer="CUST-00007", shipping="Zuhause-Billing", billing="Zuhause-Billing"):
-	sales_order = frappe.new_doc("Sales Order")
-	sales_order.update({
-		"customer": customer,
-		"customer_address": billing,
-		"shipping_address_name": shipping,
-		"delivery_date": utils.today(),
-		"items": [{
-			"item_code": "Probe-Abo",
-			"qty": "1"
-		}]
-	})
-	sales_order.flags.ignore_mandatory = True
-	sales_order.save(ignore_permissions=True)
-	sales_order.submit()
+def place_order_abo(customer, shipping, billing, abo, donee):
+	pflanzenfreund_abo = frappe.new_doc("Pflanzenfreund Abo")
+	if abo == "Jahres-Abo":
+		pflanzenfreund_abo.update({
+			"customer": customer,
+			"customer_address": billing,
+			"abo_type": abo,
+			"start_date": utils.today(),
+			"jan_ed": 1,
+			"feb_ed": 1,
+			"mar_ed": 1,
+			"apr_ed": 1,
+			"may_ed": 1,
+			"jun_ed": 1,
+			"jul_ed": 1,
+			"aug_ed": 1,
+			"sept_ed": 1,
+			"oct_ed": 1,
+			"nov_ed": 1,
+			"dec_ed": 1
+		})
+	if abo == "Probe-Abo":
+		pflanzenfreund_abo.update({
+			"customer": customer,
+			"customer_address": billing,
+			"abo_type": abo,
+			"start_date": utils.today(),
+			"end_date": get_abo_end_date(),
+			"jan_ed": 0,
+			"feb_ed": 0,
+			"mar_ed": 0,
+			"apr_ed": 0,
+			"may_ed": 0,
+			"jun_ed": 0,
+			"jul_ed": 0,
+			"aug_ed": 0,
+			"sept_ed": 0,
+			"oct_ed": 0,
+			"nov_ed": 0,
+			"dec_ed": 0
+		})
+		add_editions_to_abo_based_on_act_month(pflanzenfreund_abo)
+	if abo == "Geschenk-Abo":
+		pflanzenfreund_abo.update({
+			"customer": customer,
+			"customer_address": billing,
+			"donee": donee,
+			"donee_address": shipping,
+			"abo_type": abo,
+			"start_date": utils.today(),
+			"jan_ed": 1,
+			"feb_ed": 1,
+			"mar_ed": 1,
+			"apr_ed": 1,
+			"may_ed": 1,
+			"jun_ed": 1,
+			"jul_ed": 1,
+			"aug_ed": 1,
+			"sept_ed": 1,
+			"oct_ed": 1,
+			"nov_ed": 1,
+			"dec_ed": 1
+		})
+	pflanzenfreund_abo.flags.ignore_mandatory = True
+	pflanzenfreund_abo.save(ignore_permissions=True)
+	pflanzenfreund_abo.submit()
 	frappe.db.commit()
-	create_invoice(customer, billing, shipping, sales_order)
+	create_invoice(customer, billing, shipping, pflanzenfreund_abo, abo)
 	
-def create_invoice(customer, billing, shipping, sales_order):
+def get_abo_end_date():
+	start = utils.today()
+	end = utils.add_months(start, 4)
+	return (end)
+	
+def add_editions_to_abo_based_on_act_month(pflanzenfreund_abo):
+	start_date = utils.now_datetime()
+	start_day = start_date.day
+	start_month = start_date.month
+	if start_day > 14:
+		start_month = start_month + 1
+	if start_month == 1:
+		pflanzenfreund_abo.update({
+			"jan_ed": 1,
+			"feb_ed": 1,
+			"mar_ed": 1,
+			"apr_ed": 1
+		})
+	if start_month == 2:
+		pflanzenfreund_abo.update({
+			"feb_ed": 1,
+			"mar_ed": 1,
+			"apr_ed": 1,
+			"may_ed": 1
+		})
+	if start_month == 3:
+		pflanzenfreund_abo.update({
+			"mar_ed": 1,
+			"apr_ed": 1,
+			"may_ed": 1,
+			"jun_ed": 1
+		})
+	if start_month == 4:
+		pflanzenfreund_abo.update({
+			"apr_ed": 1,
+			"may_ed": 1,
+			"jun_ed": 1,
+			"jul_ed": 1
+		})
+	if start_month == 5:
+		pflanzenfreund_abo.update({
+			"may_ed": 1,
+			"jun_ed": 1,
+			"jul_ed": 1,
+			"aug_ed": 1
+		})
+	if start_month == 6:
+		pflanzenfreund_abo.update({
+			"jun_ed": 1,
+			"jul_ed": 1,
+			"aug_ed": 1,
+			"sept_ed": 1
+		})
+	if start_month == 7:
+		pflanzenfreund_abo.update({
+			"jul_ed": 1,
+			"aug_ed": 1,
+			"sept_ed": 1,
+			"oct_ed": 1
+		})
+	if start_month == 8:
+		pflanzenfreund_abo.update({
+			"aug_ed": 1,
+			"sept_ed": 1,
+			"oct_ed": 1,
+			"nov_ed": 1
+		})
+	if start_month == 9:
+		pflanzenfreund_abo.update({
+			"sept_ed": 1,
+			"oct_ed": 1,
+			"nov_ed": 1,
+			"dec_ed": 1
+		})
+	if start_month == 10:
+		pflanzenfreund_abo.update({
+			"jan_ed": 1,
+			"oct_ed": 1,
+			"nov_ed": 1,
+			"dec_ed": 1
+		})
+	if start_month == 11:
+		pflanzenfreund_abo.update({
+			"jan_ed": 1,
+			"feb_ed": 1,
+			"nov_ed": 1,
+			"dec_ed": 1
+		})
+	if start_month == 12:
+		pflanzenfreund_abo.update({
+			"jan_ed": 1,
+			"feb_ed": 1,
+			"mar_ed": 1,
+			"dec_ed": 1
+		})
+	return(pflanzenfreund_abo)
+	
+def create_invoice(customer, billing, shipping, pflanzenfreund_abo, abo):
 	sales_invoice = frappe.new_doc("Sales Invoice")
 	sales_invoice.update({
 		"customer": customer,
 		"customer_address": billing,
 		"shipping_address_name": shipping,
 		"delivery_date": utils.today(),
+		"pflanzenfreund_abo": pflanzenfreund_abo.name,
+		"taxes_and_charges": "Schweiz normal (302) - GCM",
 		"items": [{
-			"item_code": "Probe-Abo",
-			"qty": "1",
-			"sales_order": sales_order.name
+			"item_code": abo,
+			"qty": "1"
+		}],
+		"taxes": [{
+			"charge_type": "On Net Total",
+			"account_head": "2200 - Umsatzsteuer - GCM",
+			"cost_center": "Haupt - GCM",
+			"rate": "7.7",
+			"description": "Inkl. 7.7% MwSt"
 		}]
 	})
 	sales_invoice.flags.ignore_mandatory = True
 	sales_invoice.save(ignore_permissions=True)
 	sales_invoice.submit()
 	frappe.db.commit()
-	create_subscription(sales_invoice)
+	#create_subscription(sales_invoice)
 	
 def create_subscription(sales_invoice):
 	subscription = frappe.new_doc("Subscription")
@@ -299,6 +455,124 @@ def create_subscription(sales_invoice):
 def get_logged_in_user():
 	return frappe.session.user
 	
+	
+
+
+def get_address(customer):
+	query = """SELECT `parent` FROM `tabDynamic Link` WHERE `parenttype` = 'Address' AND `link_doctype` = 'Customer' AND `link_name` = '{0}'""".format(customer)
+	do_query = frappe.db.sql(query, as_list = True)
+	return do_query[0]
+
+@frappe.whitelist()
+def check_if_donee_exist(email, first_name, last_name, street, city, plz, phone, mobile):
+	if email:
+		user = frappe.db.get("User", {"email": email})
+		if user:
+			contact_name = frappe.db.get_value("Contact", {"email_id": email})
+			party = None
+
+			if contact_name:
+				contact = frappe.get_doc('Contact', contact_name)
+				if contact.links:
+					party_doctype = contact.links[0].link_doctype
+					party = contact.links[0].link_name
+
+			if party:
+				return party
+
+			else:
+				customer = frappe.new_doc("Customer")
+				first_name = frappe.db.get_value("User", email, "first_name")
+				last_name = frappe.db.get_value("User", email, "last_name")
+				fullname = get_fullname(email)
+				customer.update({
+					"customer_name": fullname,
+					"first_name": first_name,
+					"last_name": last_name,
+					"customer_type": "Individual",
+					"customer_group": "Pflanzenfreund",
+					"territory": get_root_of("Territory")
+				})
+
+				customer.flags.ignore_mandatory = True
+				customer.insert(ignore_permissions=True)
+
+				contact = frappe.new_doc("Contact")
+				contact.update({
+					"first_name": fullname,
+					"email_id": email
+				})
+				contact.append('links', dict(link_doctype='Customer', link_name=customer.name))
+				contact.flags.ignore_mandatory = True
+				contact.insert(ignore_permissions=True)
+				
+				address = frappe.new_doc("Address")
+				address.update({
+					"address_type": "Geschenk",
+					"address_line1": street,
+					"city": city,
+					"country": "Switzerland",
+					"pincode": plz
+				})
+				address.append('links', dict(link_doctype='Customer', link_name=customer.name))
+				logged_in_user = frappe.session.user
+				contact_name = frappe.db.get_value("Contact", {"email_id": logged_in_user})
+				party = None
+				contact = frappe.get_doc('Contact', contact_name)
+				party_doctype = contact.links[0].link_doctype
+				party = contact.links[0].link_name
+				address.append('links', dict(link_doctype='Customer', link_name=party))
+				address.flags.ignore_mandatory = True
+				address.insert(ignore_permissions=True)
+				return customer
+				
+	customer = frappe.new_doc("Customer")
+	fullname = first_name + " " + last_name
+	customer.update({
+		"customer_name": fullname,
+		"first_name": first_name,
+		"last_name": last_name,
+		"customer_type": "Individual",
+		"customer_group": "Pflanzenfreund",
+		"territory": get_root_of("Territory")
+	})
+
+	customer.flags.ignore_mandatory = True
+	customer.insert(ignore_permissions=True)
+
+	contact = frappe.new_doc("Contact")
+	contact.update({
+		"first_name": fullname
+	})
+	contact.append('links', dict(link_doctype='Customer', link_name=customer.name))
+	contact.flags.ignore_mandatory = True
+	contact.insert(ignore_permissions=True)
+	
+	address = frappe.new_doc("Address")
+	address.update({
+		"address_type": "Geschenk",
+		"address_line1": street,
+		"city": city,
+		"country": "Switzerland",
+		"pincode": plz
+	})
+	address.append('links', dict(link_doctype='Customer', link_name=customer.name))
+	logged_in_user = frappe.session.user
+	contact_name = frappe.db.get_value("Contact", {"email_id": logged_in_user})
+	party = None
+	contact = frappe.get_doc('Contact', contact_name)
+	party_doctype = contact.links[0].link_doctype
+	party = contact.links[0].link_name
+	address.append('links', dict(link_doctype='Customer', link_name=party))
+	address.flags.ignore_mandatory = True
+	address.insert(ignore_permissions=True)
+	return customer
+
+@frappe.whitelist()
+def get_donee_address(donee):
+	query = """SELECT `parent` FROM `tabDynamic Link` WHERE `parenttype` = 'Address' AND `link_doctype` = 'Customer' AND `link_name` = '{0}' ORDER BY `creation` DESC LIMIT 1""".format(donee)
+	do_query = frappe.db.sql(query, as_list = True)
+	return do_query[0]
 	
 def import_existing_abo():
 	query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '9OK3'"""
@@ -331,8 +605,3 @@ def import_existing_abo():
                 frappe.db.commit()
                 count +=1
                 print("Added {0} of {1}".format(count, len(customers)))
-
-def get_address(customer):
-	query = """SELECT `parent` FROM `tabDynamic Link` WHERE `parenttype` = 'Address' AND `link_doctype` = 'Customer' AND `link_name` = '{0}'""".format(customer)
-	do_query = frappe.db.sql(query, as_list = True)
-	return do_query[0]

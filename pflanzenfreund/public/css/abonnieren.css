@@ -1,0 +1,221 @@
+ /* The Overlay (background) */
+.overlay {
+    /* Height & width depends on how you want to reveal the overlay (see JS below) */   
+    height: 100%;
+    width: 0;
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    background-color: rgb(0,0,0); /* Black fallback color */
+    background-color: rgba(0,0,0, 0.9); /* Black w/opacity */
+	background-image: url("/assets/pflanzenfreund/images/pflanzenfreund_navbar_bottom.jpg");
+    overflow-x: hidden; /* Disable horizontal scroll */
+    transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+}
+
+/* Position the content inside the overlay */
+.overlay-content {
+    position: relative;
+    top: 25%; /* 25% from the top */
+    width: 100%; /* 100% width */
+    text-align: center; /* Centered text/links */
+    margin-top: 30px; /* 30px top margin to avoid conflict with the close button on smaller screens */
+}
+
+/* The navigation links inside the overlay */
+.overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block; /* Display block instead of inline */
+    transition: 0.3s; /* Transition effects on hover (color) */
+}
+
+.overlay a.normal-link {
+    /*padding: 8px;*/
+    text-decoration: none;
+    font-size: 16px;
+    color: black;
+    display: block; /* Display block instead of inline */
+    transition: 0.3s; /* Transition effects on hover (color) */
+}
+
+/* When you mouse over the navigation links, change their color */
+.overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+}
+
+/* Position the close button (top right corner) */
+.overlay .closebtn {
+    position: absolute;
+    top: 8px;
+    right: 45px;
+    font-size: 60px;
+}
+
+/* Position the close button (top right corner) */
+.overlay .modalIMG {
+    position: absolute;
+    top: 20px;
+    left: 45px;
+    font-size: 60px;
+}
+
+/* When the height of the screen is less than 450 pixels, change the font-size of the links and position the close button again, so they don't overlap */
+@media screen and (max-width: 550px) {
+    .overlay a {
+		font-size: 20px;
+	}
+    .overlay .closebtn {
+        font-size: 60px;
+        top: 0px;
+        right: 35px;
+    }
+	.modalIMG {
+		max-width: 50% !important;
+		top: 25px !important;
+		left: 35px !important;
+	}
+	
+}
+@media screen and (max-width: 250px) {
+    .overlay .closebtn {
+        font-size: 45px;
+		right: 5px;
+    }
+	.modalIMG {
+		max-width: 80% !important;
+		top: 25px !important;
+		left: 5px !important;
+	}
+}
+@media screen and (max-width: 300px) {
+    .overlay .closebtn {
+        font-size: 40px;
+    }
+}
+@media screen and (max-width: 400px) {
+    .overlay .closebtn {
+        font-size: 45px;
+    }
+}
+
+.btn-modal {
+	background-color: white;
+	border-color: white;
+	color: #94B600;
+}
+.btn-modal:hover, .btn-modal:focus {
+	background-color: #94B600;
+	border-color: #94B600;
+	color: white;
+}
+
+
+
+ /* Style the buttons that are used to open and close the accordion panel */
+.accordion {
+    background-color: #94B600;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    border: 2px solid #94B600;
+    outline: none;
+    transition: 0.4s;
+	margin: 5px;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.accordion.active, .accordion:hover {
+    background-color: green;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+.panel {
+    padding: 0 18px;
+    background-color: transparent;
+    display: none;
+    overflow: hidden;
+} 
+
+
+
+.shipping-addresscard, .billing-addresscard {
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+	cursor: pointer;
+	background-color: #94B600;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+/* On mouse-over, add a deeper shadow */
+.shipping-addresscard:hover, .billing-addresscard:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+	background-color: green;
+}
+
+/* Add some padding inside the card container */
+.addresscontainer {
+    padding: 2px 16px;
+}
+.markiert {
+	background-color: green;
+}
+
+#keineShippingAdresse, #keineBillingAdresse, #keineShippingAdresse-Geschenk, #keineBillingAdresse-Geschenk, #hilfetext {
+	font-size: 16px;
+}
+
+#shipping-adresse, #billing-adresse, #shipping-adresse-Geschenk, #billing-adresse-Geschenk, #rechnungsadresse-titel, #lieferadresse-titel {
+	font-size: 20px;
+}
+
+
+.card {
+	border: 1px solid #d5d5d5;
+}
+@media only screen and (min-width: 1200px) {
+	.card {
+		min-height: 350px;
+	}
+}
+@media only screen and (min-width: 600px) {
+	.card {
+		min-height: 360px;
+	}
+}
+.card:hover {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+.price {
+	font-size: 20px;
+	font-weight: bold;
+	margin-bottom: 0px;
+}
+.title {
+	font-size: 15px;
+	font-weight: bold;
+}
+.additional-text {
+	font-size: 12px;
+	color: grey;
+	padding-top: 0px;
+	margin-top: 0px;
+}
+
+.btn-bot{
+	margin-bottom: 5px;
+	bottom: 0px;
+	position: absolute;
+	left: 30%;
+	right: 30%;
+}
+.second-text {
+	margin-bottom: 30px;
+}
