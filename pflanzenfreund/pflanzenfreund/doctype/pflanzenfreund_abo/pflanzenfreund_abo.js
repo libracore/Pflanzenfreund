@@ -82,7 +82,7 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 	},
 	validate: function(frm) {
 		var count = 0;
-		count = count + cur_frm.doc.winter_ed + cur_frm.doc.feb_ed + cur_frm.doc.mar_ed + cur_frm.doc.apr_ed + cur_frm.doc.may_ed + cur_frm.doc.jun_ed + cur_frm.doc.summer_ed + cur_frm.doc.sept_ed + cur_frm.doc.oct_ed + cur_frm.doc.nov_ed;
+		count = count + cur_frm.doc.jan_ed + cur_frm.doc.feb_ed + cur_frm.doc.mar_ed + cur_frm.doc.apr_ed + cur_frm.doc.may_ed + cur_frm.doc.jun_ed + cur_frm.doc.jul_ed + cur_frm.doc.aug_ed + cur_frm.doc.sept_ed + cur_frm.doc.oct_ed + cur_frm.doc.nov_ed + cur_frm.doc.dec_ed;
 		
 		if (cur_frm.doc.abo_type == "Kundenkarten-Abo (KK)") {
 			if ((count != 4)) {
