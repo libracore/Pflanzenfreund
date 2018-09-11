@@ -511,7 +511,7 @@ def check_if_donee_exist(email, first_name, last_name, street, city, plz, phone,
 					"address_type": "Geschenk",
 					"address_line1": street,
 					"city": city,
-					"country": "Switzerland",
+					"country": "Schweiz",
 					"pincode": plz
 				})
 				address.append('links', dict(link_doctype='Customer', link_name=customer.name))
@@ -553,7 +553,7 @@ def check_if_donee_exist(email, first_name, last_name, street, city, plz, phone,
 		"address_type": "Geschenk",
 		"address_line1": street,
 		"city": city,
-		"country": "Switzerland",
+		"country": "Schweiz",
 		"pincode": plz
 	})
 	address.append('links', dict(link_doctype='Customer', link_name=customer.name))
