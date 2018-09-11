@@ -338,7 +338,7 @@ function update_customer_details(item_code, donee) {
 							"donee": donee
 					   },
 					   callback: function(r) {
-							shipping = r.message;
+							shipping = r.message[0];
 							place_order_abo(customer, shipping, billing, item_code, donee);
 					   }
 					});
