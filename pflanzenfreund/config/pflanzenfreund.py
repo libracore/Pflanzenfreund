@@ -24,6 +24,12 @@ def get_data():
 			   "name": "Payment Entry",
 			   "label": _("Payment Entry"),
 			   "description": _("Administration")
+		   },
+		   {
+			   "type": "page",
+			   "name": "abo_rechnungslauf",
+			   "label": _("Abonnementen Rechnungslauf"),
+			   "description": _("Abonnementen Rechnungslauf")
 		   }
 		]
 	},

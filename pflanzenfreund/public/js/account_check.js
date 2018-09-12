@@ -243,12 +243,23 @@ function addBilling(toCln) {
 
 
 function place_order() {
+	openNav();
 	var item_code = getCookie("abotype");
 	if (item_code != "Geschenk-Abo") {
 		update_customer_details(item_code);
 	} else {
 		check_if_donee_exist(item_code);
 	}
+}
+
+/* Open */
+function openNav() {
+    document.getElementById("myNav").style.display = "block";
+}
+
+/* Close */
+function closeNav() {
+    document.getElementById("myNav").style.display = "none";
 }
 
 function check_if_donee_exist(item_code) {
@@ -364,6 +375,7 @@ function place_order_abo(customer, shipping, billing, abo, donee) {
 			"donee": donee
 	   },
 	   callback: function(response) {
+			closeNav();
 			frappe.msgprint("Die Bestellung des " + abo + "s wurde erfolgreich platziert.");
 			if (abo != "Geschenk-Abo") {
 				document.getElementById("orderModal").style.width = "0%";

@@ -1,0 +1,68 @@
+<div style="margin: 5px;">
+	<div class="section-body">
+		<div class="row">
+			<div class="col-sm-3">
+				<button class="btn btn-primary btn-sm primary-action" style="margin-left: 15px; margin-top: 15px;" onclick="createNewInvoices()"><span>Start Verängerung und Rechnungslauf</span></button>
+			</div>
+			<div class="col-sm-3">
+				<div class="form-group">
+					<label for="start">Abo Ablaufdatum von:</label>
+					<input type="date" class="form-control" id="start">
+				</div>
+				<div class="form-group">
+					<label for="end">Bis:</label>
+					<input type="date" class="form-control" id="end">
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="form-group">
+					<label for="sel1">Abonnementen Typ:</label>
+					<select class="form-control" id="abo-typ">
+						<option>Jahres-Abo</option>
+						<option>Geschenk-Abo</option>
+					</select>
+				</div>
+				<div class="radio">
+					<label><input type="radio" name="optradio" onclick="hideBullets()" checked>Kein Bullet</label>
+				</div>
+				<div class="radio">
+					<label><input type="radio" name="optradio" onclick="showGeschenkBullet()">Geschenk-Bullet</label>
+				</div>
+				<div class="radio">
+					<label><input type="radio" name="optradio" onclick="showPromotionBullet()">Promotion-Bullet</label>
+				</div>
+			</div>
+			<div class="col-sm-3"></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-3">
+				<img src="assets/pflanzenfreund/images/Geschenk.png" alt="Geschenk-Bullet" style="width: 100%;" class="hidden" id="geschenk-bullet">
+				<img src="assets/pflanzenfreund/images/Promotion.png" alt="Promotion-Bullet" style="width: 100%;" class="hidden" id="promotion-bullet">
+			</div>
+			<div class="col-sm-8">
+				<div class="form-group hidden" id="bullet-text">
+					<label for="comment">Bullet Text:</label>
+					<textarea class="form-control" rows="5" id="comment"></textarea>
+				</div>
+			</div>
+			<div class="col-sm-1"></div>
+		</div>
+		<div class="row">
+			<div class="form-column col-sm-12">
+				<table class="hidden" id="myTable" style="width: 100%;">
+					<tr class="header">
+						<th style="width:50%;">Abonnementennummer</th>
+						<th style="width:50%;">Rechnungsnummer</th>
+					</tr>
+				</table> 
+			</div>
+		</div>
+  </div>
+</div>
+<div id="myNav" class="overlay">
+	<!-- Overlay content -->
+  <div class="overlay-content">
+    <p><i class="fa fa-spinner fa-spin" style="font-size:80px"></i></p>
+    <p>Bitte haben Sie einen Moment Geduld, die neuen Abonnemente sowie Rechnungen werden erstellt.</p>
+  </div>
+</div>

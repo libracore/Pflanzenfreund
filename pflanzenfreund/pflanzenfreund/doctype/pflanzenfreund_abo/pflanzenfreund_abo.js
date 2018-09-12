@@ -25,6 +25,7 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 	onload: function(frm) {
 		if (frm.doc.__islocal){
 			cur_frm.set_value('start_date', getStartDate());
+			add_year(getStartDate());
 			chooseAllEditions();
 			setAllEditionsReadOnly();
 		}
@@ -58,16 +59,19 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 			setAllEditionsReadOnly();
 			
 		} else if (cur_frm.doc.abo_type == "Kundenkarten-Abo (KK)") {
-			cur_frm.set_value('end_date', '');
+			//cur_frm.set_value('end_date', '');
+			add_year(getStartDate());
 			deselectAllEditions();
 			unsetAllEditionsReadOnly();
 		} else if (cur_frm.doc.abo_type == "Kunden-Abo (OK)") {
-			cur_frm.set_value('end_date', '');
+			//cur_frm.set_value('end_date', '');
+			add_year(getStartDate());
 			deselectAllEditions();
 			selectNextTwo(parseInt(refMM));
 			setAllEditionsReadOnly();
 		} else {
-			cur_frm.set_value('end_date', '');
+			//cur_frm.set_value('end_date', '');
+			add_year(getStartDate());
 			chooseAllEditions();
 			setAllEditionsReadOnly();
 			if (cur_frm.doc.abo_type == "Geschenk-Abo") {
@@ -116,6 +120,13 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 			}
 		}
 		
+	},
+	set_ed_manual: function(frm) {
+		if (cur_frm.doc.set_ed_manual == "1") {
+			unsetAllEditionsReadOnly();
+		} else {
+			setAllEditionsReadOnly();
+		}
 	}
 });
 
@@ -128,14 +139,16 @@ function getStartDate(onlyYear=false, onlyMonth=false) {
 	if (onlyYear) { return yyyy; }
 
 	if(dd < 15) {
-		mm = mm + 1;
+		mm = mm;
 	} else {
-		mm = mm + 2;
+		mm = mm + 1;
+		dd = '01';
 	}
-	dd = '01';
+	
 
 	if(mm > 12) {
 		mm = mm - 12;
+		yyyy = yyyy + 1;
 	}
 	
 	if (onlyMonth) { return mm; }
@@ -319,4 +332,16 @@ function selectNextTwo(startMonth) {
 		cur_frm.set_value('dec_ed', 1);
 		cur_frm.set_value('jan_ed', 1);
 	}
+}
+
+function add_year(date) {
+	frappe.call({
+	   method: "pflanzenfreund.utils.add_year",
+	   args: {
+			"date": date
+	   },
+	   callback: function(response) {
+			cur_frm.set_value('end_date', response.message);
+	   }
+	});
 }

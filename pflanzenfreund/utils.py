@@ -252,6 +252,7 @@ def place_order_abo(customer, shipping, billing, abo, donee):
 			"customer_address": billing,
 			"abo_type": abo,
 			"start_date": utils.today(),
+			"end_date": add_year(utils.today()),
 			"jan_ed": 1,
 			"feb_ed": 1,
 			"mar_ed": 1,
@@ -294,6 +295,7 @@ def place_order_abo(customer, shipping, billing, abo, donee):
 			"donee_address": shipping,
 			"abo_type": abo,
 			"start_date": utils.today(),
+			"end_date": add_year(utils.today()),
 			"jan_ed": 1,
 			"feb_ed": 1,
 			"mar_ed": 1,
@@ -605,3 +607,83 @@ def import_existing_abo():
                 frappe.db.commit()
                 count +=1
                 print("Added {0} of {1}".format(count, len(customers)))
+
+@frappe.whitelist()
+def add_year(date):
+	return utils.add_years(date, 1)
+	
+@frappe.whitelist()
+def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text):
+	_abos = frappe.get_all('Pflanzenfreund Abo', filters=[['docstatus', '=', '1'], ['end_date', '>=', start], ['end_date', '<=', end], ['abo_type', '=', abo_type], ['abo_renewed', '=', '0']], fields=['name'])
+	abos = []
+
+	for abo in _abos:
+		abos.append(abo.name)
+	
+	results = []
+
+	for abo in abos:
+		#get old abo
+		old_abo = frappe.get_doc('Pflanzenfreund Abo', abo)
+		#create new abo
+		new_abo = frappe.new_doc("Pflanzenfreund Abo")
+		new_abo.update({
+			"customer": old_abo.customer,
+			"customer_address": old_abo.customer_address,
+			"donee": old_abo.donee,
+			"donee_address": old_abo.donee_address,
+			"donee_text": old_abo.donee_text,
+			"abo_type": old_abo.abo_type,
+			"start_date": add_year(old_abo.start_date),
+			"end_date": add_year(old_abo.end_date),
+			"jan_ed": 1,
+			"feb_ed": 1,
+			"mar_ed": 1,
+			"apr_ed": 1,
+			"may_ed": 1,
+			"jun_ed": 1,
+			"jul_ed": 1,
+			"aug_ed": 1,
+			"sept_ed": 1,
+			"oct_ed": 1,
+			"nov_ed": 1,
+			"dec_ed": 1
+		})
+		new_abo.flags.ignore_mandatory = True
+		new_abo.save(ignore_permissions=True)
+		new_abo.submit()
+		frappe.db.commit()
+		set_renewd = frappe.db.sql("""UPDATE `tabPflanzenfreund Abo` SET `abo_renewed` = 1, `new_abo` = '{1}' WHERE `name` = '{0}'""".format(old_abo.name, new_abo.name), as_list = True)
+		#create new invoice for abo
+		sales_invoice = frappe.new_doc("Sales Invoice")
+		sales_invoice.update({
+			"customer": old_abo.customer,
+			"customer_address": old_abo.customer_address,
+			"shipping_address_name": old_abo.donee_address,
+			"delivery_date": utils.today(),
+			"pflanzenfreund_abo": new_abo.name,
+			"taxes_and_charges": "Schweiz normal (302) - GCM",
+			"items": [{
+				"item_code": abo_type,
+				"qty": "1"
+			}],
+			"taxes": [{
+				"charge_type": "On Net Total",
+				"account_head": "2200 - Umsatzsteuer - GCM",
+				"cost_center": "Haupt - GCM",
+				"rate": "7.7",
+				"description": "Inkl. 7.7% MwSt"
+			}]
+		})
+		if bullet_type != 'kein':
+			sales_invoice.update({
+				"bullet_selection": bullet_type,
+				"bullet_text": bullet_text
+			})
+		sales_invoice.flags.ignore_mandatory = True
+		sales_invoice.save(ignore_permissions=True)
+		sales_invoice.submit()
+		frappe.db.commit()
+		#appened new invoice to new_invoices
+		results.append([new_abo.name, sales_invoice.name])
+	return results
