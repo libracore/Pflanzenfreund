@@ -687,3 +687,11 @@ def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bulle
 		#appened new invoice to new_invoices
 		results.append([new_abo.name, sales_invoice.name])
 	return results
+	
+@frappe.whitelist()
+def get_abos_for_customer_view(customer):
+	query = """SELECT `name`, `abo_type`, `start_date`, `end_date`
+		FROM `tabPflanzenfreund Abo`
+		WHERE `docstatus` = '1'
+		AND `customer` = '{0}' OR `donee` = '{0}'""".format(customer)
+	return frappe.db.sql(query, as_list = True)
