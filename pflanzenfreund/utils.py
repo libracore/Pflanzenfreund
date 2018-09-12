@@ -695,3 +695,39 @@ def get_abos_for_customer_view(customer):
 		WHERE `docstatus` = '1'
 		AND `customer` = '{0}' OR `donee` = '{0}'""".format(customer)
 	return frappe.db.sql(query, as_list = True)
+	
+@frappe.whitelist()
+def extend_abo(abo):
+	old_abo = frappe.get_doc('Pflanzenfreund Abo', abo)
+	if old_abo.abo_renewed == 1:
+		return "already renewed"
+	#create new abo
+	new_abo = frappe.new_doc("Pflanzenfreund Abo")
+	new_abo.update({
+		"customer": old_abo.customer,
+		"customer_address": old_abo.customer_address,
+		"donee": old_abo.donee,
+		"donee_address": old_abo.donee_address,
+		"donee_text": old_abo.donee_text,
+		"abo_type": old_abo.abo_type,
+		"start_date": add_year(old_abo.start_date),
+		"end_date": add_year(old_abo.end_date),
+		"jan_ed": old_abo.jan_ed,
+		"feb_ed": old_abo.feb_ed,
+		"mar_ed": old_abo.mar_ed,
+		"apr_ed": old_abo.apr_ed,
+		"may_ed": old_abo.may_ed,
+		"jun_ed": old_abo.jun_ed,
+		"jul_ed": old_abo.jul_ed,
+		"aug_ed": old_abo.aug_ed,
+		"sept_ed": old_abo.sept_ed,
+		"oct_ed": old_abo.oct_ed,
+		"nov_ed": old_abo.nov_ed,
+		"dec_ed": old_abo.dec_ed
+	})
+	new_abo.flags.ignore_mandatory = True
+	new_abo.save(ignore_permissions=True)
+	new_abo.submit()
+	frappe.db.commit()
+	set_renewd = frappe.db.sql("""UPDATE `tabPflanzenfreund Abo` SET `abo_renewed` = 1, `new_abo` = '{1}' WHERE `name` = '{0}'""".format(old_abo.name, new_abo.name), as_list = True)
+	return new_abo.name

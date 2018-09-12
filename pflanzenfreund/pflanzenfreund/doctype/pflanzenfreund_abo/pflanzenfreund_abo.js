@@ -21,6 +21,29 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 				}
 			};
 		});
+		frm.add_custom_button(__("Abo Verlängern"), function() {
+			frappe.call({
+			   method: "pflanzenfreund.utils.extend_abo",
+			   args: {
+					"abo": cur_frm.doc.name
+			   },
+			   callback: function(response) {
+					if (response.message == "already renewed") {
+						frappe.msgprint("Das Abonnement wurde bereits verlängert!", "Nicht verlängert");
+					} else {
+						frappe.confirm(
+							'Das Abonnement wurde verlängert (neues Abo: ' + response.message +'<br>Wollen Sie zum neuen Abo wechseln?',
+							function(){
+								window.location.href="/desk#Form/Pflanzenfreund Abo/" + response.message;
+							},
+							function(){
+								//nichts
+							}
+						)
+					}
+			   }
+			});
+		});
 	},
 	onload: function(frm) {
 		if (frm.doc.__islocal){
