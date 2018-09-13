@@ -702,14 +702,17 @@ def extend_abo(abo):
 	set_renewd = frappe.db.sql("""UPDATE `tabPflanzenfreund Abo` SET `abo_renewed` = 1, `new_abo` = '{1}' WHERE `name` = '{0}'""".format(old_abo.name, new_abo.name), as_list = True)
 	return new_abo.name
 	
-	
+def get_customernumber(greenid):
+	query = """SELECT `name` FROM `tabCustomer` WHERE `greeninfo_id` = '{0}'""".format(greenid)
+	do_query = frappe.db.sql(query, as_list = True)
+	return do_query[0]
 	
 	
 def import_existing_abo():
-	masters = []
+	masters = [["104248", "531673"], ["106412", "677146"]]
 	for master in masters:
-		customer_address = get_address(master[0])
-		donee_address = get_address(master[1])
+		customer_address = get_address(get_customernumber(master[0]))
+		donee_address = get_address(get_customernumber(master[1]))
 		abo = frappe.new_doc("Pflanzenfreund Abo")
 		abo.update({
 			"customer": master[0],
@@ -871,202 +874,202 @@ def import_existing_abo():
 			# vip_count +=1
 			# print("Added {0} of {1}".format(vip_count, len(customers)))
 			
-	# #5. KK1
-	# query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '8KK1'"""
-	# customers = frappe.db.sql(query, as_list = True)
-	# kk1_count = 0
-	# for customer in customers:
-			# address = get_address(customer[0])
-			# abo = frappe.new_doc("Pflanzenfreund Abo")
-			# abo.update({
-				# "customer": customer[0],
-				# "customer_address": address[0],
-				# "abo_type": "Kundenkarten-Abo (KK)",
-				# "start_date": "2018-01-01",
-				# "end_date": "2018-12-31",
-				# "jan_ed": 1,
-				# "feb_ed": 0,
-				# "mar_ed": 0,
-				# "apr_ed": 1,
-				# "may_ed": 0,
-				# "jun_ed": 0,
-				# "jul_ed": 1,
-				# "aug_ed": 0,
-				# "sept_ed": 0,
-				# "oct_ed": 1,
-				# "nov_ed": 0,
-				# "dec_ed": 0
-			# })
-			# abo.flags.ignore_mandatory = True
-			# abo.save(ignore_permissions=True)
-			# abo.submit()
-			# frappe.db.commit()
-			# kk1_count +=1
-			# print("Added {0} of {1}".format(kk1_count, len(customers)))
+	#5. KK1
+	query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '8KK1' AND `code_05` = ''"""
+	customers = frappe.db.sql(query, as_list = True)
+	kk1_count = 0
+	for customer in customers:
+			address = get_address(customer[0])
+			abo = frappe.new_doc("Pflanzenfreund Abo")
+			abo.update({
+				"customer": customer[0],
+				"customer_address": address[0],
+				"abo_type": "Kundenkarten-Abo (KK)",
+				"start_date": "2018-01-01",
+				"end_date": "2018-12-31",
+				"jan_ed": 1,
+				"feb_ed": 0,
+				"mar_ed": 0,
+				"apr_ed": 1,
+				"may_ed": 0,
+				"jun_ed": 0,
+				"jul_ed": 1,
+				"aug_ed": 0,
+				"sept_ed": 0,
+				"oct_ed": 1,
+				"nov_ed": 0,
+				"dec_ed": 0
+			})
+			abo.flags.ignore_mandatory = True
+			abo.save(ignore_permissions=True)
+			abo.submit()
+			frappe.db.commit()
+			kk1_count +=1
+			print("Added {0} of {1}".format(kk1_count, len(customers)))
 			
-	# #6. KK2
-	# query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '8KK2'"""
-	# customers = frappe.db.sql(query, as_list = True)
-	# kk2_count = 0
-	# for customer in customers:
-			# address = get_address(customer[0])
-			# abo = frappe.new_doc("Pflanzenfreund Abo")
-			# abo.update({
-				# "customer": customer[0],
-				# "customer_address": address[0],
-				# "abo_type": "Kundenkarten-Abo (KK)",
-				# "start_date": "2018-01-01",
-				# "end_date": "2018-12-31",
-				# "jan_ed": 0,
-				# "feb_ed": 1,
-				# "mar_ed": 0,
-				# "apr_ed": 0,
-				# "may_ed": 1,
-				# "jun_ed": 0,
-				# "jul_ed": 0,
-				# "aug_ed": 1,
-				# "sept_ed": 0,
-				# "oct_ed": 0,
-				# "nov_ed": 1,
-				# "dec_ed": 0
-			# })
-			# abo.flags.ignore_mandatory = True
-			# abo.save(ignore_permissions=True)
-			# abo.submit()
-			# frappe.db.commit()
-			# kk2_count +=1
-			# print("Added {0} of {1}".format(kk2_count, len(customers)))
+	#6. KK2
+	query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '8KK2' AND `code_05` = ''"""
+	customers = frappe.db.sql(query, as_list = True)
+	kk2_count = 0
+	for customer in customers:
+			address = get_address(customer[0])
+			abo = frappe.new_doc("Pflanzenfreund Abo")
+			abo.update({
+				"customer": customer[0],
+				"customer_address": address[0],
+				"abo_type": "Kundenkarten-Abo (KK)",
+				"start_date": "2018-01-01",
+				"end_date": "2018-12-31",
+				"jan_ed": 0,
+				"feb_ed": 1,
+				"mar_ed": 0,
+				"apr_ed": 0,
+				"may_ed": 1,
+				"jun_ed": 0,
+				"jul_ed": 0,
+				"aug_ed": 1,
+				"sept_ed": 0,
+				"oct_ed": 0,
+				"nov_ed": 1,
+				"dec_ed": 0
+			})
+			abo.flags.ignore_mandatory = True
+			abo.save(ignore_permissions=True)
+			abo.submit()
+			frappe.db.commit()
+			kk2_count +=1
+			print("Added {0} of {1}".format(kk2_count, len(customers)))
 			
-	# #7. KK3
-	# query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '8KK3'"""
-	# customers = frappe.db.sql(query, as_list = True)
-	# kk3_count = 0
-	# for customer in customers:
-			# address = get_address(customer[0])
-			# abo = frappe.new_doc("Pflanzenfreund Abo")
-			# abo.update({
-				# "customer": customer[0],
-				# "customer_address": address[0],
-				# "abo_type": "Kundenkarten-Abo (KK)",
-				# "start_date": "2018-01-01",
-				# "end_date": "2018-12-31",
-				# "jan_ed": 0,
-				# "feb_ed": 0,
-				# "mar_ed": 1,
-				# "apr_ed": 0,
-				# "may_ed": 0,
-				# "jun_ed": 1,
-				# "jul_ed": 0,
-				# "aug_ed": 0,
-				# "sept_ed": 1,
-				# "oct_ed": 0,
-				# "nov_ed": 0,
-				# "dec_ed": 1
-			# })
-			# abo.flags.ignore_mandatory = True
-			# abo.save(ignore_permissions=True)
-			# abo.submit()
-			# frappe.db.commit()
-			# kk3_count +=1
-			# print("Added {0} of {1}".format(kk3_count, len(customers)))
+	#7. KK3
+	query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '8KK3' AND `code_05` = ''"""
+	customers = frappe.db.sql(query, as_list = True)
+	kk3_count = 0
+	for customer in customers:
+			address = get_address(customer[0])
+			abo = frappe.new_doc("Pflanzenfreund Abo")
+			abo.update({
+				"customer": customer[0],
+				"customer_address": address[0],
+				"abo_type": "Kundenkarten-Abo (KK)",
+				"start_date": "2018-01-01",
+				"end_date": "2018-12-31",
+				"jan_ed": 0,
+				"feb_ed": 0,
+				"mar_ed": 1,
+				"apr_ed": 0,
+				"may_ed": 0,
+				"jun_ed": 1,
+				"jul_ed": 0,
+				"aug_ed": 0,
+				"sept_ed": 1,
+				"oct_ed": 0,
+				"nov_ed": 0,
+				"dec_ed": 1
+			})
+			abo.flags.ignore_mandatory = True
+			abo.save(ignore_permissions=True)
+			abo.submit()
+			frappe.db.commit()
+			kk3_count +=1
+			print("Added {0} of {1}".format(kk3_count, len(customers)))
 			
-	# #8. OK1
-	# query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '9OK1'"""
-	# customers = frappe.db.sql(query, as_list = True)
-	# ok1_count = 0
-	# for customer in customers:
-			# address = get_address(customer[0])
-			# abo = frappe.new_doc("Pflanzenfreund Abo")
-			# abo.update({
-				# "customer": customer[0],
-				# "customer_address": address[0],
-				# "abo_type": "Kunden-Abo (OK)",
-				# "start_date": "2018-01-01",
-				# "end_date": "2018-12-31",
-				# "jan_ed": 0,
-				# "feb_ed": 0,
-				# "mar_ed": 1,
-				# "apr_ed": 0,
-				# "may_ed": 0,
-				# "jun_ed": 0,
-				# "jul_ed": 0,
-				# "aug_ed": 0,
-				# "sept_ed": 1,
-				# "oct_ed": 0,
-				# "nov_ed": 0,
-				# "dec_ed": 0
-			# })
-			# abo.flags.ignore_mandatory = True
-			# abo.save(ignore_permissions=True)
-			# abo.submit()
-			# frappe.db.commit()
-			# ok1_count +=1
-			# print("Added {0} of {1}".format(ok1_count, len(customers)))
+	#8. OK1
+	query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '9OK1' AND `code_05` = ''"""
+	customers = frappe.db.sql(query, as_list = True)
+	ok1_count = 0
+	for customer in customers:
+			address = get_address(customer[0])
+			abo = frappe.new_doc("Pflanzenfreund Abo")
+			abo.update({
+				"customer": customer[0],
+				"customer_address": address[0],
+				"abo_type": "Kunden-Abo (OK)",
+				"start_date": "2018-01-01",
+				"end_date": "2018-12-31",
+				"jan_ed": 0,
+				"feb_ed": 0,
+				"mar_ed": 1,
+				"apr_ed": 0,
+				"may_ed": 0,
+				"jun_ed": 0,
+				"jul_ed": 0,
+				"aug_ed": 0,
+				"sept_ed": 1,
+				"oct_ed": 0,
+				"nov_ed": 0,
+				"dec_ed": 0
+			})
+			abo.flags.ignore_mandatory = True
+			abo.save(ignore_permissions=True)
+			abo.submit()
+			frappe.db.commit()
+			ok1_count +=1
+			print("Added {0} of {1}".format(ok1_count, len(customers)))
 			
-	# #9. OK2
-	# query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '9OK2'"""
-	# customers = frappe.db.sql(query, as_list = True)
-	# ok2_count = 0
-	# for customer in customers:
-			# address = get_address(customer[0])
-			# abo = frappe.new_doc("Pflanzenfreund Abo")
-			# abo.update({
-				# "customer": customer[0],
-				# "customer_address": address[0],
-				# "abo_type": "Kunden-Abo (OK)",
-				# "start_date": "2018-01-01",
-				# "end_date": "2018-12-31",
-				# "jan_ed": 0,
-				# "feb_ed": 0,
-				# "mar_ed": 0,
-				# "apr_ed": 1,
-				# "may_ed": 0,
-				# "jun_ed": 0,
-				# "jul_ed": 0,
-				# "aug_ed": 0,
-				# "sept_ed": 0,
-				# "oct_ed": 1,
-				# "nov_ed": 0,
-				# "dec_ed": 0
-			# })
-			# abo.flags.ignore_mandatory = True
-			# abo.save(ignore_permissions=True)
-			# abo.submit()
-			# frappe.db.commit()
-			# ok2_count +=1
-			# print("Added {0} of {1}".format(ok2_count, len(customers)))
+	#9. OK2
+	query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '9OK2' AND `code_05` = ''"""
+	customers = frappe.db.sql(query, as_list = True)
+	ok2_count = 0
+	for customer in customers:
+			address = get_address(customer[0])
+			abo = frappe.new_doc("Pflanzenfreund Abo")
+			abo.update({
+				"customer": customer[0],
+				"customer_address": address[0],
+				"abo_type": "Kunden-Abo (OK)",
+				"start_date": "2018-01-01",
+				"end_date": "2018-12-31",
+				"jan_ed": 0,
+				"feb_ed": 0,
+				"mar_ed": 0,
+				"apr_ed": 1,
+				"may_ed": 0,
+				"jun_ed": 0,
+				"jul_ed": 0,
+				"aug_ed": 0,
+				"sept_ed": 0,
+				"oct_ed": 1,
+				"nov_ed": 0,
+				"dec_ed": 0
+			})
+			abo.flags.ignore_mandatory = True
+			abo.save(ignore_permissions=True)
+			abo.submit()
+			frappe.db.commit()
+			ok2_count +=1
+			print("Added {0} of {1}".format(ok2_count, len(customers)))
 			
-	# #10. OK3
-	# query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '9OK3'"""
-	# customers = frappe.db.sql(query, as_list = True)
-	# ok3_count = 0
-	# for customer in customers:
-			# address = get_address(customer[0])
-			# abo = frappe.new_doc("Pflanzenfreund Abo")
-			# abo.update({
-				# "customer": customer[0],
-				# "customer_address": address[0],
-				# "abo_type": "Kunden-Abo (OK)",
-				# "start_date": "2018-01-01",
-				# "end_date": "2018-12-31",
-				# "jan_ed": 0,
-				# "feb_ed": 0,
-				# "mar_ed": 0,
-				# "apr_ed": 0,
-				# "may_ed": 1,
-				# "jun_ed": 0,
-				# "jul_ed": 0,
-				# "aug_ed": 0,
-				# "sept_ed": 0,
-				# "oct_ed": 0,
-				# "nov_ed": 1,
-				# "dec_ed": 0
-			# })
-			# abo.flags.ignore_mandatory = True
-			# abo.save(ignore_permissions=True)
-			# abo.submit()
-			# frappe.db.commit()
-			# ok3_count +=1
-			# print("Added {0} of {1}".format(ok3_count, len(customers)))
+	#10. OK3
+	query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '9OK3' AND `code_05` = ''"""
+	customers = frappe.db.sql(query, as_list = True)
+	ok3_count = 0
+	for customer in customers:
+			address = get_address(customer[0])
+			abo = frappe.new_doc("Pflanzenfreund Abo")
+			abo.update({
+				"customer": customer[0],
+				"customer_address": address[0],
+				"abo_type": "Kunden-Abo (OK)",
+				"start_date": "2018-01-01",
+				"end_date": "2018-12-31",
+				"jan_ed": 0,
+				"feb_ed": 0,
+				"mar_ed": 0,
+				"apr_ed": 0,
+				"may_ed": 1,
+				"jun_ed": 0,
+				"jul_ed": 0,
+				"aug_ed": 0,
+				"sept_ed": 0,
+				"oct_ed": 0,
+				"nov_ed": 1,
+				"dec_ed": 0
+			})
+			abo.flags.ignore_mandatory = True
+			abo.save(ignore_permissions=True)
+			abo.submit()
+			frappe.db.commit()
+			ok3_count +=1
+			print("Added {0} of {1}".format(ok3_count, len(customers)))
 			
 	# print("Added total; Jahres-Abo: " + str(jahr_count) + ", (neu)-Jahres-Abo: " + str(jahr_count2) + ", Gratis: " + str(gratis_count) + ", VIP: " + str(vip_count) + ", KK1: " + str(kk1_count) + ", KK2: " + str(kk2_count) + ", KK3: " + str(kk3_count) + ", OK1: " + str(ok1_count) + ", OK2: " + str(ok2_count) + ", OK3: " + str(ok3_count))
