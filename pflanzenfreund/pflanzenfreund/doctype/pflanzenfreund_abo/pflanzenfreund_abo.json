@@ -1228,15 +1228,15 @@
  "issingle": 0, 
  "istable": 0, 
  "max_attachments": 0, 
- "modified": "2018-09-12 14:06:05.371361", 
- "modified_by": "joel.mesmer@libracore.com", 
+ "modified": "2018-09-13 15:42:14.863402", 
+ "modified_by": "Administrator", 
  "module": "Pflanzenfreund", 
  "name": "Pflanzenfreund Abo", 
  "name_case": "", 
  "owner": "Administrator", 
  "permissions": [
   {
-   "amend": 0, 
+   "amend": 1, 
    "apply_user_permissions": 0, 
    "cancel": 1, 
    "create": 1, 
