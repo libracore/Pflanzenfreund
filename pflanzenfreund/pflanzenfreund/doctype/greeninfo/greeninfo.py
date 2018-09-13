@@ -389,9 +389,15 @@ def export_data(filename, mod_date="2000-01-01"):
         adr_link = frappe.get_all("Dynamic Link", filters={'link_name': contact_name['name'], 'parenttype': 'Address'}, fields=['parent'])
         if adr_link:
             address = frappe.get_doc("Address", adr_link[0]['parent'])
+        else:
+            # skip when there is no address
+            continue
         cnt_link = frappe.get_all("Dynamic Link", filters={'link_name': contact_name['name'], 'parenttype': 'Contact'}, fields=['parent'])
         if cnt_link:
             contact = frappe.get_doc("Contact", cnt_link[0]['parent'])
+        else:
+            # skip when there is no contact
+            continue
         try:
             street_parts = address.address_line1.split(" ")
             if len(street_parts) == 1:
