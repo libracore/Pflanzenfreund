@@ -8,13 +8,14 @@ from frappe import utils
 def execute(filters=None):
 	columns, data = [], []
 	year = getYearFromString(filters.year+"-01-01")
-	columns = ["Abo Typ::140", "Beginn:Date:60", "End:Date:60", "Customer:Link/Customer:50", "Customer Name::110", "C-Addr Line 1::50", "C-Addr Line 2::50", "C-Pincode::50", "C-City::50", "C-Country::50", "Donee:Link/Customer:50", "Donee Name::110", "Address Line 1::50", "Address Line 2::50", "Pincode::50", "City::50", "Country::50", "Rechnungsstatus::50"]
+	columns = ["Abo Typ::140", "Beginn:Date:60", "End:Date:60", "Customer:Link/Customer:50", "Anrede::50", "Customer Name::110", "C-Addr Line 1::50", "C-Addr Line 2::50", "C-Pincode::50", "C-City::50", "C-Country::50", "Donee:Link/Customer:50", "Donee Anrede::50", "Donee Name::110", "Address Line 1::50", "Address Line 2::50", "Pincode::50", "City::50", "Country::50", "Rechnungsstatus::50"]
 	if not filters.edition:
 		data = frappe.db.sql("""SELECT
 				t1.`abo_type`,
 				t1.`start_date`,
 				t1.`end_date`,
 				t1.`customer`,
+				t8.`letter_salutation`,
 				t2.`customer_name`,
 				t4.`address_line1`,
 				t4.`address_line2`,
@@ -22,6 +23,7 @@ def execute(filters=None):
 				t4.`city`,
 				t4.`country`,
 				t1.`donee`,
+				t10.`letter_salutation`,
 				t3.`customer_name`,
 				t5.`address_line1`,
 				t5.`address_line2`,
@@ -29,14 +31,17 @@ def execute(filters=None):
 				t5.`city`,
 				t5.`country`,
 				t6.`status`
-				FROM (((((`tabPflanzenfreund Abo` AS t1
+				FROM (((((((((`tabPflanzenfreund Abo` AS t1
 				LEFT JOIN `tabCustomer` AS t2 ON t1.`customer` = t2.`name`)
 				LEFT JOIN `tabCustomer` AS t3 ON t1.`donee` = t3.`name`)
 				LEFT JOIN `tabAddress` AS t4 ON t1.`customer_address` = t4.`name`)
 				LEFT JOIN `tabAddress` AS t5 ON t1.`donee_address` = t5.`name`)
-				LEFT JOIN `tabSales Invoice` AS t6 ON t1.`name` = t6.`pflanzenfreund_abo`)
+				LEFT JOIN `tabSales Invoice` AS t6 ON t1.`name` = t6.`pflanzenfreund_abo` AND t6.`docstatus` = '1')
+				LEFT JOIN `tabDynamic Link` AS t7 ON t1.`customer` = t7.`link_name` AND t7.`parenttype` = 'Contact')
+				LEFT JOIN `tabContact` AS t8 ON t7.`parent` = t8.`name`)
+				LEFT JOIN `tabDynamic Link` AS t9 ON t1.`donee` = t9.`link_name` AND t9.`parenttype` = 'Contact')
+				LEFT JOIN `tabContact` AS t10 ON t9.`parent` = t10.`name`)
 				WHERE t1.`docstatus` = '1'
-				AND t6.`docstatus` = '1'
 				AND (YEAR(t1.`end_date`) >= {0} OR t1.`end_date` IS NULL)""".format(year), as_list = True)
 				
 		chart_data_ = frappe.db.sql("""SELECT
@@ -65,6 +70,7 @@ def execute(filters=None):
 				t1.`start_date`,
 				t1.`end_date`,
 				t1.`customer`,
+				t8.`letter_salutation`,
 				t2.`customer_name`,
 				t4.`address_line1`,
 				t4.`address_line2`,
@@ -72,6 +78,7 @@ def execute(filters=None):
 				t4.`city`,
 				t4.`country`,
 				t1.`donee`,
+				t10.`letter_salutation`,
 				t3.`customer_name`,
 				t5.`address_line1`,
 				t5.`address_line2`,
@@ -79,12 +86,16 @@ def execute(filters=None):
 				t5.`city`,
 				t5.`country`,
 				t6.`status`
-				FROM (((((`tabPflanzenfreund Abo` AS t1
+				FROM (((((((((`tabPflanzenfreund Abo` AS t1
 				LEFT JOIN `tabCustomer` AS t2 ON t1.`customer` = t2.`name`)
 				LEFT JOIN `tabCustomer` AS t3 ON t1.`donee` = t3.`name`)
 				LEFT JOIN `tabAddress` AS t4 ON t1.`customer_address` = t4.`name`)
 				LEFT JOIN `tabAddress` AS t5 ON t1.`donee_address` = t5.`name`)
 				LEFT JOIN `tabSales Invoice` AS t6 ON t1.`name` = t6.`pflanzenfreund_abo` AND t6.`docstatus` = '1')
+				LEFT JOIN `tabDynamic Link` AS t7 ON t1.`customer` = t7.`link_name` AND t7.`parenttype` = 'Contact')
+				LEFT JOIN `tabContact` AS t8 ON t7.`parent` = t8.`name`)
+				LEFT JOIN `tabDynamic Link` AS t9 ON t1.`donee` = t9.`link_name` AND t9.`parenttype` = 'Contact')
+				LEFT JOIN `tabContact` AS t10 ON t9.`parent` = t10.`name`)
 				WHERE t1.`{0}` = '1'
 				AND t1.`docstatus` = '1'
 				AND t1.`end_date` >= '{1}'
