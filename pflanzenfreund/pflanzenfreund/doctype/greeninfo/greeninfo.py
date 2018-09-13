@@ -98,7 +98,7 @@ def import_data(filename, force_update=False):
                     matches_by_name = frappe.get_all("Customer",
                         filters={
                             'greeninfo_id': 0, 
-                            'customer_name': "{0} {1}".format(get_field(cells[ADRNR]), get_field(cells[ADRNR]))}, fields=['name'])
+                            'customer_name': "{0} {1}".format(get_field(cells[VNAME]), get_field(cells[NNAME]))}, fields=['name'])
                     if matches_by_name:
                         # matched customer by name and empty ID
                         print("updating by name")
