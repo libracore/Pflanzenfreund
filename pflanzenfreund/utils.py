@@ -709,38 +709,38 @@ def get_customernumber(greenid):
 	
 	
 def import_existing_abo():
-	masters = [["104248", "531673"], ["106412", "677146"]]
-	for master in masters:
-		customer_address = get_address(get_customernumber(master[0]))
-		donee_address = get_address(get_customernumber(master[1]))
-		abo = frappe.new_doc("Pflanzenfreund Abo")
-		abo.update({
-			"customer": master[0],
-			"customer_address": customer_address,
-			"donee": master[1],
-			"donee_address": donee_address,
-			"abo_type": "Geschenk-Abo",
-			"start_date": "2018-01-01",
-			"end_date": "2018-12-31",
-			"jan_ed": 1,
-			"feb_ed": 1,
-			"mar_ed": 1,
-			"apr_ed": 1,
-			"may_ed": 1,
-			"jun_ed": 1,
-			"jul_ed": 1,
-			"aug_ed": 1,
-			"sept_ed": 1,
-			"oct_ed": 1,
-			"nov_ed": 1,
-			"dec_ed": 1
-		})
-		abo.flags.ignore_mandatory = True
-		abo.save(ignore_permissions=True)
-		abo.submit()
-		frappe.db.commit()
-		jahr_count +=1
-		print("Added {0} of {1}".format(jahr_count, len(masters)))
+	# masters = [["104248", "531673"], ["106412", "677146"]]
+	# for master in masters:
+		# customer_address = get_address(get_customernumber(master[0]))
+		# donee_address = get_address(get_customernumber(master[1]))
+		# abo = frappe.new_doc("Pflanzenfreund Abo")
+		# abo.update({
+			# "customer": master[0],
+			# "customer_address": customer_address,
+			# "donee": master[1],
+			# "donee_address": donee_address,
+			# "abo_type": "Geschenk-Abo",
+			# "start_date": "2018-01-01",
+			# "end_date": "2018-12-31",
+			# "jan_ed": 1,
+			# "feb_ed": 1,
+			# "mar_ed": 1,
+			# "apr_ed": 1,
+			# "may_ed": 1,
+			# "jun_ed": 1,
+			# "jul_ed": 1,
+			# "aug_ed": 1,
+			# "sept_ed": 1,
+			# "oct_ed": 1,
+			# "nov_ed": 1,
+			# "dec_ed": 1
+		# })
+		# abo.flags.ignore_mandatory = True
+		# abo.save(ignore_permissions=True)
+		# abo.submit()
+		# frappe.db.commit()
+		# jahr_count +=1
+		# print("Added {0} of {1}".format(jahr_count, len(masters)))
 	
 	# #1.Jahres-Abos
 	# query = """SELECT `name` FROM `tabCustomer` WHERE `code_08` = '1  A'"""
