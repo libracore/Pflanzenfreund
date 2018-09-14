@@ -8,13 +8,14 @@ from frappe import utils
 def execute(filters=None):
 	columns, data = [], []
 	year = getYearFromString(filters.year+"-01-01")
-	columns = ["Abo Typ::140", "Beginn:Date:60", "End:Date:60", "Customer:Link/Customer:50", "Customer Name::110", "C-Addr Line 1::50", "C-Addr Line 2::50", "C-Pincode::50", "C-City::50", "C-Country::50", "Donee:Link/Customer:50", "Donee Name::110", "Address Line 1::50", "Address Line 2::50", "Pincode::50", "City::50", "Country::50", "Rechnungsstatus::50"]
+	columns = ["Abo Typ::140", "Beginn:Date:60", "End:Date:60", "Customer:Link/Customer:50", "Customer Salutation::50", "Customer Name::110", "C-Addr Line 1::50", "C-Addr Line 2::50", "C-Pincode::50", "C-City::50", "C-Country::50", "Donee:Link/Customer:50", "Donee Salutation::50", "Donee Name::110", "Address Line 1::50", "Address Line 2::50", "Pincode::50", "City::50", "Country::50", "Rechnungsstatus::50"]
 	if not filters.edition:
 		data = frappe.db.sql("""SELECT
 				t1.`abo_type`,
 				t1.`start_date`,
 				t1.`end_date`,
 				t1.`customer`,
+				t1.`customer_letter_salutation`,
 				t2.`customer_name`,
 				t4.`address_line1`,
 				t4.`address_line2`,
@@ -22,6 +23,7 @@ def execute(filters=None):
 				t4.`city`,
 				t4.`country`,
 				t1.`donee`,
+				t1.`donee_letter_salutation`,
 				t3.`customer_name`,
 				t5.`address_line1`,
 				t5.`address_line2`,
@@ -64,6 +66,7 @@ def execute(filters=None):
 				t1.`start_date`,
 				t1.`end_date`,
 				t1.`customer`,
+				t1.`customer_letter_salutation`,
 				t2.`customer_name`,
 				t4.`address_line1`,
 				t4.`address_line2`,
@@ -71,6 +74,7 @@ def execute(filters=None):
 				t4.`city`,
 				t4.`country`,
 				t1.`donee`,
+				t1.`donee_letter_salutation`,
 				t3.`customer_name`,
 				t5.`address_line1`,
 				t5.`address_line2`,

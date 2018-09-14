@@ -708,37 +708,25 @@ def get_customernumber(greenid):
 	return do_query[0]
 	
 	
-def import_existing_abo():
-	masters = [["104248", "531673"], ["106412", "677146"]]
-	for master in masters:
-		customer_address = get_address(get_customernumber(master[0]))
-		donee_address = get_address(get_customernumber(master[1]))
-		abo = frappe.new_doc("Pflanzenfreund Abo")
-		abo.update({
-			"customer": get_customernumber(master[0]),
-			"customer_address": customer_address,
-			"donee": get_customernumber(master[1]),
-			"donee_address": donee_address,
-			"abo_type": "Geschenk-Abo",
-			"start_date": "2018-01-01",
-			"end_date": "2018-12-31",
-			"jan_ed": 1,
-			"feb_ed": 1,
-			"mar_ed": 1,
-			"apr_ed": 1,
-			"may_ed": 1,
-			"jun_ed": 1,
-			"jul_ed": 1,
-			"aug_ed": 1,
-			"sept_ed": 1,
-			"oct_ed": 1,
-			"nov_ed": 1,
-			"dec_ed": 1
-		})
-		abo.flags.ignore_mandatory = True
-		abo.save(ignore_permissions=True)
-		abo.submit()
-		frappe.db.commit()
-		jahr_count +=1
-		print("Added {0} of {1}".format(jahr_count, len(masters)))
-	
+def update_existing_abo_with_salutations():
+	abos = frappe.get_all("Pflanzenfreund Abo")
+	count = 0
+	for abo in abos:
+		a = frappe.get_doc("Pflanzenfreund Abo", abo.name)
+		if a.abo_type == "Geschenk-Abo":
+			customer_contact_link = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `link_name` = '{0}' AND `parenttype` = 'Contact'""".format(a.customer), as_list = True)
+			customer_contact = frappe.get_doc("Contact", customer_contact_link[0][0])
+			
+			donee_contact_link = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `link_name` = '{0}' AND `parenttype` = 'Contact'""".format(a.donee), as_list = True)
+			donee_contact = frappe.get_doc("Contact", donee_contact_link[0][0])
+			
+			do_update = frappe.db.sql("""UPDATE `tabPflanzenfreund Abo` SET `customer_letter_salutation` = '{0}', `donee_letter_salutation` = '{1}' WHERE `name` = '{2}'""".format(customer_contact.letter_salutation, donee_contact.letter_salutation, a.name), as_list = True)
+			count += 1
+		else:
+			customer_contact_link = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `link_name` = '{0}' AND `parenttype` = 'Contact'""".format(a.customer), as_list = True)
+			customer_contact = frappe.get_doc("Contact", customer_contact_link[0][0])
+			
+			do_update = frappe.db.sql("""UPDATE `tabPflanzenfreund Abo` SET `customer_letter_salutation` = '{0}' WHERE `name` = '{1}'""".format(customer_contact.letter_salutation, a.name), as_list = True)
+			count += 1
+			
+		print("updatet {0} of {1}".format(count, len(abos)))
