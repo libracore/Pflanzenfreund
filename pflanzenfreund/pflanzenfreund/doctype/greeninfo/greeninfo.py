@@ -14,6 +14,7 @@ from frappe import _
 from frappe.utils.background_jobs import enqueue
 import csv
 import codecs
+from datetime import datetime
 
 # Parser config
 ROW_SEPARATOR = "\n"
@@ -264,23 +265,22 @@ def update_customer(name, cells, force=False):
     # get customer record
     cus = frappe.get_doc("Customer", name)
     # check last modification date
-    gi_last_modified_fields = get_field(cells[MUTDT]).split(".")
-    mod = str(cus.modified)
     update = False
-    print("cells: {0}".format(str(cells)))
     if force:
         update = True
     else:
-        print("gi: {0}/{2}/{3} erp: {1}".format(get_field(cells[MUTDT]), mod, MUTDT, cells[MUTDT]))
         try:
-            if int(gi_last_modified_fields[2]) >= int(mod[0:4]):
-                if int(gi_last_modified_fields[1]) >= int(mod[5:7]):
-                    if int(gi_last_modified_fields[0]) > int(mod[8:10]):
-                        update = True
+            gi_mod_date = datetime.strptime(get_field(cells[MUTDT]), '%d.%m.%Y')
+            erp_mod_date = datetime.strptime(str(cus.modified).split(' ')[0], '%Y-%m-%d')
+            #print("gi: {0} erp: {1}".format(gi_mod_date, erp_mod_date))
+            if gi_mod_date >= erp_mod_date:
+                update = True
         except Exception as e:
             add_log(_("Invalid modification date"), _("Modification date of {0} ({1}) is invalid: {2}").format(
                 get_field(cells[ADRNR]), get_field(cells[MUTDT]), get_field(cells[ADRNR]), e))
+            update = True
     if update:
+        #print("perform update")
         fullname = "{0} {1}".format(get_field(cells[VNAME]), get_field(cells[NNAME]))
         cus.customer_name = fullname
         cus.first_name = get_field(cells[VNAME])
