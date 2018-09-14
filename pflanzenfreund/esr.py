@@ -1,12 +1,11 @@
 """
 Function for generating ESR-numbers for orange swiss payment slips ("Oranger Einzahlungsschein").
 @param
-    bc "Belegartcodes": fix, "01" or "04"
-    chf: dynamic, amount in chf without rappen, must have eight chars minimum (if less than eight chars, insert zeros before)
-    rappen: dynamic, amount in rappen
+    chf: amount in chf without rappen
+    rappen: amount in rappen
     help1, help2, help3: fix, "+" or ">", no editing required
-    referenceNumber: dynamic, contains matag number, zeros, client number and job number
-    participantNumber: dynamic, bankaccount number
+    referenceNumber: contains matag number, zeros, client number and job number
+    participantNumber: bankaccount number
 @usage generateCodeline("4378", "85", "94476300000000128001105152", "01200027")
  
 """
