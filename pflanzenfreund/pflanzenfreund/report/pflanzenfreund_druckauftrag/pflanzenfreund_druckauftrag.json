@@ -7,7 +7,7 @@
  "doctype": "Report", 
  "idx": 0, 
  "is_standard": "Yes", 
- "modified": "2018-08-16 22:37:41.089620", 
+ "modified": "2018-09-14 07:56:51.328122", 
  "modified_by": "Administrator", 
  "module": "Pflanzenfreund", 
  "name": "Pflanzenfreund Druckauftrag", 
@@ -19,6 +19,9 @@
  "roles": [
   {
    "role": "System Manager"
+  }, 
+  {
+   "role": "All"
   }
  ]
 }
