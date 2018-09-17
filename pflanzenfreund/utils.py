@@ -315,12 +315,6 @@ def place_order_abo(customer, shipping, billing, abo, donee):
 		})
 	pflanzenfreund_abo.flags.ignore_mandatory = True
 	pflanzenfreund_abo.save(ignore_permissions=True)
-	pflanzenfreund_abo.save()
-	frappe.throw("Rechnung {0} // betrag {1}".format(pflanzenfreund_abo.name, pflanzenfreund_abo.grand_total))
-	# pflanzenfreund_abo.update({
-		# "": ""
-	# })
-	# pflanzenfreund_abo.save()
 	pflanzenfreund_abo.submit()
 	frappe.db.commit()
 	create_invoice(customer, billing, shipping, pflanzenfreund_abo, abo)
@@ -445,6 +439,7 @@ def create_invoice(customer, billing, shipping, pflanzenfreund_abo, abo):
 	})
 	sales_invoice.flags.ignore_mandatory = True
 	sales_invoice.save(ignore_permissions=True)
+	frappe.throw("Rechnung {0} // betrag {1}".format(sales_invoice.name, sales_invoice.grand_total))
 	sales_invoice.submit()
 	frappe.db.commit()
 	#create_subscription(sales_invoice)
