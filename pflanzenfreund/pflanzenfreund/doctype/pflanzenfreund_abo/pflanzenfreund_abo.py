@@ -29,6 +29,11 @@ class PflanzenfreundAbo(Document):
 			except:
 				self.customer_letter_salutation = "Sehr geehrte Damen und Herren"
 
+	def before_cancel(self):
+		for linked_abo in frappe.get_all("Pflanzenfreund Abo", filters={"new_abo": self.name}, fields=["name"]):
+			remove_link = frappe.db.sql("""UPDATE `tabPflanzenfreund Abo` SET `new_abo` = '' WHERE `name` = '{0}'""".format(linked_abo.name), as_list = True)
+		frappe.msgprint("Alle existierenden Abo Verknüpfungen wurden entfernt", "Entfernung Abo-Verknüpfungen")
+		
 @frappe.whitelist()
 def create_abo(customer):
 	abo = frappe.new_doc("Pflanzenfreund Abo")
