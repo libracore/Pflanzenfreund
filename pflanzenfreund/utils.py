@@ -439,12 +439,10 @@ def create_invoice(customer, billing, shipping, pflanzenfreund_abo, abo):
 	})
 	sales_invoice.flags.ignore_mandatory = True
 	sales_invoice.save(ignore_permissions=True)
-	franken = sales_invoice.grand_total.split(".")[0]
-	rappen = sales_invoice.grand_total.split(".")[1]
 	referencenumber = sales_invoice.name.splitt("-")[1]
 	sales_invoice.update({
 		"esr_reference": esr.get_reference_number(referencenumber),
-		"esr_code": esr.generateCodeline(franken, rappen, esr.get_reference_number(referencenumber), "013100113")
+		"esr_code": esr.generateCodeline(sales_invoice.grand_total, esr.get_reference_number(referencenumber), "013100113")
 	})
 	sales_invoice.save(ignore_permissions=True)
 	sales_invoice.submit()

@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-import frappe, os, json
+import frappe, os, json, math
 """
 Function for generating ESR-numbers for orange swiss payment slips ("Oranger Einzahlungsschein").
 @param
@@ -20,12 +20,20 @@ def moduloTenRecursive(number):
 	return str((10 - carryover) % 10)
 
 @frappe.whitelist()
-def generateCodeline(chf, rappen, referenceNumber, participantNumber):
+def generateCodeline(betrag, referenceNumber, participantNumber):
+	bc = "01"
+	help1 = ">"
+	help2 = "+"
+	help3 = ">"
+	_rappen, franken = math.modf(betrag)
+	if len(str(_rappen)) == 3:
+		_rappen = str(_rappen) + "0"
+		
 	if len(referenceNumber) < 27:  # check if referenceNumber has less than 27 chars
 		referenceNumber = (27-len(referenceNumber))*"0" + referenceNumber
 			
-	chf = str(chf)
-	rappen = str(rappen) 
+	chf = str(int(franken))
+	rappen = str(_rappen).split(".")[1]
 	if len(chf) < 8:  # check if amount has less than eight chars
 		chf = (8-len(chf))*"0" + chf
 	if len(rappen) < 2:  # check if amount has less than 2 chars
