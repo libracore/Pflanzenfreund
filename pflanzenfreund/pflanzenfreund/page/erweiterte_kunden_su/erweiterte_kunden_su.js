@@ -250,7 +250,16 @@ function loadPreFilterData() {
 					//console.log(r.message);
 					createTableWithContent(r.message);
 					
-				} 
+				} else {
+					closeNav();
+					var tabelle = document.getElementById("myTable");
+
+					var rowCount = tabelle.rows.length;
+					for (var i = rowCount - 1; i > 0; i--) {
+						tabelle.deleteRow(i);
+					}
+					frappe.msgprint("Keine Suchresultate gefunden!", "Suche ergebnislos");
+				}
 			}
 		});
 	}
