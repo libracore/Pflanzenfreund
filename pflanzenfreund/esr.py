@@ -35,3 +35,8 @@ def generateCodeline(chf, rappen, referenceNumber, participantNumber):
 	p2 = moduloTenRecursive(referenceNumber)
 	
 	return bc + chf + rappen + p1 + help1 + referenceNumber + p2 + help2 + " " + participantNumber + help3
+
+def get_reference_number(referenceNumber):
+	if len(referenceNumber) < 27:  # check if referenceNumber has less than 27 chars
+		referenceNumber = (27-len(referenceNumber))*"0" + referenceNumber
+	return referenceNumber

@@ -18,6 +18,7 @@ from frappe.utils import cint, flt, get_fullname, cstr
 from erpnext.shopping_cart.doctype.shopping_cart_settings.shopping_cart_settings import get_shopping_cart_settings
 from frappe.utils.nestedset import get_root_of
 from frappe import utils
+import esr
 
 def get_navbar_items(position):
 	if position == 'top':
@@ -245,6 +246,9 @@ def get_debtors_account(cart_settings):
 
 @frappe.whitelist()
 def place_order_abo(customer, shipping, billing, abo, donee):
+	tn = "01-310011-3"
+	_tn = "013100113"
+	
 	pflanzenfreund_abo = frappe.new_doc("Pflanzenfreund Abo")
 	if abo == "Jahres-Abo":
 		pflanzenfreund_abo.update({
@@ -311,6 +315,12 @@ def place_order_abo(customer, shipping, billing, abo, donee):
 		})
 	pflanzenfreund_abo.flags.ignore_mandatory = True
 	pflanzenfreund_abo.save(ignore_permissions=True)
+	pflanzenfreund_abo.save()
+	frappe.throw("Rechnung {0} // betrag {1}".format(pflanzenfreund_abo.name, pflanzenfreund_abo.grand_total))
+	# pflanzenfreund_abo.update({
+		# "": ""
+	# })
+	# pflanzenfreund_abo.save()
 	pflanzenfreund_abo.submit()
 	frappe.db.commit()
 	create_invoice(customer, billing, shipping, pflanzenfreund_abo, abo)
