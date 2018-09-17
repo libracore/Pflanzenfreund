@@ -246,14 +246,34 @@ def get_debtors_account(cart_settings):
 
 @frappe.whitelist()
 def place_order_abo(customer, shipping, billing, abo, donee):
-	tn = "01-310011-3"
-	_tn = "013100113"
+	customer_letter_salutation = ""
+	donee_letter_salutation = ""
+	if abo == "Geschenk-Abo":
+		try:
+			customer_contact_link = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `link_name` = '{0}' AND `parenttype` = 'Contact'""".format(customer), as_list = True)
+			customer_contact = frappe.get_doc("Contact", customer_contact_link[0][0])
+			customer_letter_salutation = customer_contact.letter_salutation
+			
+			donee_contact_link = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `link_name` = '{0}' AND `parenttype` = 'Contact'""".format(donee), as_list = True)
+			donee_contact = frappe.get_doc("Contact", donee_contact_link[0][0])
+			donee_letter_salutation = donee_contact.letter_salutation
+		except:
+			customer_letter_salutation = "Sehr geehrte Damen und Herren"
+			donee_letter_salutation = "Sehr geehrte Damen und Herren"
+	else:
+		try:
+			contact_link = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `link_name` = '{0}' AND `parenttype` = 'Contact'""".format(customer), as_list = True)
+			contact = frappe.get_doc("Contact", contact_link[0][0])
+			customer_letter_salutation = contact.letter_salutation
+		except:
+			customer_letter_salutation = "Sehr geehrte Damen und Herren"
 	
 	pflanzenfreund_abo = frappe.new_doc("Pflanzenfreund Abo")
 	if abo == "Jahres-Abo":
 		pflanzenfreund_abo.update({
 			"customer": customer,
 			"customer_address": billing,
+			"customer_letter_salutation": customer_letter_salutation,
 			"abo_type": abo,
 			"start_date": utils.today(),
 			"end_date": add_year(utils.today()),
@@ -274,6 +294,7 @@ def place_order_abo(customer, shipping, billing, abo, donee):
 		pflanzenfreund_abo.update({
 			"customer": customer,
 			"customer_address": billing,
+			"customer_letter_salutation": customer_letter_salutation,
 			"abo_type": abo,
 			"start_date": utils.today(),
 			"end_date": get_abo_end_date(),
@@ -295,8 +316,10 @@ def place_order_abo(customer, shipping, billing, abo, donee):
 		pflanzenfreund_abo.update({
 			"customer": customer,
 			"customer_address": billing,
+			"customer_letter_salutation": customer_letter_salutation,
 			"donee": donee,
 			"donee_address": shipping,
+			"donee_letter_salutation": donee_letter_salutation,
 			"abo_type": abo,
 			"start_date": utils.today(),
 			"end_date": add_year(utils.today()),
@@ -610,8 +633,10 @@ def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bulle
 		new_abo.update({
 			"customer": old_abo.customer,
 			"customer_address": old_abo.customer_address,
+			"customer_letter_salutation": old_abo.customer_letter_salutation,
 			"donee": old_abo.donee,
 			"donee_address": old_abo.donee_address,
+			"donee_letter_salutation": old_abo.donee_letter_salutation,
 			"donee_text": old_abo.donee_text,
 			"abo_type": old_abo.abo_type,
 			"start_date": add_year(old_abo.start_date),
@@ -662,6 +687,16 @@ def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bulle
 			})
 		sales_invoice.flags.ignore_mandatory = True
 		sales_invoice.save(ignore_permissions=True)
+		
+		referencenumber = sales_invoice.name.split("-")[1]
+		sales_invoice.update({
+			"esr_reference": esr.get_reference_number(referencenumber),
+			"esr_code": esr.generateCodeline(sales_invoice.grand_total, esr.get_reference_number(referencenumber), "013100113")
+		})
+		sales_invoice.save(ignore_permissions=True)
+		
+		
+		
 		sales_invoice.submit()
 		frappe.db.commit()
 		#appened new invoice to new_invoices
