@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+import frappe, os, json
 """
 Function for generating ESR-numbers for orange swiss payment slips ("Oranger Einzahlungsschein").
 @param
