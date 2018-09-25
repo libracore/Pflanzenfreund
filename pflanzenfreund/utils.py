@@ -128,6 +128,7 @@ def get_all_addresses():
 def get_address_details(address_name):
 	return frappe.get_doc("Address", address_name)
 
+@frappe.whitelist()
 def get_party(user=None):
 	if not user:
 		user = frappe.session.user

@@ -24,12 +24,6 @@ def get_data():
 			   "name": "Payment Entry",
 			   "label": _("Payment Entry"),
 			   "description": _("Administration")
-		   },
-		   {
-			   "type": "page",
-			   "name": "abo_rechnungslauf",
-			   "label": _("Abonnementen Rechnungslauf"),
-			   "description": _("Abonnementen Rechnungslauf")
 		   }
 		]
 	},
@@ -58,96 +52,6 @@ def get_data():
 		]
 	},
 	{
-		"label": _("Website Settings"),
-		"icon": "fa fa-bookmark",
-		"items": [
-		   {
-			   "type": "doctype",
-			   "name": "Website Settings",
-			   "label": _("General Settings"),
-			   "description": _("Setup Tools for the Website")
-		   },
-		   {
-			   "type": "doctype",
-			   "name": "Website Settings Pflanzenfreund",
-			   "label": _("Navbar and Footer Settings"),
-			   "description": _("Setup Tools for the Website")
-		   },
-		   {
-			   "type": "doctype",
-			   "name": "Website Theme",
-			   "label": _("Website Theme"),
-			   "description": _("Setup Tools for the Website")
-		   },
-		   {
-			   "type": "doctype",
-			   "name": "Website Script",
-			   "label": _("Website Script"),
-			   "description": _("Setup Tools for the Website")
-		   }
-		]
-	},
-	{
-		"label": _("Websites and Items"),
-		"icon": "fa fa-bookmark",
-		"items": [
-		   {
-			   "type": "doctype",
-			   "name": "Web Page",
-			   "label": _("Web Pages"),
-			   "description": _("Setup Tools for the Website")
-		   },
-		   {
-			   "type": "doctype",
-			   "name": "Web Form",
-			   "label": _("Web Forms"),
-			   "description": _("Setup Tools for the Website")
-		   },
-		   {
-			   "type": "doctype",
-			   "name": "Website Sidebar",
-			   "label": _("Web Sidebars"),
-			   "description": _("Setup Tools for the Website")
-		   },
-		   {
-			   "type": "doctype",
-			   "name": "Website Slideshow",
-			   "label": _("Web Slideshows"),
-			   "description": _("Setup Tools for the Website")
-		   }
-		]
-	},
-	{
-		"label": _("Extranet Settings"),
-		"icon": "fa fa-bookmark",
-		"items": [
-		   {
-			   "type": "doctype",
-			   "name": "Portal Settings",
-			   "label": _("Portal Settings"),
-			   "description": _("Setup Tools for the Extranet")
-		   }
-		]
-	},
-	{
-		"label": _("Knowledge Base"),
-		"icon": "fa fa-bookmark",
-		"items": [
-		   {
-			   "type": "doctype",
-			   "name": "Help Category",
-			   "label": _("Help Category"),
-			   "description": _("Setup Tools for KB")
-		   },
-		   {
-			   "type": "doctype",
-			   "name": "Help Article",
-			   "label": _("Help Article"),
-			   "description": _("Setup Tools for KB")
-		   }
-		]
-	},
-	{
 		"label": _("Integration"),
 		"icon": "fa fa-leaf",
 		"items": [
@@ -168,6 +72,12 @@ def get_data():
 			   "name": "erweiterte-kunden-su",
 			   "label": _("Erweiterte Kundensuche"),
 			   "description": _("Erweiterte Kunden Suche")
+		   },
+		   {
+			   "type": "page",
+			   "name": "abo_rechnungslauf",
+			   "label": _("Abonnementen Rechnungslauf"),
+			   "description": _("Abonnementen Rechnungslauf")
 		   }
 		]
 	}
