@@ -19,7 +19,7 @@
  "is_standard": 1, 
  "login_required": 1, 
  "max_attachment_size": 0, 
- "modified": "2018-09-25 14:26:34.207114", 
+ "modified": "2018-09-26 08:49:57.630125", 
  "modified_by": "joel.mesmer@libracore.com", 
  "module": "Pflanzenfreund", 
  "name": "neues-pflanzenfreund-abonnement", 
@@ -56,12 +56,22 @@
   }, 
   {
    "fieldname": "customer_address", 
-   "fieldtype": "Link", 
+   "fieldtype": "Data", 
+   "hidden": 0, 
+   "label": "Address hidden", 
+   "max_length": 0, 
+   "max_value": 0, 
+   "options": "", 
+   "read_only": 0, 
+   "reqd": 1
+  }, 
+  {
+   "fieldtype": "Select", 
    "hidden": 0, 
    "label": "Address", 
    "max_length": 0, 
    "max_value": 0, 
-   "options": "Address", 
+   "options": "Bitte erfassen Sie Ihre erste Adresse", 
    "read_only": 0, 
    "reqd": 1
   }, 

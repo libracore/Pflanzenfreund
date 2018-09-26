@@ -38,3 +38,8 @@ def get_address_templates(address):
 		
 def validate(self):
 	frappe.throw("okokok")
+	
+@frappe.whitelist()
+def get_address_list(customer):
+	address_list = frappe.get_list("Dynamic Link", fields=("parent"), filters={"parenttype": "Address", "link_name": customer})
+	return address_list
