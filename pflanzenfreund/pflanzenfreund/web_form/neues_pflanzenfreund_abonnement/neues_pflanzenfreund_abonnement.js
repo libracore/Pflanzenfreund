@@ -108,7 +108,12 @@ function set_initial_start_and_end_date(abo_type) {
 }
 
 function change_start(abo_type) {
-	var _user_start = $('input[data-label = "Start"]')[0].value.split("-");
+	var _user_start = "";
+	if (frappe.moment_date_format.split("-").length == 3) {
+		_user_start = $('input[data-label = "Start"]')[0].value.split("-");
+	} else if (frappe.moment_date_format.split(".").length == 3) {
+		_user_start = $('input[data-label = "Start"]')[0].value.split(".");
+	}
 	var user_start = new Date(_user_start[2], _user_start[1] - 1, _user_start[0]);
 	
 	$('input[data-fieldname = "start_date"]')[0].value = formatDate_as_dd_mm_yyyy(user_start);
@@ -127,7 +132,12 @@ function formatDate_as_yyyy_mm_dd(value) {
    if (month < 10) {
 	   month = "0" + month;
    }
-   return value.getFullYear() + "-" + month + "-" + value.getDate();
+	if (frappe.moment_date_format.split("-").length == 3) {
+		return value.getFullYear() + "-" + month + "-" + value.getDate();
+	} else if (frappe.moment_date_format.split(".").length == 3) {
+		return value.getFullYear() + "." + month + "." + value.getDate();
+	}
+   
 }
 
 function formatDate_as_dd_mm_yyyy(value) {
@@ -135,7 +145,12 @@ function formatDate_as_dd_mm_yyyy(value) {
    if (month < 10) {
 	   month = "0" + month;
    }
-   return value.getDate() + "-" + month + "-" + value.getFullYear();
+   if (frappe.moment_date_format.split("-").length == 3) {
+		return value.getDate() + "-" + month + "-" + value.getFullYear();
+	} else if (frappe.moment_date_format.split(".").length == 3) {
+		return value.getDate() + "." + month + "." + value.getFullYear();
+	}
+   
 }
 
 function add_one_year_to_date(d) {
@@ -153,6 +168,12 @@ function add_four_months_to_date(d) {
 }
 
 function set_editions_based_on_abo_type_and_start_date() {
+	var splitter = "";
+	if (frappe.moment_date_format.split("-").length == 3) {
+		splitter = "-";
+	} else if (frappe.moment_date_format.split(".").length == 3) {
+		splitter = ".";
+	}
 	var abo_type = $('select[data-fieldname = "abo_type"]')[0];
 	var start_date = $('input[data-fieldname = "start_date"]')[0];
 	var jan = $('input[data-fieldname = "jan_ed"]')[0];
@@ -193,8 +214,8 @@ function set_editions_based_on_abo_type_and_start_date() {
 		oct.checked = false;
 		nov.checked = false;
 		dec.checked = false;
-		var start_day = parseInt(start_date.value.split("-")[0]);
-		var start_month = parseInt(start_date.value.split("-")[1]);
+		var start_day = parseInt(start_date.value.split(splitter)[0]);
+		var start_month = parseInt(start_date.value.split(splitter)[1]);
 		if (start_day >= 15) {
 			start_month = start_month + 1;
 		}
