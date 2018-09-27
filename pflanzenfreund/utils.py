@@ -782,3 +782,23 @@ def update_existing_abo_with_salutations():
 			count += 1
 			
 		print("updatet {0} of {1}".format(count, len(abos)))
+		
+def create_user_based_on_contact():
+	contacts = frappe.get_list("Contact", fields=["name"])
+	for _contact in contacts:
+		contact = frappe.get_doc("Contact", _contact["name"])
+		if contact.email_id:
+			if contact.has_permission("write"):
+				try:
+					user = frappe.get_doc({
+						"doctype": "User",
+						"first_name": contact.first_name,
+						"last_name": contact.last_name,
+						"email": contact.email_id,
+						"user_type": "Website User",
+						"send_welcome_email": 0,
+						"language": "de"
+					}).insert(ignore_permissions = True)
+					print("New User {0} created!".format(user.name))
+				except:
+					print("Contact {0} already exist as user!".format(contact.email_id))
