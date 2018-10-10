@@ -107,7 +107,7 @@ function goAhead(mod='Deaktivierte Kunden', withFilter=false) {
 		}
 	}
 	frappe.call({
-		method: 'pflanzenfreund.pflanzenfreund.page.abo_plausibility.utils.start_checking',
+		method: 'pflanzenfreund.pflanzenfreund.page.abo_plausibility.utils.start_background_jop',
 		args: {
 			'mod': mod,
 			'start': start,

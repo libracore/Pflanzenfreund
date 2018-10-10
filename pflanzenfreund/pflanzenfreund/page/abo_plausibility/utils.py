@@ -5,8 +5,18 @@
 from __future__ import unicode_literals
 import frappe
 from frappe import throw, _, utils
+from frappe.utils.background_jobs import enqueue
 
 @frappe.whitelist()
+def start_background_jop(mod=None, start=None, end=None):
+	args = {
+		'mod': mod,
+		'start': start,
+		'end': end
+	}
+	enqueue("pflanzenfreund.pflanzenfreund.page.abo_plausibility.utils.start_checking", queue='long', timeout=1500, **args)
+
+
 def start_checking(mod=None, start=None, end=None):
 	
 	if mod == "Deaktivierte Kunden":
