@@ -78,6 +78,12 @@ def get_data():
 			   "name": "abo_rechnungslauf",
 			   "label": _("Abonnementen Rechnungslauf"),
 			   "description": _("Abonnementen Rechnungslauf")
+		   },
+		   {
+			   "type": "page",
+			   "name": "abo_plausibility",
+			   "label": _("Abonnementen Plausibility Check"),
+			   "description": _("Abonnementen Plausibility Check")
 		   }
 		]
 	}

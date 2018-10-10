@@ -1,0 +1,80 @@
+<div style="margin: 5px;">
+	<div class="section-body">
+		<div class="row">
+			<div class="col-sm-3">
+				<button class="btn btn-primary btn-sm primary-action" style="margin-left: 15px; margin-top: 15px;" onclick="checkIfFilterSelected()"><span>Start Abo Plausibilitätsprüfung</span></button>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label for="sel1" id="check-typ-label">Zu prüfen:</label>
+					<select class="form-control" id="check-typ">
+						<option>Deaktivierte Kunden</option>
+						<option>Aktivierte Kunden ohne Werbe-Sperre mit Kundenkarte</option>
+						<option>Aktivierte Kunden ohne Werbe-Sperre ohne Kundenkarte</option>
+						<option>Aktivierte Kunden mit Werbe-Sperre</option>
+					</select>
+				</div>
+				<div class="radio">
+					<label><input type="radio" name="optradio" id="hide" onclick="showOrHideFilters(this)" checked>Ohne Filter</label>
+				</div>
+				<div class="radio">
+					<label><input type="radio" name="optradio" id="show" onclick="showOrHideFilters(this)">Mit Filter</label>
+				</div>
+			</div>
+			<div class="col-sm-3"></div>
+		</div>
+		<div class="row hidden" id="filters">
+			<div class="col-sm-3">
+			</div>
+			<div class="col-sm-3">
+				<div class="form-check">
+					<input type="checkbox" class="form-check-input" id="check-abo-end" onclick="showOrHideFilterAboEnd()">
+					<label for="check-abo-end">Abo Ablaufdatum</label>
+				</div>
+				<div class="form-group hidden" id="start-group">
+					<label for="start">Abo Ablaufdatum von:</label>
+					<input type="date" class="form-control" id="start">
+				</div>
+				<div class="form-group hidden" id="end-group">
+					<label for="end">Bis:</label>
+					<input type="date" class="form-control" id="end">
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="form-check">
+					<input type="checkbox" class="form-check-input" id="check-customer-end" onclick="showOrHideFilterCustomerMod()">
+					<label for="check-customer-end">Kunden Änderungsdatum</label>
+				</div>
+				<div class="form-group hidden" id="customer-start-group">
+					<label for="customer-start">Von:</label>
+					<input type="date" class="form-control" id="customer-start">
+				</div>
+				<div class="form-group hidden" id="customer-end-group">
+					<label for="customer-end">Bis:</label>
+					<input type="date" class="form-control" id="customer-end">
+				</div>
+			</div>
+			<div class="col-sm-3">
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-column col-sm-12">
+				<table class="hidden" id="myTable" style="width: 100%;">
+					<tr class="header">
+						<th style="width:10%;"><button class="btn btn-primary btn-sm primary-action" onclick="selectAll(this)"><span>Alle auswählen</span></button></th>
+						<th style="width:40%;">Zustand</th>
+						<th style="width:40%;">Vorgeschlagene Bereinigung</th>
+						<th style="width:10%;"><button class="btn btn-primary btn-sm primary-action" onclick="allSelectedBereinigen()"><span>Ausgewählte bereinigen</span></button></th>
+					</tr>
+				</table> 
+			</div>
+		</div>
+  </div>
+</div>
+<div id="myNav" class="overlay">
+	<!-- Overlay content -->
+  <div class="overlay-content">
+    <p><i class="fa fa-spinner fa-spin" style="font-size:80px"></i></p>
+    <p>Bitte haben Sie einen Moment Geduld.</p>
+  </div>
+</div>
