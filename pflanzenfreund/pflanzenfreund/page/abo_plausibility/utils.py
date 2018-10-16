@@ -14,19 +14,43 @@ def start_background_jop(mod=None, start=None, end=None):
 		'start': start,
 		'end': end
 	}
-	enqueue("pflanzenfreund.pflanzenfreund.page.abo_plausibility.utils.start_checking", queue='long', timeout=1500, **args)
+	enqueue("pflanzenfreund.pflanzenfreund.page.abo_plausibility.utils.start_checking", queue='long', job_name=mod, timeout=1500, **args)
 
 @frappe.whitelist()
 def read_log(mod):
 	result = []
 	if mod == "Deaktivierte Kunden":
-		raw_result = frappe.db.sql("""SELECT `result` FROM `tababo plausibility log` WHERE `name` = 'Deaktivierte Kunden'""", as_list=True)[0][0]
+		try:
+			seen_status = frappe.db.sql("""SELECT `seen` FROM `tababo plausibility log` WHERE `name` = 'Deaktivierte Kunden'""", as_list=True)[0][0]
+		except:
+			return 'not found'
+		print(seen_status)
+		if seen_status != 1:
+			raw_result = frappe.db.sql("""SELECT `result` FROM `tababo plausibility log` WHERE `name` = 'Deaktivierte Kunden'""", as_list=True)[0][0]
+			update_seen = frappe.db.sql("""UPDATE `tababo plausibility log` SET `seen` = '1' WHERE `name` = 'Deaktivierte Kunden'""", as_list=True)
+		else:
+			return "abort"
 	if mod == "Aktivierte Kunden ohne Werbe-Sperre mit Kundenkarte":
-		raw_result = frappe.db.sql("""SELECT `result` FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden ohne Werbe-Sperre mit Kundenkarte'""", as_list=True)[0][0]
+		seen_status = frappe.db.sql("""SELECT `seen` FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden ohne Werbe-Sperre mit Kundenkarte'""", as_list=True)[0][0]
+		if seen_status != 1:
+			raw_result = frappe.db.sql("""SELECT `result` FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden ohne Werbe-Sperre mit Kundenkarte'""", as_list=True)[0][0]
+			update_seen = frappe.db.sql("""UPDATE `tababo plausibility log` SET `seen` = '1' WHERE `name` = 'Aktivierte Kunden ohne Werbe-Sperre mit Kundenkarte'""", as_list=True)
+		else:
+			return "abort"
 	if mod == "Aktivierte Kunden ohne Werbe-Sperre ohne Kundenkarte":
-		raw_result = frappe.db.sql("""SELECT `result` FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden ohne Werbe-Sperre ohne Kundenkarte'""", as_list=True)[0][0]
+		seen_status = frappe.db.sql("""SELECT `seen` FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden ohne Werbe-Sperre ohne Kundenkarte'""", as_list=True)[0][0]
+		if seen_status != 1:
+			raw_result = frappe.db.sql("""SELECT `result` FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden ohne Werbe-Sperre ohne Kundenkarte'""", as_list=True)[0][0]
+			update_seen = frappe.db.sql("""UPDATE `tababo plausibility log` SET `seen` = '1' WHERE `name` = 'Aktivierte Kunden ohne Werbe-Sperre ohne Kundenkarte'""", as_list=True)
+		else:
+			return "abort"
 	if mod == "Aktivierte Kunden mit Werbe-Sperre":
-		raw_result = frappe.db.sql("""SELECT `result` FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden mit Werbe-Sperre'""", as_list=True)[0][0]
+		seen_status = frappe.db.sql("""SELECT `seen` FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden mit Werbe-Sperre'""", as_list=True)[0][0]
+		if seen_status != 1:
+			raw_result = frappe.db.sql("""SELECT `result` FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden mit Werbe-Sperre'""", as_list=True)[0][0]
+			update_seen = frappe.db.sql("""UPDATE `tababo plausibility log` SET `seen` = '1' WHERE `name` = 'Aktivierte Kunden mit Werbe-Sperre'""", as_list=True)
+		else:
+			return "abort"
 	__result = raw_result.split("*/****")
 	for _result in __result:
 		_result = _result.split("*/*")
