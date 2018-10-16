@@ -14,7 +14,7 @@ def start_background_jop(mod=None, start=None, end=None):
 		'start': start,
 		'end': end
 	}
-	enqueue("pflanzenfreund.pflanzenfreund.page.abo_plausibility.utils.start_checking", queue='long', job_name=mod, timeout=1500, **args)
+	enqueue("pflanzenfreund.pflanzenfreund.page.abo_plausibility.utils.start_checking", queue='long', job_name=mod, timeout=3000, **args)
 
 @frappe.whitelist()
 def read_log(mod):
