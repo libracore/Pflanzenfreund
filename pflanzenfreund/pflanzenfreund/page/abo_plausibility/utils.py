@@ -82,7 +82,6 @@ def start_checking(mod=None, start=None, end=None):
 		})
 		new_log.insert()
 		frappe.db.commit()
-		frappe.publish_realtime(event='msgprint', message='Der Background-Job für {0} wurde erfolgreich abgeschlossen, die Daten können nun analysiert werden.'.format(mod))
 	
 	if mod == "Aktivierte Kunden mit Werbe-Sperre":
 		delete = frappe.db.sql("""DELETE FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden mit Werbe-Sperre'""", as_list=True)
@@ -99,7 +98,6 @@ def start_checking(mod=None, start=None, end=None):
 		})
 		new_log.insert()
 		frappe.db.commit()
-		frappe.publish_realtime(event='msgprint', message='Der Background-Job für {0} wurde erfolgreich abgeschlossen, die Daten können nun analysiert werden.'.format(mod))
 	
 	if mod == "Aktivierte Kunden ohne Werbe-Sperre mit Kundenkarte":
 		delete = frappe.db.sql("""DELETE FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden ohne Werbe-Sperre mit Kundenkarte'""", as_list=True)
@@ -116,7 +114,6 @@ def start_checking(mod=None, start=None, end=None):
 		})
 		new_log.insert()
 		frappe.db.commit()
-		frappe.publish_realtime(event='msgprint', message='Der Background-Job für {0} wurde erfolgreich abgeschlossen, die Daten können nun analysiert werden.'.format(mod))
 		
 	if mod == "Aktivierte Kunden ohne Werbe-Sperre ohne Kundenkarte":
 		delete = frappe.db.sql("""DELETE FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden ohne Werbe-Sperre ohne Kundenkarte'""", as_list=True)
@@ -133,7 +130,7 @@ def start_checking(mod=None, start=None, end=None):
 		})
 		new_log.insert()
 		frappe.db.commit()
-		frappe.publish_realtime(event='msgprint', message='Der Background-Job für {0} wurde erfolgreich abgeschlossen, die Daten können nun analysiert werden.'.format(mod))
+	frappe.publish_realtime(event='msgprint', message='Der Background-Job für {0} wurde erfolgreich abgeschlossen, die Daten können nun analysiert werden.'.format(mod))
 		
 def get_abos_of_customer(customer, werbesperre=False):
 	if not werbesperre:

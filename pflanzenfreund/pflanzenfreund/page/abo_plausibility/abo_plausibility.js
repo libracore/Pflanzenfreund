@@ -65,6 +65,7 @@ frappe.pages.abo_plausibility.refresh_jobs = function() {
 
 function readExistCheck() {
 	var mod = document.getElementById("check-typ").value;
+	openNav();
 	frappe.call({
 		method: 'pflanzenfreund.pflanzenfreund.page.abo_plausibility.utils.read_log',
 		args: {
@@ -72,19 +73,25 @@ function readExistCheck() {
 		},
 		callback: function(r) {
 			if (r.message) {
-				closeNav();
-				console.log(r.message);
+				//console.log(r.message);
 				deleteTable();
 				if (r.message[0][0] == "empty") {
+					closeNav();
 					frappe.msgprint('Die Plausibilitätsprüfung wurde ohne Resultate abgeschlossen.', 'Keine unplausiblen Daten');
 				} else if (r.message == "abort") {
+					closeNav();
 					frappe.msgprint('Die vorhandenen Daten der Plausibilitätsprüfung wurden bereits ausgewertet.<br>Damit Fehler vermieden werden können, führen Sie die Aufbereitung der Daten nochmals durch.', 'Bitte Datenaufbereitung erneut durchführen');
 				} else if (r.message == "not found") {
+					closeNav();
 					frappe.msgprint('Die gewünschte Plausibilitätsprüfung wurde noch nicht ausgeführt.<br>Bitte führen Sie zuerst die Aufbereitung der Daten durch.', 'Bitte Datenaufbereitung durchführen');
 				} else {
+					if (document.getElementById("myTable").classList.contains('hidden')) {
+						document.getElementById("myTable").classList.toggle('hidden');
+					}
 					for (i = 0; i < r.message.length - 1; i++) {
 						crateTableContentElement(r.message[i][0], r.message[i][1], r.message[i][2], r.message[i][3], r.message[i][4]);
 					}
+					closeNav();
 				}
 			} else {
 				closeNav();
@@ -195,7 +202,7 @@ function startWithFilter(mod) {
 }
 
 function deleteTable() {
-	if (document.getElementById("myTable").classList.contains('hidden')) {
+	if (!document.getElementById("myTable").classList.contains('hidden')) {
 		document.getElementById("myTable").classList.toggle('hidden');
 	}
 	var tabelle = document.getElementById("myTable");
