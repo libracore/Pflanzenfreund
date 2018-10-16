@@ -156,7 +156,7 @@ def check_aktivierte_kunden(start, end):
 		if customer.name != 'Administrator' and customer.name != 'Guest':
 			abos, geschenke = get_abos_of_customer(customer.name)
 			for abo in abos:
-				results.append(['Der Kunde {0} besitzt das Abonnement {1}, obwohl der Kunde Deaktiviert ist.'.format(customer.name, abo.name), 'Das Abonnement stornieren.', 'storno', customer.name, abo.name])
+				results.append(['Der Kunde <a href="/desk#Form/Customer/{0}">{0}</a> besitzt das Abonnement <a href="/desk#Form/Pflanzenfreund Abo/{1}">{1}</a>, obwohl der Kunde Deaktiviert ist.'.format(customer.name, abo.name), 'Das Abonnement stornieren.', 'storno', customer.name, abo.name])
 			
 			for geschenk in geschenke:
 				results.append(['Der Kunde {0} hat das Abonnement {1} verschenkt, ist selber aber deaktiviert.'.format(customer.name, geschenk.name), 'Das Geschenk-Abo in ein Gratis-Abo umwandeln.', 'geschenk_gratis', customer.name, geschenk.name])
