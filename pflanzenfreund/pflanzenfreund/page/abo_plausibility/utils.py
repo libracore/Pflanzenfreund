@@ -16,11 +16,35 @@ def start_background_jop(mod=None, start=None, end=None):
 	}
 	enqueue("pflanzenfreund.pflanzenfreund.page.abo_plausibility.utils.start_checking", queue='long', timeout=1500, **args)
 
+@frappe.whitelist()
+def read_log(mod):
+	if mod == "Deaktivierte Kunden":
+		result = []
+		raw_result = frappe.db.sql("""SELECT `result` FROM `tababo plausibility log` WHERE `name` = 'Deaktivierte Kunden'""", as_list=True)[0][0]
+		__result = raw_result.split("*/****")
+		for _result in __result:
+			_result = _result.split("*/*")
+			result.append(_result)
+		return result
 
 def start_checking(mod=None, start=None, end=None):
-	
 	if mod == "Deaktivierte Kunden":
-		return check_deaktivierte_kunden(start, end)
+		delete = frappe.db.sql("""DELETE FROM `tababo plausibility log` WHERE `name` = 'Deaktivierte Kunden'""", as_list=True)
+		string_array = ""
+		for item in check_deaktivierte_kunden(start, end):
+			sub_string_array = ""
+			for sub_item in item:
+				sub_string_array += str(sub_item) + "*/*"
+			string_array += sub_string_array + "***"
+		new_log = frappe.get_doc({
+			"doctype": "abo plausibility log",
+			"type": "Deaktivierte Kunden",
+			"result": string_array
+		})
+		new_log.insert()
+		
+		frappe.db.commit()
+		frappe.publish_realtime(event='msgprint', message='Der Background-Job für {0} wurde erfolgreich abgeschlossen, die Daten können nun analysiert werden.'.format(mod))
 	
 	if mod == "Aktivierte Kunden mit Werbe-Sperre":
 		return check_aktivierte_kunden_mit_werbe_sperre(start, end)
