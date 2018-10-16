@@ -39,7 +39,7 @@ def start_checking(mod=None, start=None, end=None):
 		new_log = frappe.get_doc({
 			"doctype": "abo plausibility log",
 			"type": "Deaktivierte Kunden",
-			"result": string_array
+			"result": string_array or "empty"
 		})
 		new_log.insert()
 		
