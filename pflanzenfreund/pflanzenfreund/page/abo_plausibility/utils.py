@@ -130,7 +130,9 @@ def start_checking(mod=None, start=None, end=None):
 		})
 		new_log.insert()
 		frappe.db.commit()
-	frappe.publish_realtime('msgprint', 'Der Background-Job für {0} wurde erfolgreich abgeschlossen, die Daten können nun analysiert werden.'.format(mod), user=frappe.session.user)
+	
+	message = 'Der Background-Job für {0} wurde erfolgreich abgeschlossen, die Daten können nun analysiert werden.'.format(mod)
+	frappe.publish_realtime(event='msgprint',message=message,user=frappe.session.user)
 		
 def get_abos_of_customer(customer, werbesperre=False):
 	if not werbesperre:
