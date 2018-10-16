@@ -63,39 +63,6 @@ frappe.pages.abo_plausibility.refresh_jobs = function() {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function readExistCheck() {
 	var mod = document.getElementById("check-typ").value;
 	frappe.call({
@@ -212,19 +179,10 @@ function goAhead(mod='Deaktivierte Kunden', withFilter=false) {
 		},
 		callback: function(r) {
 			if (r.message) {
-				/* closeNav();
-				//console.log(r.message);
-				deleteTable();
-				for (i = 0; i < r.message.length; i++) {
-					crateTableContentElement(r.message[i][0], r.message[i][1], r.message[i][2], r.message[i][3], r.message[i][4]);
-				} */
+				// wenn code hierhin kommt, stimmt etwas nicht!
 			} else {
-				/* closeNav();
-				if (!document.getElementById("myTable").classList.contains('hidden')) {
-					document.getElementById("myTable").classList.toggle('hidden');
-				}
-				 frappe.msgprint('Die Plausibilitätsprüfung wurde erfolgreich abgeschlossen.', 'Keine unplausiblen Daten'); */
 				closeNav();
+				deleteTable();
 				frappe.msgprint('Die Plausibilitätsprüfung wurde erfolgreich dem Background-Worker übergeben.', 'Erfolg');
 			}
 		}
