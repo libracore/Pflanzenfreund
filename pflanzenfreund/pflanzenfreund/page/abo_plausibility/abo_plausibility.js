@@ -5,8 +5,13 @@ frappe.pages['abo_plausibility'].on_page_load = function(wrapper) {
 		single_column: true
 	});
 	
+	
+	
 	frappe.abo_plausibility.make(page);
 	frappe.abo_plausibility.run(page);
+	$(frappe.render_template('background_jobs_outer')).appendTo(page.body);
+	page.job_content = $(page.body).find('.table-area');
+	frappe.pages.abo_plausibility.page = page;
 	
 	// add the application reference
 	frappe.breadcrumbs.add("Pflanzenfreund");
@@ -27,6 +32,69 @@ frappe.abo_plausibility = {
  
 	}
 }
+
+
+
+frappe.pages['abo_plausibility'].on_page_show = function(wrapper) {
+	frappe.pages.abo_plausibility.refresh_jobs();
+}
+
+frappe.pages.abo_plausibility.refresh_jobs = function() {
+	var page = frappe.pages.abo_plausibility.page;
+
+	// don't call if already waiting for a response
+	if(page.called) return;
+	page.called = true;
+	frappe.call({
+		method: 'frappe.core.page.background_jobs.background_jobs.get_info',
+		args: {
+			show_failed: page.body.find('.show-failed').prop('checked') ? 1 : 0
+		},
+		callback: function(r) {
+			page.called = false;
+			page.body.find('.list-jobs').remove();
+			$(frappe.render_template('background_jobs', {jobs:r.message || []})).appendTo(page.job_content);
+
+			if(frappe.get_route()[0]==='abo_plausibility') {
+				frappe.background_jobs_timeout = setTimeout(frappe.pages.abo_plausibility.refresh_jobs, 2000);
+			}
+		}
+	});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function readExistCheck() {
 	var mod = document.getElementById("check-typ").value;

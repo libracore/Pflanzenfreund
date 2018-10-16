@@ -18,14 +18,20 @@ def start_background_jop(mod=None, start=None, end=None):
 
 @frappe.whitelist()
 def read_log(mod):
+	result = []
 	if mod == "Deaktivierte Kunden":
-		result = []
 		raw_result = frappe.db.sql("""SELECT `result` FROM `tababo plausibility log` WHERE `name` = 'Deaktivierte Kunden'""", as_list=True)[0][0]
-		__result = raw_result.split("*/****")
-		for _result in __result:
-			_result = _result.split("*/*")
-			result.append(_result)
-		return result
+	if mod == "Aktivierte Kunden ohne Werbe-Sperre mit Kundenkarte":
+		raw_result = frappe.db.sql("""SELECT `result` FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden ohne Werbe-Sperre mit Kundenkarte'""", as_list=True)[0][0]
+	if mod == "Aktivierte Kunden ohne Werbe-Sperre ohne Kundenkarte":
+		raw_result = frappe.db.sql("""SELECT `result` FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden ohne Werbe-Sperre ohne Kundenkarte'""", as_list=True)[0][0]
+	if mod == "Aktivierte Kunden mit Werbe-Sperre":
+		raw_result = frappe.db.sql("""SELECT `result` FROM `tababo plausibility log` WHERE `name` = 'Aktivierte Kunden mit Werbe-Sperre'""", as_list=True)[0][0]
+	__result = raw_result.split("*/****")
+	for _result in __result:
+		_result = _result.split("*/*")
+		result.append(_result)
+	return result
 
 def start_checking(mod=None, start=None, end=None):
 	if mod == "Deaktivierte Kunden":
