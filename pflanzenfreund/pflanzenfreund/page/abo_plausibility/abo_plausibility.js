@@ -40,8 +40,12 @@ function readExistCheck() {
 				closeNav();
 				console.log(r.message);
 				deleteTable();
-				for (i = 0; i < r.message.length - 1; i++) {
-					crateTableContentElement(r.message[i][0], r.message[i][1], r.message[i][2], r.message[i][3], r.message[i][4]);
+				if (r.message[0][0] == "empty") {
+					frappe.msgprint('Die Plausibilitätsprüfung wurde ohne Resultate abgeschlossen.', 'Keine unplausiblen Daten');
+				} else {
+					for (i = 0; i < r.message.length - 1; i++) {
+						crateTableContentElement(r.message[i][0], r.message[i][1], r.message[i][2], r.message[i][3], r.message[i][4]);
+					}
 				}
 			} else {
 				closeNav();
