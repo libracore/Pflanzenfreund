@@ -84,12 +84,6 @@ def get_data():
 			   "name": "abo_plausibility",
 			   "label": _("Abonnementen Plausibility Check"),
 			   "description": _("Abonnementen Plausibility Check")
-		   },
-		   {
-			   "type": "doctype",
-			   "name": "abo plausibility log",
-			   "label": _("Abo Plausibility Log"),
-			   "description": _("Abo Plausibility Log")
 		   }
 		]
 	}
