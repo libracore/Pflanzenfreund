@@ -9,7 +9,8 @@ frappe.pages['abo_plausibility'].on_page_load = function(wrapper) {
 	
 	frappe.abo_plausibility.make(page);
 	frappe.abo_plausibility.run(page);
-	$(frappe.render_template('background_jobs_outer')).appendTo(page.body);
+	page.wokrer_place = $(page.body).find('#placeForWorkers');
+	$(frappe.render_template('background_jobs_outer')).appendTo(page.wokrer_place);
 	page.job_content = $(page.body).find('.table-area');
 	frappe.pages.abo_plausibility.page = page;
 	
@@ -288,19 +289,29 @@ function einzelZeileBereinigen(btn) {
 	var action = btn.parentNode.dataset.todo;
 	var customer = btn.parentNode.dataset.refcustomer;
 	var abo = btn.parentNode.dataset.refabo;
-	if (action == "storno") {
-		einzel_storno(customer, abo);
-	} else if (action == "geschenk_gratis") {
-		einzel_geschenk_gratis(customer, abo);
-	} else if (action == "anlage_kk") {
-		einzel_anlage_kk(customer);
-	} else if (action == "anlage_ok") {
-		einzel_anlage_ok(customer);
-	} else if (action == "none") {
-		frappe.msgprint("Diese Aktion kann nicht automatisch ausgeführt werden.", "Bitte um manuelle Ausführung");
+	to_mark = btn.parentNode.parentNode;
+	if (!to_mark.classList.contains('verarbeitet')) {
+		mark_green(to_mark);
+		if (action == "storno") {
+			einzel_storno(customer, abo);
+		} else if (action == "geschenk_gratis") {
+			einzel_geschenk_gratis(customer, abo);
+		} else if (action == "anlage_kk") {
+			einzel_anlage_kk(customer);
+		} else if (action == "anlage_ok") {
+			einzel_anlage_ok(customer);
+		} else if (action == "none") {
+			frappe.msgprint("Diese Aktion kann nicht automatisch ausgeführt werden.", "Bitte um manuelle Ausführung");
+		} else {
+			frappe.msgprint("Bitte wenden Sie sich an libracore.", "ERROR");
+		}
 	} else {
-		frappe.msgprint("Bitte wenden Sie sich an libracore.", "ERROR");
+		frappe.msgprint("Diese Position wurde bereits verarbeitet.", "Bereits verarbeitet");
 	}
+}
+
+function mark_green(elm) {
+	elm.classList.add("verarbeitet");
 }
 
 function einzel_storno(customer, abo) {
@@ -386,28 +397,35 @@ function allSelectedBereinigen() {
 	var tabelle = document.getElementById("myTable");
 	var rowCount = tabelle.rows.length;
 	var control_qty = 0;
-	var stornos = [];
-	var umwandlungen = [];
-	var anlagen_kk = [];
-	var anlagen_ok = [];
+	var stornos = "";
+	var umwandlungen = "";
+	var anlagen_kk = "";
+	var anlagen_ok = "";
 	for (var i = rowCount - 1; i > 0; i--) {
-		tr = tabelle.getElementsByTagName("tr")[i],
-		td = tr.getElementsByTagName("td")[0];
-		if (td.childNodes[0].checked == true) {
-			var ref_td = tr.getElementsByTagName("td")[3];
-			var action = ref_td.dataset.todo;
-			var customer = ref_td.dataset.refcustomer;
-			var abo = ref_td.dataset.refabo;
-			if (action == "storno") {
-				stornos.push([customer, abo]);
-			} else if (action == "geschenk_gratis") {
-				umwandlungen.push([customer, abo]);
-			} else if (action == "anlage_kk") {
-				anlagen_kk.push(customer);
-			} else if (action == "anlage_ok") {
-				anlagen_ok.push(customer);
+		tr = tabelle.getElementsByTagName("tr")[i];
+		if (!tr.classList.contains('verarbeitet')) {
+			mark_green(tr);
+			td = tr.getElementsByTagName("td")[0];
+			if (td.childNodes[0].checked == true) {
+				var ref_td = tr.getElementsByTagName("td")[3];
+				var action = ref_td.dataset.todo;
+				var customer = ref_td.dataset.refcustomer;
+				var abo = ref_td.dataset.refabo;
+				if (action == "storno") {
+					//stornos.push([customer, abo]);
+					stornos += customer + "**-**" + abo + "**+**";
+				} else if (action == "geschenk_gratis") {
+					//umwandlungen.push([customer, abo]);
+					umwandlungen += customer + "**-**" + abo + "**+**";
+				} else if (action == "anlage_kk") {
+					//anlagen_kk.push(customer);
+					anlagen_kk += customer + "**+**";
+				} else if (action == "anlage_ok") {
+					//anlagen_ok.push(customer);
+					anlagen_ok += customer + "**+**";
+				}
+				control_qty += 1;
 			}
-			control_qty += 1;
 		}
 	}
 	if (control_qty == 0) {
@@ -415,7 +433,7 @@ function allSelectedBereinigen() {
 		frappe.msgprint("Es wurde keine Zeile ausgewählt", "Keine Aktion getroffen");
 	} else {
 		frappe.call({
-			method: 'pflanzenfreund.pflanzenfreund.page.abo_plausibility.utils.sammel_bereinigung',
+			method: 'pflanzenfreund.pflanzenfreund.page.abo_plausibility.utils.sammel_bereinigung_background',
 			args: {
 				'stornos': stornos,
 				'umwandlungen': umwandlungen,

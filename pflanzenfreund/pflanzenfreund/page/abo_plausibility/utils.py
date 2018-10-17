@@ -283,22 +283,320 @@ def aktivierte_kunden_ohne_werbe_sperre_ohne_kundenkarte(start, end):
 					results.append(['Der Kunde {0} besitzt mehere Kunden-Abo (OK)'.format(customer.name), 'Alle bis auf ein Kunden-Abo (OK) stornieren', 'none', customer.name, 'none'])
 	return results
 	
-@frappe.whitelist()
-def sammel_bereinigung(stornos, umwandlungen, anlagen_kk, anlagen_ok):
+
+def sammel_bereinigung(_stornos, _umwandlungen, _anlagen_kk, _anlagen_ok):
+	stornos = _stornos.split("**+**")
+	umwandlungen = _umwandlungen.split("**+**")
+	anlagen_kk = _anlagen_kk.split("**+**")
+	anlagen_ok = _anlagen_ok.split("**+**")
+	for storno in stornos:
+		try:
+			customer, abo = storno.split("**-**")
+			storno_bereinigung(customer, abo)
+		except:
+			continue
+			
+	for umwandlung in umwandlungen:
+		try:
+			customer, abo = umwandlung.split("**-**")
+			umwandlungen_bereinigung(customer, abo)
+		except:
+			continue
+		
+	for anlagen_kk_item in anlagen_kk:
+		if len(anlagen_kk_item) > 4:
+			anlagen_kk_bereinigung(anlagen_kk_item)
+		
+	for anlagen_ok_item in anlagen_ok:
+		if len(anlagen_ok_item) > 4:
+			anlagen_ok_bereinigung(anlagen_ok_item)
+		
 	return stornos, umwandlungen, anlagen_kk, anlagen_ok
 	
 @frappe.whitelist()
+def sammel_bereinigung_background(stornos, umwandlungen, anlagen_kk, anlagen_ok):
+	args = {
+		'_stornos': stornos,
+		'_umwandlungen': umwandlungen,
+		'_anlagen_kk': anlagen_kk,
+		'_anlagen_ok': anlagen_ok
+	}
+	enqueue("pflanzenfreund.pflanzenfreund.page.abo_plausibility.utils.sammel_bereinigung", queue='long', job_name='Sammel Bereinigung', timeout=3000, **args)
+	return "background"
+	
+@frappe.whitelist()
 def storno_bereinigung(customer, abo):
+	to_storno = frappe.get_doc("Pflanzenfreund Abo", abo)
+	to_storno.add_comment('Comment', 'Dieses Abo wurde automatisiert storniert')
+	remove_links_in_sales_invoice = frappe.db.sql("""UPDATE `tabSales Invoice` SET `pflanzenfreund_abo` = null WHERE `pflanzenfreund_abo` = '{0}'""".format(to_storno.name), as_list=True)
+	to_storno.cancel()
+	
 	return customer, abo
+	
 	
 @frappe.whitelist()
 def umwandlungen_bereinigung(customer, abo):
-	return customer, abo
+	old_abo = frappe.get_doc("Pflanzenfreund Abo", abo)
+	new_abo = frappe.get_doc({
+		"doctype": "Pflanzenfreund Abo",
+		"customer": old_abo.donee,
+		"customer_address": old_abo.donee_address,
+		"abo_type": "Gratis-Abo",
+		"start_date": old_abo.start_date,
+		"end_date": old_abo.end_date,
+		"jan_ed": old_abo.jan_ed,
+		"feb_ed": old_abo.feb_ed,
+		"mar_ed": old_abo.mar_ed,
+		"apr_ed": old_abo.apr_ed,
+		"may_ed": old_abo.may_ed,
+		"jun_ed": old_abo.jun_ed,
+		"jul_ed": old_abo.jul_ed,
+		"aug_ed": old_abo.aug_ed,
+		"sept_ed": old_abo.sept_ed,
+		"oct_ed": old_abo.oct_ed,
+		"nov_ed": old_abo.nov_ed,
+		"dec_ed": old_abo.dec_ed,
+		"set_ed_manual": old_abo.set_ed_manual
+	})
+	new_abo.insert()
+	new_abo.submit()
+	frappe.db.commit()
+	old_abo.add_comment('Comment', 'Dieses Abo wurde automatisiert storniert und in ein Gratis-Abo ({0}) umgewandelt'.format(new_abo.name))
+	new_abo.add_comment('Comment', 'Dieses Abo wurde automatisiert erstellt, basierend auf dem Geschenk-Abo {0}'.format(old_abo.name))
+	old_abo.cancel()
+	
+	return new_abo
 	
 @frappe.whitelist()
 def anlagen_kk_bereinigung(customer):
-	return customer
+	address = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `parenttype` = 'Address' AND `link_name` = '{0}' ORDER BY `idx` ASC LIMIT 1""".format(customer), as_list=True)[0][0]
+	new_kk_abo = frappe.get_doc({
+		"doctype": "Pflanzenfreund Abo",
+		"customer": customer,
+		"customer_address": address,
+		"abo_type": "Kundenkarten-Abo (KK)",
+		"start_date": utils.today(),
+		"end_date": utils.add_years(utils.today(), 1)
+	})
+	new_kk_abo.update(get_editions(kk=True))
+	new_kk_abo.insert()
+	new_kk_abo.submit()
+	frappe.db.commit()
+	new_kk_abo.add_comment('Comment', 'Dieses Abo wurde automatisiert angelegt')
+	return new_kk_abo
 	
 @frappe.whitelist()
 def anlagen_ok_bereinigung(customer):
-	return customer
+	address = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `parenttype` = 'Address' AND `link_name` = '{0}' ORDER BY `idx` ASC LIMIT 1""".format(customer), as_list=True)[0][0]
+	new_ok_abo = frappe.get_doc({
+		"doctype": "Pflanzenfreund Abo",
+		"customer": customer,
+		"customer_address": address,
+		"abo_type": "Kunden-Abo (OK)",
+		"start_date": utils.today(),
+		"end_date": utils.add_years(utils.today(), 1)
+	})
+	new_ok_abo.update(get_editions(ok=True))
+	new_ok_abo.insert()
+	new_ok_abo.submit()
+	frappe.db.commit()
+	new_ok_abo.add_comment('Comment', 'Dieses Abo wurde automatisiert angelegt')
+	return new_ok_abo
+	
+def get_editions(ok=False, kk=False):
+	today = utils.today()
+	year, month, date = today.split('-')
+	
+	if ok:
+		if month == '1':
+			editions = {
+				"jan_ed": 1,
+				"feb_ed": 1
+			}
+			return editions
+			
+		if month == '2':
+			editions = {
+				"feb_ed": 1,
+				"mar_ed": 1
+			}
+			return editions
+			
+		if month == '3':
+			editions = {
+				"mar_ed": 1,
+				"apr_ed": 1
+			}
+			return editions
+			
+		if month == '4':
+			editions = {
+				"apr_ed": 1,
+				"may_ed": 1
+			}
+			return editions
+			
+		if month == '5':
+			editions = {
+				"may_ed": 1,
+				"jun_ed": 1
+			}
+			return editions
+			
+		if month == '6':
+			editions = {
+				"jun_ed": 1,
+				"jul_ed": 1
+			}
+			return editions
+			
+		if month == '7':
+			editions = {
+				"jul_ed": 1,
+				"aug_ed": 1
+			}
+			return editions
+			
+		if month == '8':
+			editions = {
+				"aug_ed": 1,
+				"sept_ed": 1
+			}
+			return editions
+			
+		if month == '9':
+			editions = {
+				"sept_ed": 1,
+				"oct_ed": 1
+			}
+			return editions
+			
+		if month == '10':
+			editions = {
+				"oct_ed": 1,
+				"nov_ed": 1
+			}
+			return editions
+			
+		if month == '11':
+			editions = {
+				"nov_ed": 1,
+				"dec_ed": 1
+			}
+			return editions
+			
+		if month == '12':
+			editions = {
+				"dec_ed": 1,
+				"jan_ed": 1
+			}
+			return editions
+	
+	if kk:
+		if month == '1':
+			editions = {
+				"jan_ed": 1,
+				"feb_ed": 1,
+				"mar_ed": 1,
+				"apr_ed": 1
+			}
+			return editions
+			
+		if month == '2':
+			editions = {
+				"feb_ed": 1,
+				"mar_ed": 1,
+				"apr_ed": 1,
+				"may_ed": 1
+			}
+			return editions
+			
+		if month == '3':
+			editions = {
+				"mar_ed": 1,
+				"apr_ed": 1,
+				"may_ed": 1,
+				"jun_ed": 1
+			}
+			return editions
+			
+		if month == '4':
+			editions = {
+				"apr_ed": 1,
+				"may_ed": 1,
+				"jun_ed": 1,
+				"jul_ed": 1
+			}
+			return editions
+			
+		if month == '5':
+			editions = {
+				"may_ed": 1,
+				"jun_ed": 1,
+				"jul_ed": 1,
+				"aug_ed": 1
+			}
+			return editions
+			
+		if month == '6':
+			editions = {
+				"jun_ed": 1,
+				"jul_ed": 1,
+				"aug_ed": 1,
+				"sept_ed": 1
+			}
+			return editions
+			
+		if month == '7':
+			editions = {
+				"jul_ed": 1,
+				"aug_ed": 1,
+				"sept_ed": 1,
+				"oct_ed": 1
+			}
+			return editions
+			
+		if month == '8':
+			editions = {
+				"aug_ed": 1,
+				"sept_ed": 1,
+				"oct_ed": 1,
+				"nov_ed": 1
+			}
+			return editions
+			
+		if month == '9':
+			editions = {
+				"sept_ed": 1,
+				"oct_ed": 1,
+				"nov_ed": 1,
+				"dec_ed": 1
+			}
+			return editions
+			
+		if month == '10':
+			editions = {
+				"oct_ed": 1,
+				"nov_ed": 1,
+				"dec_ed": 1,
+				"jan_ed": 1
+			}
+			return editions
+			
+		if month == '11':
+			editions = {
+				"nov_ed": 1,
+				"dec_ed": 1,
+				"jan_ed": 1,
+				"feb_ed": 1
+			}
+			return editions
+			
+		if month == '12':
+			editions = {
+				"dec_ed": 1,
+				"jan_ed": 1,
+				"feb_ed": 1,
+				"mar_ed": 1
+			}
+			return editions
