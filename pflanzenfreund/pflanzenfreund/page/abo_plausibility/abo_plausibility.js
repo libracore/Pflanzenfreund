@@ -227,11 +227,19 @@ function crateTableContentElement(zustand, bereinigung, action, customer, abo) {
 	var input_checkbox = document.createElement("input");
 	var td_btn_btn = document.createElement("button");
 	
+	var td_info_btn = document.createElement("td");
+	var td_info_btn_btn_span = document.createElement("span");
+	var td_info_btn_btn = document.createElement("button");
+	var td_info_btn_btn_span_txt = document.createTextNode('Details anzeigen');
+	
 	var td_zustand_txt = document.createTextNode(zustand);
 	var td_bereinigung_txt = document.createTextNode(bereinigung);
 	var td_btn_btn_span_txt = document.createTextNode('Diese Position bereinigen');
 	
-	
+	td_info_btn_btn.setAttribute("class", "btn btn-primary btn-sm primary-action");
+	td_info_btn_btn.onclick = function() { 
+		showDetail(this);
+	};
 	
 	td_btn_btn.setAttribute("class", "btn btn-primary btn-sm primary-action");
 	td_btn_btn.onclick = function() { 
@@ -241,6 +249,9 @@ function crateTableContentElement(zustand, bereinigung, action, customer, abo) {
 	input_checkbox.setAttribute("type", "checkbox");
 	input_checkbox.setAttribute("class", "form-check-input");
 	
+	td_info_btn.setAttribute("data-refcustomer", customer);
+	td_info_btn.setAttribute("data-refabo", abo);
+	
 	td_btn.setAttribute("data-todo", action);
 	td_btn.setAttribute("data-refcustomer", customer);
 	td_btn.setAttribute("data-refabo", abo);
@@ -248,6 +259,11 @@ function crateTableContentElement(zustand, bereinigung, action, customer, abo) {
 	td_check.appendChild(input_checkbox);
 	td_zustand.appendChild(td_zustand_txt);
 	td_bereinigung.appendChild(td_bereinigung_txt);
+	
+	td_info_btn_btn_span.appendChild(td_info_btn_btn_span_txt);
+	td_info_btn_btn.appendChild(td_info_btn_btn_span);
+	td_info_btn.appendChild(td_info_btn_btn);
+	
 	td_btn_btn_span.appendChild(td_btn_btn_span_txt);
 	td_btn_btn.appendChild(td_btn_btn_span);
 	td_btn.appendChild(td_btn_btn);
@@ -255,6 +271,7 @@ function crateTableContentElement(zustand, bereinigung, action, customer, abo) {
 	tr.appendChild(td_check);
 	tr.appendChild(td_zustand);
 	tr.appendChild(td_bereinigung);
+	tr.appendChild(td_info_btn);
 	tr.appendChild(td_btn);
 	
 	tabelle.appendChild(tr);
@@ -452,3 +469,64 @@ function allSelectedBereinigen() {
 		});
 	}
 }
+
+function showDetail(btn) {
+	var customer = btn.parentNode.dataset.refcustomer;
+	var abo = btn.parentNode.dataset.refabo;
+	var customer_name = "";
+	var kundenkarte = "";
+	var werbe_sperre = "";
+	var abo_type = "";
+	var abo_start = "";
+	var abo_end = "";
+		frappe.call({
+		"method": "frappe.client.get",
+		"args": {
+			"doctype": "Customer",
+			"name": customer
+		},
+		"callback": function(r_customer) {
+			var customer_details = r_customer.message;
+			if (customer_details) {
+				customer_name = customer_details.customer_name;
+				if (customer_details.karte == "J") {
+					kundenkarte = "Ja";
+				} else {
+					kundenkarte = "Nein";
+				}
+				if (customer_details.code_05 == "1") {
+					werbe_sperre = "Ja";
+				} else {
+					werbe_sperre = "Nein";
+				}
+				
+				if ((abo != "Kunden-Abo (OK)") && (abo != "Kundenkarten-Abo (KK)")) {
+					frappe.call({
+						"method": "frappe.client.get",
+						"args": {
+							"doctype": "Pflanzenfreund Abo",
+							"name": abo
+						},
+						"callback": function(response) {
+							var abo_details = response.message;
+							if (abo_details) {
+								abo_type = abo_details.abo_type;
+								abo_start = abo_details.start_date;
+								abo_end = abo_details.end_date;
+								
+								frappe.msgprint("<h2><a href='/desk#Form/Customer/" + customer + "'>" + customer + "</a></h2><br><b>Name:</b> " + customer_name + "<br><b>Kundenkarte:</b> " + kundenkarte + "<br><b>Werbe-Sperre:</b> " + werbe_sperre + "<br><h2><a href='/desk#Form/Pflanzenfreund Abo/" + abo + "'>" + abo + "</a></h2><br><b>Typ:</b> " + abo_type + "<br><b>Von</b> " + abo_start + " <b>bis</b> " + abo_end, "Details");
+							} else {
+								frappe.msgprint("Es wurden keine Abo Details gefunden", "Error");
+							}
+						}
+					});
+				} else {
+					frappe.msgprint("<h2><a href='/desk#Form/Customer/" + customer + "'>" + customer + "</a></h2><br><b>Name:</b> " + customer_name + "<br><b>Kundenkarte:</b> " + kundenkarte + "<br><b>Werbe-Sperre:</b> " + werbe_sperre, "Details");
+				}
+			} else {
+				frappe.msgprint("Es wurden keine Kunden Details gefunden", "Error");
+			}
+		}
+	});
+}
+
