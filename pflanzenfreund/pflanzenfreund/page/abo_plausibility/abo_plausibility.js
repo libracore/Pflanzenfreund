@@ -476,6 +476,7 @@ function showDetail(btn) {
 	var customer_name = "";
 	var kundenkarte = "";
 	var werbe_sperre = "";
+	var kunden_status = "";
 	var abo_type = "";
 	var abo_start = "";
 	var abo_end = "";
@@ -499,6 +500,11 @@ function showDetail(btn) {
 				} else {
 					werbe_sperre = "Nein";
 				}
+				if (customer_details.disabled == "1") {
+					kunden_status = "Deaktiviert";
+				} else {
+					kunden_status = "Aktiv";
+				}
 				
 				if ((abo != "Kunden-Abo (OK)") && (abo != "Kundenkarten-Abo (KK)")) {
 					frappe.call({
@@ -514,14 +520,14 @@ function showDetail(btn) {
 								abo_start = abo_details.start_date;
 								abo_end = abo_details.end_date;
 								
-								frappe.msgprint("<h2><a href='/desk#Form/Customer/" + customer + "'>" + customer + "</a></h2><br><b>Name:</b> " + customer_name + "<br><b>Kundenkarte:</b> " + kundenkarte + "<br><b>Werbe-Sperre:</b> " + werbe_sperre + "<br><h2><a href='/desk#Form/Pflanzenfreund Abo/" + abo + "'>" + abo + "</a></h2><br><b>Typ:</b> " + abo_type + "<br><b>Von</b> " + abo_start + " <b>bis</b> " + abo_end, "Details");
+								frappe.msgprint("<h2><a href='/desk#Form/Customer/" + customer + "'>" + customer + "</a></h2><br><b>Name:</b> " + customer_name + "<br><b>Kundenkarte:</b> " + kundenkarte + "<br><b>Werbe-Sperre:</b> " + werbe_sperre + "<br><b>Status:</b> " + kunden_status + "<br><h2><a href='/desk#Form/Pflanzenfreund Abo/" + abo + "'>" + abo + "</a></h2><br><b>Typ:</b> " + abo_type + "<br><b>Von</b> " + abo_start + " <b>bis</b> " + abo_end, "Details");
 							} else {
 								frappe.msgprint("Es wurden keine Abo Details gefunden", "Error");
 							}
 						}
 					});
 				} else {
-					frappe.msgprint("<h2><a href='/desk#Form/Customer/" + customer + "'>" + customer + "</a></h2><br><b>Name:</b> " + customer_name + "<br><b>Kundenkarte:</b> " + kundenkarte + "<br><b>Werbe-Sperre:</b> " + werbe_sperre, "Details");
+					frappe.msgprint("<h2><a href='/desk#Form/Customer/" + customer + "'>" + customer + "</a></h2><br><b>Name:</b> " + customer_name + "<br><b>Kundenkarte:</b> " + kundenkarte + "<br><b>Werbe-Sperre:</b> " + werbe_sperre + "<br><b>Status:</b> " + kunden_status, "Details");
 				}
 			} else {
 				frappe.msgprint("Es wurden keine Kunden Details gefunden", "Error");
