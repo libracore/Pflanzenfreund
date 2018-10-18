@@ -363,6 +363,7 @@ def umwandlungen_bereinigung(customer, abo):
 	frappe.db.commit()
 	old_abo.add_comment('Comment', 'Dieses Abo wurde automatisiert storniert und in ein Gratis-Abo ({0}) umgewandelt'.format(new_abo.name))
 	new_abo.add_comment('Comment', 'Dieses Abo wurde automatisiert erstellt, basierend auf dem Geschenk-Abo {0}'.format(old_abo.name))
+	remove_links_in_sales_invoice = frappe.db.sql("""UPDATE `tabSales Invoice` SET `pflanzenfreund_abo` = null WHERE `pflanzenfreund_abo` = '{0}'""".format(old_abo.name), as_list=True)
 	old_abo.cancel()
 	
 	return new_abo
