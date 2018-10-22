@@ -464,6 +464,7 @@ function allSelectedBereinigen() {
 				}
 			}
 		});
+		frappe.msgprint('Die Sammel-Bereinigung wurde erfolgreich dem Background-Worker übergeben.', 'Erfolg');
 	}
 }
 

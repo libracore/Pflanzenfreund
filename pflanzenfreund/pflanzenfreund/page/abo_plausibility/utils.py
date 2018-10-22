@@ -394,7 +394,9 @@ def sammel_bereinigung(_stornos, _umwandlungen, _anlagen_kk, _anlagen_ok):
 		if len(anlagen_ok_item) > 4:
 			anlagen_ok_bereinigung(anlagen_ok_item)
 		
-	return stornos, umwandlungen, anlagen_kk, anlagen_ok
+	#return stornos, umwandlungen, anlagen_kk, anlagen_ok
+	message = 'Der Background-Job Sammel Bereinigung wurde erfolgreich abgeschlossen, die Daten sind nun bereinigt.'
+	frappe.publish_realtime(event='msgprint',message=message,user=frappe.session.user)
 	
 @frappe.whitelist()
 def sammel_bereinigung_background(stornos, umwandlungen, anlagen_kk, anlagen_ok):
