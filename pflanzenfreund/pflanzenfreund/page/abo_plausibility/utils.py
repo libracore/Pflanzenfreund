@@ -221,32 +221,52 @@ def aktivierte_kunden_ohne_werbe_sperre_mit_kundenkarte(start, end):
 			probe_qty = 0
 			geschenk_qty = 0
 			kk_qty = 0
-			jahr_qty = get_abo_or_qty(customer.name, "Jahres-Abo")
-			probe_qty = get_abo_or_qty(customer.name, "Probe-Abo")
-			geschenk_qty = get_abo_or_qty(customer.name, "Geschenk-Abo")
+			ok_qty = 0
+			
+			jahr_qty, probe_qty, geschenk_qty, kk_qty, ok_qty = get_abo_qty_sql(customer.name)
+			
+			#jahr_qty = get_abo_or_qty(customer.name, "Jahres-Abo")
+			#probe_qty = get_abo_or_qty(customer.name, "Probe-Abo")
+			#geschenk_qty = get_abo_or_qty(customer.name, "Geschenk-Abo")
 			
 			if jahr_qty > 0 or probe_qty > 0 or geschenk_qty > 0:
 				#abfrage aller KK abos und vorschlagen für stornierung
-				abos = get_abo_or_qty(customer.name, "Kundenkarten-Abo (KK)", qty=False)
+				#abos = get_abo_or_qty(customer.name, "Kundenkarten-Abo (KK)", qty=False)
+				abos = frappe.get_all("Pflanzenfreund Abo", {'customer': customer.name, 'docstatus': 1, 'end_date': (">=", utils.today()), 'abo_type': "Kundenkarten-Abo (KK)"}, ["name"])
 				for abo in abos:
 					results.append(['Der Kunde {0} besitzt ein Kundenkarten-Abo (KK) ({1}), hat aber bereits bezahlte Abonnemente'.format(customer.name, abo.name), 'Das Abonnement stornieren', 'storno', customer.name, abo.name])
 			else:
 				#abfrage ob kk abo, wenn nein vorschlag für erstellung
-				kk_qty = 0
-				kk_qty = get_abo_or_qty(customer.name, "Kundenkarten-Abo (KK)")
+				#kk_qty = 0
+				#kk_qty = get_abo_or_qty(customer.name, "Kundenkarten-Abo (KK)")
 				if kk_qty == 0:
 					results.append(['Der Kunde {0} besitzt eine Kundenkarte, hat aber weder bezahlte Abonnemente noch ein Kundenkarten-Abo (KK)'.format(customer.name), 'Ein Kundenkarten-Abo (KK) anlegen', 'anlage_kk', customer.name, 'Kundenkarten-Abo (KK)'])
 				if kk_qty > 1:
 					results.append(['Der Kunde {0} besitzt mehere Kundenkarten-Abo (KK)'.format(customer.name), 'Alle bis auf ein Kundenkarten-Abo (KK) stornieren', 'none', customer.name, 'none'])
+					
+			if ok_qty > 0:
+				#abfrage aller OK abos und vorschlagen für stornierung
+				#abos = get_abo_or_qty(customer.name, "Kunden-Abo (OK)", qty=False)
+				abos = frappe.get_all("Pflanzenfreund Abo", {'customer': customer.name, 'docstatus': 1, 'end_date': (">=", utils.today()), 'abo_type': "Kunden-Abo (OK)"}, ["name"])
+				for abo in abos:
+					results.append(['Der Kunde {0} besitzt ein Kunden-Abo (OK) ({1}), hat aber eine Kundenkarte'.format(customer.name, abo.name), 'Das Abonnement stornieren', 'storno', customer.name, abo.name])
 	return results
 	
-def get_abo_or_qty(customer, abotype, qty=True):
-	abos = frappe.get_all("Pflanzenfreund Abo", {'customer': customer, 'docstatus': 1, 'end_date': (">=", utils.today()), 'abo_type': ("=", abotype)}, ["name"])
-	if qty:
-		abo_qty = len(abos)
-		return abo_qty
-	else:
-		return abos
+# def get_abo_or_qty(customer, abotype, qty=True):
+	# abos = frappe.get_all("Pflanzenfreund Abo", {'customer': customer, 'docstatus': 1, 'end_date': (">=", utils.today()), 'abo_type': ("=", abotype)}, ["name"])
+	# if qty:
+		# abo_qty = len(abos)
+		# return abo_qty
+	# else:
+		# return abos
+		
+def get_abo_qty_sql(customer):
+	results = frappe.db.sql("""SELECT (SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Jahres-Abo' AND `end_date` >= {1}),
+		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Probe-Abo' AND `end_date` >= {1}),
+		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Geschenk-Abo' AND `end_date` >= {1}),
+		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Kundenkarten-Abo (KK)' AND `end_date` >= {1}),
+		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Kunden-Abo (OK)' AND `end_date` >= {1})""".format(customer, utils.today()), as_list=True)[0]
+	return results[0], results[1], results[2], results[3], results[4]
 
 def aktivierte_kunden_ohne_werbe_sperre_ohne_kundenkarte(start, end):
 	results = []
@@ -264,23 +284,33 @@ def aktivierte_kunden_ohne_werbe_sperre_ohne_kundenkarte(start, end):
 			probe_qty = 0
 			geschenk_qty = 0
 			ok_qty = 0
-			jahr_qty = get_abo_or_qty(customer.name, "Jahres-Abo")
-			probe_qty = get_abo_or_qty(customer.name, "Probe-Abo")
-			geschenk_qty = get_abo_or_qty(customer.name, "Geschenk-Abo")
+			kk_qty = 0
+			
+			jahr_qty, probe_qty, geschenk_qty, kk_qty, ok_qty = get_abo_qty_sql(customer.name)
+			
+			#jahr_qty = get_abo_or_qty(customer.name, "Jahres-Abo")
+			#probe_qty = get_abo_or_qty(customer.name, "Probe-Abo")
+			#geschenk_qty = get_abo_or_qty(customer.name, "Geschenk-Abo")
 			
 			if jahr_qty > 0 or probe_qty > 0 or geschenk_qty > 0:
 				#abfrage aller OK abos und vorschlagen für stornierung
-				abos = get_abo_or_qty(customer.name, "Kunden-Abo (OK)", qty=False)
+				#abos = get_abo_or_qty(customer.name, "Kunden-Abo (OK)", qty=False)
+				abos = frappe.get_all("Pflanzenfreund Abo", {'customer': customer.name, 'docstatus': 1, 'end_date': (">=", utils.today()), 'abo_type': "Kunden-Abo (OK)"}, ["name"])
 				for abo in abos:
 					results.append(['Der Kunde {0} besitzt ein Kunden-Abo (OK) ({1}), hat aber bereits bezahlte Abonnemente'.format(customer.name, abo.name), 'Das Abonnement stornieren', 'storno', customer.name, abo.name])
 			else:
 				#abfrage ob ok abo, wenn nein vorschlag für erstellung
-				ok_qty = 0
-				ok_qty = get_abo_or_qty(customer.name, "Kunden-Abo (OK)")
+				#ok_qty = 0
+				#ok_qty = get_abo_or_qty(customer.name, "Kunden-Abo (OK)")
 				if ok_qty == 0:
 					results.append(['Der Kunde {0} besitzt keine Kundenkarte, hat aber weder bezahlte Abonnemente noch ein Kunden-Abo (OK)'.format(customer.name), 'Ein Kunden-Abo (OK) anlegen', 'anlage_ok', customer.name, 'Kunden-Abo (OK)'])
 				if ok_qty > 1:
 					results.append(['Der Kunde {0} besitzt mehere Kunden-Abo (OK)'.format(customer.name), 'Alle bis auf ein Kunden-Abo (OK) stornieren', 'none', customer.name, 'none'])
+					
+			if kk_qty > 0:
+				abos = frappe.get_all("Pflanzenfreund Abo", {'customer': customer.name, 'docstatus': 1, 'end_date': (">=", utils.today()), 'abo_type': "Kundenkarten-Abo (KK)"}, ["name"])
+				for abo in abos:
+					results.append(['Der Kunde {0} besitzt ein Kundenkarten-Abo (KK) ({1}), hat aber keine Kundenkarte'.format(customer.name, abo.name), 'Das Abonnement stornieren', 'storno', customer.name, abo.name])
 	return results
 	
 
