@@ -371,6 +371,7 @@ def sammel_bereinigung(_stornos, _umwandlungen, _anlagen_kk, _anlagen_ok):
 	umwandlungen = _umwandlungen.split("**+**")
 	anlagen_kk = _anlagen_kk.split("**+**")
 	anlagen_ok = _anlagen_ok.split("**+**")
+	#throw(_stornos)
 	for storno in stornos:
 		try:
 			customer, abo = storno.split("**-**")
@@ -404,7 +405,7 @@ def sammel_bereinigung_background(stornos, umwandlungen, anlagen_kk, anlagen_ok)
 		'_anlagen_ok': anlagen_ok
 	}
 	enqueue("pflanzenfreund.pflanzenfreund.page.abo_plausibility.utils.sammel_bereinigung", queue='long', job_name='Sammel Bereinigung', timeout=3000, **args)
-	return "background"
+	#return "background"
 	
 @frappe.whitelist()
 def storno_bereinigung(customer, abo):

@@ -424,7 +424,7 @@ function allSelectedBereinigen() {
 			mark_green(tr);
 			td = tr.getElementsByTagName("td")[0];
 			if (td.childNodes[0].checked == true) {
-				var ref_td = tr.getElementsByTagName("td")[3];
+				var ref_td = tr.getElementsByTagName("td")[4];
 				var action = ref_td.dataset.todo;
 				var customer = ref_td.dataset.refcustomer;
 				var abo = ref_td.dataset.refabo;
@@ -445,8 +445,8 @@ function allSelectedBereinigen() {
 			}
 		}
 	}
+	closeNav();
 	if (control_qty == 0) {
-		closeNav();
 		frappe.msgprint("Es wurde keine Zeile ausgewählt", "Keine Aktion getroffen");
 	} else {
 		frappe.call({
@@ -459,10 +459,7 @@ function allSelectedBereinigen() {
 			},
 			callback: function(r) {
 				if (r.message) {
-					closeNav();
 					console.log(r.message);
-				} else {
-					closeNav();
 					frappe.msgprint("Bitte wenden Sie sich an libracore.", "ERROR");
 				}
 			}
