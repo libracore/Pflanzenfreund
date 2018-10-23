@@ -12,11 +12,11 @@ class PflanzenfreundAbo(Document):
 			try:
 				customer_contact_link = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `link_name` = '{0}' AND `parenttype` = 'Contact'""".format(self.customer), as_list = True)
 				customer_contact = frappe.get_doc("Contact", customer_contact_link[0][0])
-				self.customer_letter_salutation = customer_contact.letter_salutation
+				self.customer_letter_salutation = customer_contact.salutation
 				
 				donee_contact_link = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `link_name` = '{0}' AND `parenttype` = 'Contact'""".format(self.donee), as_list = True)
 				donee_contact = frappe.get_doc("Contact", donee_contact_link[0][0])
-				self.donee_letter_salutation = donee_contact.letter_salutation
+				self.donee_letter_salutation = donee_contact.salutation
 			except:
 				self.customer_letter_salutation = "Sehr geehrte Damen und Herren"
 				self.donee_letter_salutation = "Sehr geehrte Damen und Herren"
@@ -25,7 +25,7 @@ class PflanzenfreundAbo(Document):
 			try:
 				contact_link = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `link_name` = '{0}' AND `parenttype` = 'Contact'""".format(self.customer), as_list = True)
 				contact = frappe.get_doc("Contact", contact_link[0][0])
-				self.customer_letter_salutation = contact.letter_salutation
+				self.customer_letter_salutation = contact.salutation
 			except:
 				self.customer_letter_salutation = "Sehr geehrte Damen und Herren"
 
