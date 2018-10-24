@@ -19,6 +19,7 @@ from erpnext.shopping_cart.doctype.shopping_cart_settings.shopping_cart_settings
 from frappe.utils.nestedset import get_root_of
 from frappe import utils
 import esr
+from frappe.utils.background_jobs import enqueue
 
 def get_navbar_items(position):
 	if position == 'top':
@@ -617,7 +618,26 @@ def add_year(date):
 	return utils.add_years(date, 1)
 	
 @frappe.whitelist()
-def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text):
+def qty_abo_rechnungslauf(start, end, abo_type):
+	return len(frappe.get_all('Pflanzenfreund Abo', filters=[['docstatus', '=', '1'], ['end_date', '>=', start], ['end_date', '<=', end], ['abo_type', '=', abo_type], ['abo_renewed', '=', '0']], fields=['name']))
+	
+@frappe.whitelist()
+def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background):
+	if background == "no":
+		return _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background)
+	else:
+		max_time = qty_abo_rechnungslauf(start, end, abo_type) * 3
+		args = {
+			'start': start,
+			'end': end,
+			'abo_type': abo_type,
+			'bullet_type': bullet_type,
+			'bullet_text': bullet_text,
+			'background': background
+		}
+		enqueue("pflanzenfreund.utils._createNewInvoices_abo_rechnungslauf", queue='long', job_name='Automatisierter Abonnementenlauf', timeout=max_time, **args)
+	
+def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background):
 	_abos = frappe.get_all('Pflanzenfreund Abo', filters=[['docstatus', '=', '1'], ['end_date', '>=', start], ['end_date', '<=', end], ['abo_type', '=', abo_type], ['abo_renewed', '=', '0']], fields=['name'])
 	abos = []
 
@@ -702,7 +722,11 @@ def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bulle
 		frappe.db.commit()
 		#appened new invoice to new_invoices
 		results.append([new_abo.name, sales_invoice.name])
-	return results
+	if background == "no":
+		return results
+	else:
+		message = 'Der Background-Job Automatisierter Abonnementenlauf wurde erfolgreich abgeschlossen.'
+		frappe.publish_realtime(event='msgprint',message=message,user=frappe.session.user)
 	
 @frappe.whitelist()
 def get_abos_for_customer_view(customer):
