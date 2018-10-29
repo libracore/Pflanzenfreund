@@ -220,7 +220,7 @@ def check_aktivierte_kunden_mit_werbe_sperre(start, end):
 		if customer.name != 'Administrator' and customer.name != 'Guest':
 			abos, geschenke = get_abos_of_customer(customer.name, werbesperre=True)
 			for abo in abos:
-				if abo.abo_type != "Geschenk-Abo" and abo.abo_type != "Jahres-Abo" and abo.abo_type != "Probe-Abo":
+				if abo.abo_type != "Geschenk-Abo" and abo.abo_type != "Jahres-Abo" and abo.abo_type != "Probe-Abo" and abo.abo_type != "VIP-Abo":
 					results.append(['Der Kunde {0} besitzt das Abonnement {1}, hat aber eine Werbe-Sperre'.format(customer.name, abo.name), 'Das Abonnement stornieren', 'storno', customer.name, abo.name])
 					control_results += 1
 					if control_results == max_results:
