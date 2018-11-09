@@ -90,7 +90,8 @@ def execute(filters=None):
 				LEFT JOIN `tabSales Invoice` AS t6 ON t1.`name` = t6.`pflanzenfreund_abo` AND t6.`docstatus` = '1')
 				WHERE t1.`{0}` = '1'
 				AND t1.`docstatus` = '1'
-				AND t1.`end_date` >= '{1}'
+				AND (t1.`end_date` >= '{1}'
+				OR t1.`end_date` IS NULL)
 				AND t1.`start_date` <= '{1}'""".format(edition, ref_date), as_list = True)
 				
 		_chart_data = {"Jahres-Abo":"", "Probe-Abo":"", "Geschenk-Abo":"", "Gratis-Abo":"", "VIP-Abo":"", "Kundenkarten-Abo (KK)":"", "Kunden-Abo (OK)":""}
@@ -102,7 +103,8 @@ def execute(filters=None):
 										AND `{0}` = '1'
 										AND `abo_type` = '{1}'
 										AND `docstatus` = '1'
-										AND `end_date` >= '{3}'
+										AND (`end_date` >= '{3}'
+										OR `end_date` IS NULL)
 										AND `start_date` <= '{3}'""".format(edition, key, year, ref_date), as_list = True)[0]
 		chart=get_chart_data(data, filtered_chart_data=_chart_data)
 	return columns, data, None, chart
