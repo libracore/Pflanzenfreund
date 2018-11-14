@@ -102,7 +102,7 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 				var month = start.split("-")[1];
 				var day = start.split("-")[2];
 				var end = (parseInt((new Date()).getFullYear()) + 1) + "-" + month + "-" + day;
-				var text = "<div>Sie erhalten als Geschenk für die Periode " + cur_frm.doc.start_date + " bis " + end + " ein Abonnement des<br><b>SCHWEIZERISCHEN PFLANZENFREUNDES</b><br> die illustrierte Monatszeitschrift für jeden Gartenbesitzer.</div>"
+				var text = "<div><p>Sie erhalten im Auftrag von " + cur_frm.doc.customer_name + " als Geschenk-Abo die nächsten 10 Ausgaben unseres Gartenmagazins «Mein Pflanzenfreund» bequem und rechtzeitig zur Saison. Wir wünschen Ihnen viel Vergnügen bei der Lektüre.</p></div>"
 				cur_frm.set_value('donee_text', text);
 			}
 		}
