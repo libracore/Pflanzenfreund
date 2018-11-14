@@ -5,6 +5,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
+from erpnext.controllers.sales_and_purchase_return import make_return_doc
 
 class PflanzenfreundAbo(Document):
 	def before_save(self):
@@ -30,9 +31,30 @@ class PflanzenfreundAbo(Document):
 				self.customer_letter_salutation = "Sehr geehrte Damen und Herren"
 
 	def before_cancel(self):
+		customer = frappe.get_doc("Customer", self.customer)
+		disable_status = False
+		if customer.disabled == 1:
+			disable_status = True
+			enable_customer = frappe.db.sql("""UPDATE `tabCustomer` SET `disabled` = '0' WHERE `name` = '{0}'""".format(self.customer), as_list=True)
+		
+		linked_sales_invoices = frappe.db.sql("""SELECT `name` FROM `tabSales Invoice` WHERE `pflanzenfreund_abo` = '{0}'""".format(self.name), as_list=True)
+		remove_links_in_sales_invoice = frappe.db.sql("""UPDATE `tabSales Invoice` SET `pflanzenfreund_abo` = null WHERE `pflanzenfreund_abo` = '{0}'""".format(self.name), as_list=True)
+		for _sales_invoice in linked_sales_invoices:
+			sales_invoice = frappe.get_doc("Sales Invoice", _sales_invoice[0])
+			sales_invoice.add_comment('Comment', 'Diese Rechnung wurde automatisiert storniert/gutgeschrieben')
+			reurn_invoice = make_return_doc("Sales Invoice", sales_invoice.name)
+			reurn_invoice.insert()
+			reurn_invoice.add_comment('Comment', 'Diese Gutschrift wurde automatisiert erstellt')
+			reurn_invoice.submit()
+			frappe.db.commit()
+		frappe.db.commit()
+		
+		if disable_status:
+			disable_customer = frappe.db.sql("""UPDATE `tabCustomer` SET `disabled` = '1' WHERE `name` = '{0}'""".format(self.customer), as_list=True)
+		
 		for linked_abo in frappe.get_all("Pflanzenfreund Abo", filters={"new_abo": self.name}, fields=["name"]):
 			remove_link = frappe.db.sql("""UPDATE `tabPflanzenfreund Abo` SET `new_abo` = '' WHERE `name` = '{0}'""".format(linked_abo.name), as_list = True)
-		frappe.msgprint("Alle existierenden Abo Verknüpfungen wurden entfernt", "Entfernung Abo-Verknüpfungen")
+		frappe.msgprint("Alle existierenden Abo Verknüpfungen wurden entfernt und für alle verknüpften Rechnungen eine Gutschrift erstellt.", "Entfernung Abo-Verknüpfungen & Erstellung Gutschrift")
 		
 @frappe.whitelist()
 def create_abo(customer):
