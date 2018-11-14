@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import frappe
 from frappe import throw, _, utils
 from frappe.utils.background_jobs import enqueue
+from erpnext.controllers.sales_and_purchase_return import make_return_doc
 
 @frappe.whitelist()
 def start_background_jop(mod=None, start=None, end=None):
@@ -412,9 +413,28 @@ def sammel_bereinigung_background(stornos, umwandlungen, anlagen_kk, anlagen_ok)
 @frappe.whitelist()
 def storno_bereinigung(customer, abo):
 	to_storno = frappe.get_doc("Pflanzenfreund Abo", abo)
+	customer = frappe.get_doc("Customer", to_storno.customer)
+	disable_status = False
+	if customer.disabled == 1:
+		disable_status = True
+		enable_customer = frappe.db.sql("""UPDATE `tabCustomer` SET `disabled` = '0' WHERE `name` = '{0}'""".format(to_storno.customer), as_list=True)
+	
 	to_storno.add_comment('Comment', 'Dieses Abo wurde automatisiert storniert')
+	linked_sales_invoices = frappe.db.sql("""SELECT `name` FROM `tabSales Invoice` WHERE `pflanzenfreund_abo` = '{0}'""".format(to_storno.name), as_list=True)
 	remove_links_in_sales_invoice = frappe.db.sql("""UPDATE `tabSales Invoice` SET `pflanzenfreund_abo` = null WHERE `pflanzenfreund_abo` = '{0}'""".format(to_storno.name), as_list=True)
+	for _sales_invoice in linked_sales_invoices:
+		sales_invoice = frappe.get_doc("Sales Invoice", _sales_invoice[0])
+		sales_invoice.add_comment('Comment', 'Diese Rechnung wurde automatisiert storniert/gutgeschrieben')
+		reurn_invoice = make_return_doc("Sales Invoice", sales_invoice.name)
+		reurn_invoice.insert()
+		reurn_invoice.add_comment('Comment', 'Diese Gutschrift wurde automatisiert erstellt')
+		reurn_invoice.submit()
+		frappe.db.commit()
 	to_storno.cancel()
+	frappe.db.commit()
+	
+	if disable_status:
+		disable_customer = frappe.db.sql("""UPDATE `tabCustomer` SET `disabled` = '1' WHERE `name` = '{0}'""".format(to_storno.customer), as_list=True)
 	
 	return customer, abo
 	
