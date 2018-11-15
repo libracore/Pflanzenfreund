@@ -86,5 +86,17 @@ def get_data():
 			   "description": _("Abonnementen Plausibility Check")
 		   }
 		]
-	}
+	},
+        {
+                "label": _("Configuration"),
+                "icon": "fa fa-wrench",
+                "items": [
+                   {
+                           "type": "doctype",
+                           "name": "Textbaustein",
+                           "label": _("Textbaustein"),
+                           "description": _("Textbaustein")
+                   }
+                ]
+        }
 ]
