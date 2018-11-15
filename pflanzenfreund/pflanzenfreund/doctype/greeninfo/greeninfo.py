@@ -386,7 +386,7 @@ def export_data(filename, mod_date="2000-01-01"):
     for contact_name in contacts:
         print("Looking for {0}...".format(contact_name['name']))
         customer = frappe.get_doc("Customer", contact_name['name'])
-        adr_link = frappe.get_all("Dynamic Link", filters={'link_name': contact_name['name'], 'parenttype': 'Address'}, fields=['parent'])
+        adr_link = frappe.get_all("Dynamic Link", filters={'link_name': contact_name['name'], 'parenttype': 'Address', `idx`: 1}, fields=['parent'])
         if adr_link:
             address = frappe.get_doc("Address", adr_link[0]['parent'])
         else:
