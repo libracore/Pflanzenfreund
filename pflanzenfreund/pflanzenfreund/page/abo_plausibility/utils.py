@@ -301,7 +301,7 @@ def aktivierte_kunden_ohne_werbe_sperre_mit_kundenkarte(start, end):
 def get_abo_qty_sql(customer):
 	results = frappe.db.sql("""SELECT (SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Jahres-Abo' AND `end_date` >= {1}),
 		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Probe-Abo' AND `end_date` >= {1}),
-		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Geschenk-Abo' AND `end_date` >= {1}),
+		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `donee` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Geschenk-Abo' AND `end_date` >= {1}),
 		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Kundenkarten-Abo (KK)' AND `end_date` >= {1}),
 		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Kunden-Abo (OK)' AND `end_date` >= {1})""".format(customer, utils.today()), as_list=True)[0]
 	return results[0], results[1], results[2], results[3], results[4]
