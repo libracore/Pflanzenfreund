@@ -20,6 +20,7 @@ from frappe.utils.nestedset import get_root_of
 from frappe import utils
 import esr
 from frappe.utils.background_jobs import enqueue
+from frappe.utils.data import add_days
 
 def get_navbar_items(position):
 	if position == 'top':
@@ -622,9 +623,9 @@ def qty_abo_rechnungslauf(start, end, abo_type):
 	return len(frappe.get_all('Pflanzenfreund Abo', filters=[['docstatus', '=', '1'], ['end_date', '>=', start], ['end_date', '<=', end], ['abo_type', '=', abo_type], ['abo_renewed', '=', '0']], fields=['name']))
 	
 @frappe.whitelist()
-def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background):
+def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background, rechnungsdatum):
 	if background == "no":
-		return _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background)
+		return _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background, rechnungsdatum)
 	else:
 		max_time = qty_abo_rechnungslauf(start, end, abo_type) * 3
 		args = {
@@ -633,11 +634,12 @@ def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bulle
 			'abo_type': abo_type,
 			'bullet_type': bullet_type,
 			'bullet_text': bullet_text,
-			'background': background
+			'background': background,
+			'rechnungsdatum': rechnungsdatum
 		}
 		enqueue("pflanzenfreund.utils._createNewInvoices_abo_rechnungslauf", queue='long', job_name='Automatisierter Abonnementenlauf', timeout=max_time, **args)
 	
-def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background):
+def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background, rechnungsdatum):
 	_abos = frappe.get_all('Pflanzenfreund Abo', filters=[['docstatus', '=', '1'], ['end_date', '>=', start], ['end_date', '<=', end], ['abo_type', '=', abo_type], ['abo_renewed', '=', '0']], fields=['name'])
 	abos = []
 
@@ -687,7 +689,8 @@ def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bull
 			"customer": old_abo.customer,
 			"customer_address": old_abo.customer_address,
 			"shipping_address_name": old_abo.donee_address,
-			"delivery_date": utils.today(),
+			"set_posting_time": 1,
+			"posting_date": add_days(rechnungsdatum, 0),
 			"pflanzenfreund_abo": new_abo.name,
 			"taxes_and_charges": "Schweiz normal (302) - GCM",
 			"items": [{
@@ -700,8 +703,27 @@ def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bull
 				"cost_center": "Haupt - GCM",
 				"rate": "7.7",
 				"description": "Inkl. 7.7% MwSt"
+			}],
+			"due_date": add_days(rechnungsdatum, 30),
+			"payment_schedule": [{
+				"payment_term": "30 Tage netto",
+				"description": "30 Tage netto",
+				"due_date": add_days(rechnungsdatum, 30),
+				"invoice_portion": "100",
+				"payment_amount": sales_invoice.rounded_total
 			}]
 		})
+		# sales_invoice.update({
+			# "due_date": add_days(rechnungsdatum, 30),
+			# "payment_terms_template": "30 Tage netto",
+			# "payment_schedule": [{
+				# "payment_term": "30 Tage netto",
+				# "description": "30 Tage netto",
+				# "due_date": add_days(rechnungsdatum, 30),
+				# "invoice_portion": "100",
+				# "payment_amount": sales_invoice.rounded_total
+			# }]
+		# })
 		if bullet_type != 'kein':
 			sales_invoice.update({
 				"bullet_selection": bullet_type,

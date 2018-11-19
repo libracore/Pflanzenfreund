@@ -22,18 +22,29 @@
 						<option>Geschenk-Abo</option>
 					</select>
 				</div>
-				<div class="radio">
+				<div class="form-group">
+					<label for="vordatierung">Manuelles Rechnungsdatum:</label>
+					<input type="date" class="form-control" id="vordatierung">
+				</div>
+				<!-- aktuell nicht gebraucht -->
+				<div class="radio hidden">
 					<label><input type="radio" name="optradio" onclick="hideBullets()" checked>Kein Bullet</label>
 				</div>
-				<div class="radio">
+				<!-- ------ -->
+				<!-- aktuell nicht gebraucht -->
+				<div class="radio hidden">
 					<label><input type="radio" name="optradio" onclick="showGeschenkBullet()">Geschenk-Bullet</label>
 				</div>
-				<div class="radio">
+				<!-- ------ -->
+				<!-- aktuell nicht gebraucht -->
+				<div class="radio hidden">
 					<label><input type="radio" name="optradio" onclick="showPromotionBullet()">Promotion-Bullet</label>
 				</div>
+				<!-- ------ -->
 			</div>
 			<div class="col-sm-3"></div>
 		</div>
+		<!-- aktuell nicht gebraucht -->
 		<div class="row">
 			<div class="col-sm-3">
 				<img src="assets/pflanzenfreund/images/Geschenk.png" alt="Geschenk-Bullet" style="width: 100%;" class="hidden" id="geschenk-bullet">
@@ -47,6 +58,7 @@
 			</div>
 			<div class="col-sm-1"></div>
 		</div>
+		<!-- ------ -->
 		<div class="row">
 			<div class="form-column col-sm-12">
 				<table class="hidden" id="myTable" style="width: 100%;">
