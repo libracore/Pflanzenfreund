@@ -652,6 +652,7 @@ def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bull
 		#create new abo
 		new_abo = frappe.new_doc("Pflanzenfreund Abo")
 		new_abo.update({
+			"abo_ist_verlaengerung": 1,
 			"customer": old_abo.customer,
 			"customer_address": old_abo.customer_address,
 			"customer_letter_salutation": old_abo.customer_letter_salutation,
