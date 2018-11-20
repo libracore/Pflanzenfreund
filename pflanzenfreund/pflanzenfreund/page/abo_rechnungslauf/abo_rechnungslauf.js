@@ -275,12 +275,12 @@ function createBindPDF() {
 	if (!rechnungsdatum) {
 		rechnungsdatum = frappe.datetime.get_today();
 	}
+	var printformat = document.getElementById("printformat").value;
 	frappe.confirm(
 		"Wollen Sie ein Sammel-PDF aller gültigen Rechnungen mit dem Valuta-Datum " + rechnungsdatum + " erstellen?",
 		function(){
 			frappe.msgprint("Der Job wurde dem Background-Worker übergeben.<br>Sie erhalten eine Information sobald der Job erfolgreich abgeschlossen ist.<br>Alternativ können Sie den Fortschritt auch <a href='/desk#background_jobs'>hier</a> einsehen.");
-			console.log(r.message);
-			start_createNewInvoices(periode_start, periode_end, abo_type, bullet, bullet_text, 'yes', rechnungsdatum, printformat);
+			startCreateBindPDF(rechnungsdatum, printformat);
 		},
 		function(){
 			return false;
@@ -291,11 +291,12 @@ function createBindPDF() {
 
 
 
-function startCreateBindPDF(rechnungsdatum) {
+function startCreateBindPDF(rechnungsdatum, printformat) {
 	frappe.call({
 		method: 'pflanzenfreund.utils.createSammelPDF',
 		args: {
-			'valuta': rechnungsdatum
+			'valuta': rechnungsdatum,
+			'printformat': printformat
 		},
 		callback: function(r) {
 			

@@ -34,15 +34,16 @@ def remove_downloaded_pdf():
 	os.remove(path)
 	
 @frappe.whitelist()
-def createSammelPDF(valuta):
+def createSammelPDF(valuta, printformat):
 	max_time = 40000
 	args = {
-		'valuta': valuta
+		'valuta': valuta,
+		'printformat': printformat
 	}
 	enqueue("pflanzenfreund.utils._createSammelPDF", queue='long', job_name='Generierung Sammel-PDF', timeout=max_time, **args)
 	
 	
-def _createSammelPDF(valuta):
+def _createSammelPDF(valuta, printformat):
 	sql_query = ("""SELECT `name` FROM `tabSales Invoice` WHERE `posting_date` = {0} AND `docstatus` = 1""".format(valuta))
 	sinvs = frappe.db.sql(sql_query, as_dict=True)
 	print_sinv = []
