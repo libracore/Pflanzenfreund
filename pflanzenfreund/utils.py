@@ -44,10 +44,10 @@ def createSammelPDF(valuta, printformat):
 	
 	
 def _createSammelPDF(valuta, printformat):
-	sql_query = ("""SELECT `name` FROM `tabSales Invoice` WHERE `posting_date` = {0} AND `docstatus` = 1""".format(valuta))
+	sql_query = ("""SELECT `name` FROM `tabSales Invoice` WHERE `posting_date` = '{0}' AND `docstatus` = 1""".format(valuta))
 	sinvs = frappe.db.sql(sql_query, as_dict=True)
 	print_sinv = []
-	qty_controller = 1
+	qty_controller = 0
 	for sinv in sinvs:
 		print_sinv.append(sinv)
 		qty_controller += 1
