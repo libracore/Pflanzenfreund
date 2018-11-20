@@ -63,6 +63,13 @@ def _createSammelPDF(valuta, printformat):
 				qty_controller = 0
 				loop_controller += 1
 				print_sinv = []
+				
+	if len(print_sinv) > 0:
+		#print("lets binding")
+		now = datetime.now()
+		bind_source = "/assets/pflanzenfreund/sinvs_for_print/sammel_pdf_vom_{valuta}-{loop}.pdf".format(valuta=valuta, loop=loop_controller)
+		physical_path = "/home/frappe/frappe-bench/sites" + bind_source
+		print_bind(print_sinv, format=printformat, dest=str(physical_path))
 		
 	
 
