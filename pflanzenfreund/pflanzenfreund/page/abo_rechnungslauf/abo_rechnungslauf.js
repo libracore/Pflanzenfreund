@@ -78,6 +78,7 @@ function createNewInvoices() {
 	var periode_start = document.getElementById("start").value;
 	var periode_end = document.getElementById("end").value;
 	var printformat = document.getElementById("printformat").value;
+	console.log(printformat);
 	
 	var abo_type = document.getElementById("abo-typ").value;
 	var rechnungsdatum = document.getElementById("vordatierung").value;
@@ -188,7 +189,7 @@ function checkQTY(periode_start, periode_end, abo_type, bullet, bullet_text, rec
 	});
 } */
 
-function start_createNewInvoices(periode_start, periode_end, abo, bullet, bullet_text, background, rechnungsdatum, batch) {
+function start_createNewInvoices(periode_start, periode_end, abo, bullet, bullet_text, background, rechnungsdatum, printformat) {
 	openNav();
 	frappe.call({
 		method: 'pflanzenfreund.utils.createNewInvoices_abo_rechnungslauf',
@@ -200,7 +201,7 @@ function start_createNewInvoices(periode_start, periode_end, abo, bullet, bullet
 			'bullet_text': bullet_text,
 			'background': background,
 			'rechnungsdatum': rechnungsdatum,
-			'batch': batch
+			'printformat': printformat
 		},
 		callback: function(r) {
 			if (r.message) {
