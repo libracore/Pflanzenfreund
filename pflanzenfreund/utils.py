@@ -34,6 +34,31 @@ def remove_downloaded_pdf():
 	os.remove(path)
 	
 @frappe.whitelist()
+def createSammelPDF(valuta):
+	max_time = 40000
+	args = {
+		'valuta': valuta
+	}
+	enqueue("pflanzenfreund.utils._createSammelPDF", queue='long', job_name='Generierung Sammel-PDF', timeout=max_time, **args)
+	
+	
+def _createSammelPDF(valuta):
+	sql_query = ("""SELECT `name` FROM `tabSales Invoice` WHERE `posting_date` = {0} AND `docstatus` = 1""".format(valuta))
+	sinvs = frappe.db.sql(sql_query, as_dict=True)
+	print_sinv = []
+	for sinv in sinvs:
+		print_sinv.append(sinv)
+		print("found sinv")
+		
+	# run bind job
+	if len(print_sinv) > 0:
+		#print("lets binding")
+		now = datetime.now()
+		bind_source = "/assets/pflanzenfreund/sinvs_for_print/sammel_pdf_vom_{valuta}.pdf".format(valuta=valuta)
+		physical_path = "/home/frappe/frappe-bench/sites" + bind_source
+		print_bind(print_sinv, format=printformat, dest=str(physical_path))
+
+@frappe.whitelist()
 def list_all_pdfs():
 	from os import listdir
 	from os.path import isfile, join

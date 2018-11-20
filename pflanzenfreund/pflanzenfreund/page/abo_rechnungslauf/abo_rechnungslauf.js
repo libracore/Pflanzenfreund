@@ -268,3 +268,37 @@ function crateTableContentElement(abo, invoice) {
 	tabelle.appendChild(tr);
 	
 }
+
+
+function createBindPDF() {
+	var rechnungsdatum = document.getElementById("vordatierung").value;
+	if (!rechnungsdatum) {
+		rechnungsdatum = frappe.datetime.get_today();
+	}
+	frappe.confirm(
+		"Wollen Sie ein Sammel-PDF aller gültigen Rechnungen mit dem Valuta-Datum " + rechnungsdatum + " erstellen?",
+		function(){
+			frappe.msgprint("Der Job wurde dem Background-Worker übergeben.<br>Sie erhalten eine Information sobald der Job erfolgreich abgeschlossen ist.<br>Alternativ können Sie den Fortschritt auch <a href='/desk#background_jobs'>hier</a> einsehen.");
+			console.log(r.message);
+			start_createNewInvoices(periode_start, periode_end, abo_type, bullet, bullet_text, 'yes', rechnungsdatum, printformat);
+		},
+		function(){
+			return false;
+		}
+	)
+}
+
+
+
+
+function startCreateBindPDF(rechnungsdatum) {
+	frappe.call({
+		method: 'pflanzenfreund.utils.createSammelPDF',
+		args: {
+			'valuta': rechnungsdatum
+		},
+		callback: function(r) {
+			
+		}
+	});
+}
