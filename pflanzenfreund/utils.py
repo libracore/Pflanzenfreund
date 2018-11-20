@@ -701,7 +701,7 @@ def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bulle
 		'bullet_text': bullet_text,
 		'background': background,
 		'rechnungsdatum': rechnungsdatum,
-		'batch': batch
+		'printformat': printformat
 	}
 	enqueue("pflanzenfreund.utils._createNewInvoices_abo_rechnungslauf", queue='long', job_name='Automatisierter Abonnementenlauf in 10er Batches', timeout=max_time, **args)
 	
