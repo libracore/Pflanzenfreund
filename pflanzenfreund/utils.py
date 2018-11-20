@@ -35,7 +35,7 @@ def remove_downloaded_pdf():
 	
 @frappe.whitelist()
 def createSammelPDF(valuta, printformat):
-	max_time = 300
+	max_time = 4800
 	args = {
 		'valuta': valuta,
 		'printformat': printformat
@@ -47,20 +47,24 @@ def _createSammelPDF(valuta, printformat):
 	sql_query = ("""SELECT `name` FROM `tabSales Invoice` WHERE `posting_date` = '{0}' AND `docstatus` = 1""".format(valuta))
 	sinvs = frappe.db.sql(sql_query, as_dict=True)
 	print_sinv = []
+	loop_controller = 1
 	qty_controller = 0
 	for sinv in sinvs:
 		print_sinv.append(sinv)
 		qty_controller += 1
-		if qty_controller == 100: break
-		print("found sinv")
+		if qty_controller == 100:
+			# run bind job
+			if len(print_sinv) > 0:
+				#print("lets binding")
+				now = datetime.now()
+				bind_source = "/assets/pflanzenfreund/sinvs_for_print/sammel_pdf_vom_{valuta}-{loop}.pdf".format(valuta=valuta, loop=loop_controller)
+				physical_path = "/home/frappe/frappe-bench/sites" + bind_source
+				print_bind(print_sinv, format=printformat, dest=str(physical_path))
+				qty_controller = 0
+				loop_controller += 1
+				print_sinv = []
 		
-	# run bind job
-	if len(print_sinv) > 0:
-		#print("lets binding")
-		now = datetime.now()
-		bind_source = "/assets/pflanzenfreund/sinvs_for_print/sammel_pdf_vom_{valuta}.pdf".format(valuta=valuta)
-		physical_path = "/home/frappe/frappe-bench/sites" + bind_source
-		print_bind(print_sinv, format=printformat, dest=str(physical_path))
+	
 
 @frappe.whitelist()
 def list_all_pdfs():
