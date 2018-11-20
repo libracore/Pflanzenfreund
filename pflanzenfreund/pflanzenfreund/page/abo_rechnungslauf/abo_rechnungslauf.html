@@ -3,6 +3,11 @@
 		<div class="row">
 			<div class="col-sm-3">
 				<button class="btn btn-primary btn-sm primary-action" style="margin-left: 15px; margin-top: 15px;" onclick="createNewInvoices()"><span>Start Verängerung und Rechnungslauf</span></button>
+				<!--<a href="/assets/sales_invoice_print_2018-11-19.pdf" download="sales_invoice_print_2018-11-19.pdf">HTML Referenz als PDF</a>-->
+				<div class="form-group" style="margin-top: 17px; margin-left: 15px;">
+					<label for="quantity">Menge pro Batch:</label>
+					<input type="number" id="quantity" min="0" max="50" step="10" value="10" class="input-with-feedback form-control bold" style="background-color: white; font-weight: normal;">
+				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="form-group">
@@ -42,7 +47,7 @@
 				</div>
 				<!-- ------ -->
 			</div>
-			<div class="col-sm-3"></div>
+			<div class="col-sm-3"><div id="placeForWorkers"></div></div>
 		</div>
 		<!-- aktuell nicht gebraucht -->
 		<div class="row">

@@ -7,7 +7,7 @@ frappe.pages['abo_rechnungslauf'].on_page_load = function(wrapper) {
 	
 	frappe.abo_rechnungslauf.make(page);
 	frappe.abo_rechnungslauf.run(page);
-	
+	page.job_content = $(page.body).find('#placeForWorkers');
 	// add the application reference
 	frappe.breadcrumbs.add("Pflanzenfreund");
 }
@@ -26,6 +26,30 @@ frappe.abo_rechnungslauf = {
 	run: function(page) {
  
 	}
+}
+
+frappe.pages['abo_rechnungslauf'].on_page_show = function(wrapper) {
+	frappe.pages.abo_rechnungslauf.refresh_jobs();
+}
+
+frappe.pages.abo_rechnungslauf.refresh_jobs = function() {
+	var page = frappe.pages.abo_rechnungslauf.page;
+
+	// don't call if already waiting for a response
+	if(page.called) return;
+	page.called = true;
+	frappe.call({
+		method: 'pflanzenfreund.utils.list_all_pdfs',
+		callback: function(r) {
+			page.called = false;
+			page.body.find('.list-jobs').remove();
+			$(frappe.render_template('background_jobs', {onlyfiles:r.message || []})).appendTo(page.job_content);
+
+			if(frappe.get_route()[0]==='abo_rechnungslauf') {
+				frappe.background_jobs_timeout = setTimeout(frappe.pages.abo_rechnungslauf.refresh_jobs, 2000);
+			}
+		}
+	});
 }
 
 
@@ -53,6 +77,7 @@ function createNewInvoices() {
 	
 	var periode_start = document.getElementById("start").value;
 	var periode_end = document.getElementById("end").value;
+	var batch = parseInt(document.getElementById("quantity").value);
 	
 	var abo_type = document.getElementById("abo-typ").value;
 	var rechnungsdatum = document.getElementById("vordatierung").value;
@@ -84,7 +109,7 @@ function createNewInvoices() {
 			function(){
 				//console.log(abo_type);
 				//start_without_end_createNewInvoices(periode_start, abo_type, bullet, bullet_text);
-				checkQTY(periode_start, '2099-01-01', abo_type, bullet, bullet_text, rechnungsdatum);
+				checkQTY(periode_start, '2099-01-01', abo_type, bullet, bullet_text, rechnungsdatum, batch);
 				return false;
 			},
 			function(){
@@ -93,11 +118,11 @@ function createNewInvoices() {
 		)
 	} else {
 		//start_createNewInvoices(periode_start, periode_end, abo_type, bullet, bullet_text);
-		checkQTY(periode_start, periode_end, abo_type, bullet, bullet_text, rechnungsdatum);
+		checkQTY(periode_start, periode_end, abo_type, bullet, bullet_text, rechnungsdatum, batch);
 	}
 }
 
-function checkQTY(periode_start, periode_end, abo_type, bullet, bullet_text, rechnungsdatum) {
+function checkQTY(periode_start, periode_end, abo_type, bullet, bullet_text, rechnungsdatum, batch) {
 	openNav();
 	frappe.call({
 		method: 'pflanzenfreund.utils.qty_abo_rechnungslauf',
@@ -110,21 +135,17 @@ function checkQTY(periode_start, periode_end, abo_type, bullet, bullet_text, rec
 			if (r.message) {
 				closeNav();
 				console.log(r.message);
-				if (r.message > 10) {
-					frappe.confirm(
-						"Ihre Auswahl beinhaltet mehr als 10 zu verlängernde Abonnemente, dies kann einen Moment dauern.<br>Die Ausführung wird dem Background-Worker übergeben.<br>Möchten Sie fortfahren?",
-						function(){
-							frappe.msgprint("Der Job wurde dem Background-Worker übergeben.<br>Sie erhalten eine Information sobald der Job erfolgreich abgeschlossen ist.<br>Alternativ können Sie den Fortschritt auch <a href='/desk#background_jobs'>hier</a> einsehen.");
-							console.log(r.message);
-							start_createNewInvoices(periode_start, periode_end, abo_type, bullet, bullet_text, 'yes', rechnungsdatum);
-						},
-						function(){
-							return false;
-						}
-					)
-				} else {
-					start_createNewInvoices(periode_start, periode_end, abo_type, bullet, bullet_text, 'no', rechnungsdatum);
-				}
+				frappe.confirm(
+					"Ihre Auswahl beinhaltet " + r.message + " Abonnemente. Dies kann einen Moment dauern.<br>Die Ausführung wird dem Background-Worker übergeben.<br>Möchten Sie fortfahren?",
+					function(){
+						frappe.msgprint("Der Job wurde dem Background-Worker übergeben.<br>Sie erhalten eine Information sobald der Job erfolgreich abgeschlossen ist.<br>Alternativ können Sie den Fortschritt auch <a href='/desk#background_jobs'>hier</a> einsehen.");
+						console.log(r.message);
+						start_createNewInvoices(periode_start, periode_end, abo_type, bullet, bullet_text, 'yes', rechnungsdatum, batch);
+					},
+					function(){
+						return false;
+					}
+				)
 			} else {
 				closeNav();
 				frappe.msgprint('Es wurden keine Abos gefunden, die den Kriterien entsprechen.', 'Kein Output');
@@ -167,7 +188,7 @@ function checkQTY(periode_start, periode_end, abo_type, bullet, bullet_text, rec
 	});
 } */
 
-function start_createNewInvoices(periode_start, periode_end, abo, bullet, bullet_text, background, rechnungsdatum) {
+function start_createNewInvoices(periode_start, periode_end, abo, bullet, bullet_text, background, rechnungsdatum, batch) {
 	openNav();
 	frappe.call({
 		method: 'pflanzenfreund.utils.createNewInvoices_abo_rechnungslauf',
@@ -178,7 +199,8 @@ function start_createNewInvoices(periode_start, periode_end, abo, bullet, bullet
 			'bullet_type': bullet,
 			'bullet_text': bullet_text,
 			'background': background,
-			'rechnungsdatum': rechnungsdatum
+			'rechnungsdatum': rechnungsdatum,
+			'batch': batch
 		},
 		callback: function(r) {
 			if (r.message) {

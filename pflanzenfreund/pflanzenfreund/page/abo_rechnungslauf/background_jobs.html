@@ -1,0 +1,10 @@
+<div class="list-jobs">
+	{% if onlyfiles.length %}
+		{% for j in onlyfiles %}
+			<a href="/assets/pflanzenfreund/sinvs_for_print/{{ j }}" download="{{ j }}">Download {{ j }}</a></td>
+		{% endfor %}
+	{% else %}
+	<p class="text-muted">Keine Files zum Downloaden</p>
+	{% endif %}
+	<p class="text-muted" style="margin-top: 30px;">Letzte Aktualisierung {{ frappe.datetime.now_datetime() }}</p>
+</div>
