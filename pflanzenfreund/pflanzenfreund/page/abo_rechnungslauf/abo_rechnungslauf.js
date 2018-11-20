@@ -77,7 +77,7 @@ function createNewInvoices() {
 	
 	var periode_start = document.getElementById("start").value;
 	var periode_end = document.getElementById("end").value;
-	var batch = parseInt(document.getElementById("quantity").value);
+	var printformat = document.getElementById("printformat").value;
 	
 	var abo_type = document.getElementById("abo-typ").value;
 	var rechnungsdatum = document.getElementById("vordatierung").value;
@@ -109,7 +109,7 @@ function createNewInvoices() {
 			function(){
 				//console.log(abo_type);
 				//start_without_end_createNewInvoices(periode_start, abo_type, bullet, bullet_text);
-				checkQTY(periode_start, '2099-01-01', abo_type, bullet, bullet_text, rechnungsdatum, batch);
+				checkQTY(periode_start, '2099-01-01', abo_type, bullet, bullet_text, rechnungsdatum, printformat);
 				return false;
 			},
 			function(){
@@ -118,11 +118,11 @@ function createNewInvoices() {
 		)
 	} else {
 		//start_createNewInvoices(periode_start, periode_end, abo_type, bullet, bullet_text);
-		checkQTY(periode_start, periode_end, abo_type, bullet, bullet_text, rechnungsdatum, batch);
+		checkQTY(periode_start, periode_end, abo_type, bullet, bullet_text, rechnungsdatum, printformat);
 	}
 }
 
-function checkQTY(periode_start, periode_end, abo_type, bullet, bullet_text, rechnungsdatum, batch) {
+function checkQTY(periode_start, periode_end, abo_type, bullet, bullet_text, rechnungsdatum, printformat) {
 	openNav();
 	frappe.call({
 		method: 'pflanzenfreund.utils.qty_abo_rechnungslauf',
@@ -140,7 +140,7 @@ function checkQTY(periode_start, periode_end, abo_type, bullet, bullet_text, rec
 					function(){
 						frappe.msgprint("Der Job wurde dem Background-Worker übergeben.<br>Sie erhalten eine Information sobald der Job erfolgreich abgeschlossen ist.<br>Alternativ können Sie den Fortschritt auch <a href='/desk#background_jobs'>hier</a> einsehen.");
 						console.log(r.message);
-						start_createNewInvoices(periode_start, periode_end, abo_type, bullet, bullet_text, 'yes', rechnungsdatum, batch);
+						start_createNewInvoices(periode_start, periode_end, abo_type, bullet, bullet_text, 'yes', rechnungsdatum, printformat);
 					},
 					function(){
 						return false;

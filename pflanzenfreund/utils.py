@@ -42,7 +42,7 @@ def list_all_pdfs():
 	return onlyfiles
 	
 	
-def create_pdf_of_all_sinvs(print_sinv, counter):
+def create_pdf_of_all_sinvs(print_sinv, counter, printformat):
 	# sql_query = ("""SELECT `name` FROM `tabSales Invoice` WHERE `creation` > '2018-11-19 00:01:00' AND `docstatus` = 1 LIMIT 3""")
 	# sinvs = frappe.db.sql(sql_query, as_dict=True)
 	# print_sinv = []
@@ -52,11 +52,11 @@ def create_pdf_of_all_sinvs(print_sinv, counter):
 		
 	# run bind job
 	if len(print_sinv) > 0:
-		print("lets binding")
+		#print("lets binding")
 		now = datetime.now()
 		bind_source = "/assets/pflanzenfreund/sinvs_for_print/sales_invoice_print_{year}-{month}-{day}-{counter}.pdf".format(day=now.day, month=now.month, year=now.year, counter=counter)
 		physical_path = "/home/frappe/frappe-bench/sites" + bind_source
-		print_bind(print_sinv, format="ESR (only)", dest=str(physical_path))
+		print_bind(print_sinv, format=printformat, dest=str(physical_path))
 				
 				
 				
@@ -688,7 +688,7 @@ def qty_abo_rechnungslauf(start, end, abo_type):
 	return len(frappe.get_all('Pflanzenfreund Abo', filters=[['docstatus', '=', '1'], ['end_date', '>=', start], ['end_date', '<=', end], ['abo_type', '=', abo_type], ['abo_renewed', '=', '0']], fields=['name']))
 	
 @frappe.whitelist()
-def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background, rechnungsdatum, batch):
+def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background, rechnungsdatum, printformat):
 	# if background == "no":
 		# return _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background, rechnungsdatum)
 	# else:
@@ -703,11 +703,9 @@ def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bulle
 		'rechnungsdatum': rechnungsdatum,
 		'batch': batch
 	}
-	enqueue("pflanzenfreund.utils._createNewInvoices_abo_rechnungslauf", queue='long', job_name='Automatisierter Abonnementenlauf in {0}er Batches'.format(batch), timeout=max_time, **args)
+	enqueue("pflanzenfreund.utils._createNewInvoices_abo_rechnungslauf", queue='long', job_name='Automatisierter Abonnementenlauf in 10er Batches', timeout=max_time, **args)
 	
-def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background, rechnungsdatum, batch):
-	batch = int(batch)
-	loop_qty = int(qty_abo_rechnungslauf(start, end, abo_type)) / batch
+def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background, rechnungsdatum, printformat):
 	results = []
 	abo_counter = 0
 	loop_control = 1
@@ -821,7 +819,7 @@ def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bull
 		print_sinv.append(sales_invoice.name)
 		abo_counter += 1
 		if abo_counter == batch:
-			create_pdf_of_all_sinvs(print_sinv, "(" + str(abo_counter) + ")Invoices_Loop(" + str(loop_control) + ")")
+			create_pdf_of_all_sinvs(print_sinv, "(" + str(abo_counter) + ")Invoices_Loop(" + str(loop_control) + ")", printformat)
 			abo_counter = 0
 			loop_control += 1
 			print_sinv = []
@@ -829,7 +827,7 @@ def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bull
 		# return results
 	# else:
 	if abo_counter > 0:
-		create_pdf_of_all_sinvs(print_sinv, "(" + str(abo_counter) + ")Invoices_Loop(" + str(loop_control) + ")")
+		create_pdf_of_all_sinvs(print_sinv, "(" + str(abo_counter) + ")Invoices_Loop(" + str(loop_control) + ")", printformat)
 	message = 'Der Background-Job Automatisierter Abonnementenlauf wurde erfolgreich abgeschlossen.'
 	frappe.publish_realtime(event='msgprint',message=message,user=frappe.session.user)
 	
