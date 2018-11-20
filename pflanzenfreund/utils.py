@@ -35,7 +35,7 @@ def remove_downloaded_pdf():
 	
 @frappe.whitelist()
 def createSammelPDF(valuta, printformat):
-	max_time = 40000
+	max_time = 300
 	args = {
 		'valuta': valuta,
 		'printformat': printformat
@@ -47,8 +47,11 @@ def _createSammelPDF(valuta, printformat):
 	sql_query = ("""SELECT `name` FROM `tabSales Invoice` WHERE `posting_date` = {0} AND `docstatus` = 1""".format(valuta))
 	sinvs = frappe.db.sql(sql_query, as_dict=True)
 	print_sinv = []
+	qty_controller = 1
 	for sinv in sinvs:
 		print_sinv.append(sinv)
+		qty_controller += 1
+		if qty_controller == 100: break
 		print("found sinv")
 		
 	# run bind job
