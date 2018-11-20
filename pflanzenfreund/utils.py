@@ -818,7 +818,7 @@ def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bull
 		
 		print_sinv.append(sales_invoice.name)
 		abo_counter += 1
-		if abo_counter == batch:
+		if abo_counter == 10:
 			create_pdf_of_all_sinvs(print_sinv, "(" + str(abo_counter) + ")Invoices_Loop(" + str(loop_control) + ")", printformat)
 			abo_counter = 0
 			loop_control += 1
