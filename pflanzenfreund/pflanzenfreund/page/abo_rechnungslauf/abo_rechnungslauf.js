@@ -305,10 +305,18 @@ function startCreateBindPDF(rechnungsdatum, printformat) {
 }
 
 function deleteAllPDF() {
-	frappe.call({
-		method: 'pflanzenfreund.utils.remove_downloaded_pdf',
-		callback: function(r) {
-			frappe.msgprint("Die PDF's wurden entfernt");
+	frappe.confirm(
+		"Wollen Sie alle oben aufgeführten PDF's vom Server entfernen?<br>Sie können diese nachträglich auch wieder erstellen.",
+		function(){
+			frappe.call({
+				method: 'pflanzenfreund.utils.remove_downloaded_pdf',
+				callback: function(r) {
+					frappe.msgprint("Die PDF's wurden entfernt");
+				}
+			});
+		},
+		function(){
+			return false;
 		}
-	});
+	)
 }
