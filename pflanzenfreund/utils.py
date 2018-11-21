@@ -20,18 +20,15 @@ from frappe.utils.nestedset import get_root_of
 from frappe import utils
 import esr
 from frappe.utils.background_jobs import enqueue
-from frappe.utils.data import add_days
-
-
-#........................
-
-
+from frappe.utils.data import add_days, add_years
 from datetime import datetime
 from PyPDF2 import PdfFileWriter
 
+@frappe.whitelist()
 def remove_downloaded_pdf():
-	path = "/home/frappe/frappe-bench/sites/assets/pflanzenfreund/sinvs_for_print/sales_invoice_print_2018-11-19.pdf"
-	os.remove(path)
+	path = "/home/frappe/frappe-bench/sites/assets/pflanzenfreund/sinvs_for_print/"
+	for filename in os.listdir(path):
+		os.remove(filename)
 	
 @frappe.whitelist()
 def createSammelPDF(valuta, printformat):
@@ -53,9 +50,8 @@ def _createSammelPDF(valuta, printformat):
 		print_sinv.append(sinv)
 		qty_controller += 1
 		if qty_controller == 100:
-			# run bind job
+			# run bind job for 100 batch
 			if len(print_sinv) > 0:
-				#print("lets binding")
 				now = datetime.now()
 				bind_source = "/assets/pflanzenfreund/sinvs_for_print/sammel_pdf_vom_{valuta}-{loop}.pdf".format(valuta=valuta, loop=loop_controller)
 				physical_path = "/home/frappe/frappe-bench/sites" + bind_source
@@ -64,8 +60,8 @@ def _createSammelPDF(valuta, printformat):
 				loop_controller += 1
 				print_sinv = []
 				
+	# run bind job for rest batch
 	if len(print_sinv) > 0:
-		#print("lets binding")
 		now = datetime.now()
 		bind_source = "/assets/pflanzenfreund/sinvs_for_print/sammel_pdf_vom_{valuta}-{loop}.pdf".format(valuta=valuta, loop=loop_controller)
 		physical_path = "/home/frappe/frappe-bench/sites" + bind_source
@@ -79,26 +75,7 @@ def list_all_pdfs():
 	from os.path import isfile, join
 	path = "/home/frappe/frappe-bench/sites/assets/pflanzenfreund/sinvs_for_print/"
 	onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
-	return onlyfiles
-	
-	
-def create_pdf_of_all_sinvs(print_sinv, counter, printformat):
-	# sql_query = ("""SELECT `name` FROM `tabSales Invoice` WHERE `creation` > '2018-11-19 00:01:00' AND `docstatus` = 1 LIMIT 3""")
-	# sinvs = frappe.db.sql(sql_query, as_dict=True)
-	# print_sinv = []
-	# for sinv in sinvs:
-		# print_sinv.append(sinv)
-		# print("found sinv")
-		
-	# run bind job
-	if len(print_sinv) > 0:
-		#print("lets binding")
-		now = datetime.now()
-		bind_source = "/assets/pflanzenfreund/sinvs_for_print/sales_invoice_print_{year}-{month}-{day}-{counter}.pdf".format(day=now.day, month=now.month, year=now.year, counter=counter)
-		physical_path = "/home/frappe/frappe-bench/sites" + bind_source
-		print_bind(print_sinv, format=printformat, dest=str(physical_path))
-				
-				
+	return onlyfiles			
 				
 # this function will bind a pdf from all provided sales invoices (list of names)
 def print_bind(sales_invoices, format=None, dest=None):
@@ -121,11 +98,6 @@ def print_bind(sales_invoices, format=None, dest=None):
 	else:
 		print("second return")
 		return output
-
-
-
-
-#...............................
 
 def get_navbar_items(position):
 	if position == 'top':
@@ -729,9 +701,6 @@ def qty_abo_rechnungslauf(start, end, abo_type):
 	
 @frappe.whitelist()
 def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background, rechnungsdatum, printformat):
-	# if background == "no":
-		# return _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background, rechnungsdatum)
-	# else:
 	max_time = (qty_abo_rechnungslauf(start, end, abo_type) / 10) * 120
 	args = {
 		'start': start,
@@ -746,128 +715,180 @@ def createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bulle
 	enqueue("pflanzenfreund.utils._createNewInvoices_abo_rechnungslauf", queue='long', job_name='Automatisierter Abonnementenlauf in 10er Batches', timeout=max_time, **args)
 	
 def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bullet_text, background, rechnungsdatum, printformat):
-	results = []
-	abo_counter = 0
-	loop_control = 1
-	print_sinv = []
 	_abos = frappe.get_all('Pflanzenfreund Abo', filters=[['docstatus', '=', '1'], ['end_date', '>=', start], ['end_date', '<=', end], ['abo_type', '=', abo_type], ['abo_renewed', '=', '0']], fields=['name'])
 	abos = []
 
 	for abo in _abos:
 		abos.append(abo.name)
 	
-	
-
-	for abo in abos:
-		#get old abo
-		old_abo = frappe.get_doc('Pflanzenfreund Abo', abo)
-		#create new abo
-		new_abo = frappe.new_doc("Pflanzenfreund Abo")
-		new_abo.update({
-			"abo_ist_verlaengerung": 1,
-			"customer": old_abo.customer,
-			"customer_address": old_abo.customer_address,
-			"customer_letter_salutation": old_abo.customer_letter_salutation,
-			"donee": old_abo.donee,
-			"donee_address": old_abo.donee_address,
-			"donee_letter_salutation": old_abo.donee_letter_salutation,
-			"donee_text": old_abo.donee_text,
-			"abo_type": old_abo.abo_type,
-			"start_date": add_year(old_abo.start_date),
-			"end_date": add_year(old_abo.end_date),
-			"jan_ed": 1,
-			"feb_ed": 1,
-			"mar_ed": 1,
-			"apr_ed": 1,
-			"may_ed": 1,
-			"jun_ed": 1,
-			"jul_ed": 1,
-			"aug_ed": 1,
-			"sept_ed": 1,
-			"oct_ed": 1,
-			"nov_ed": 1,
-			"dec_ed": 1
-		})
-		new_abo.flags.ignore_mandatory = True
-		new_abo.save(ignore_permissions=True)
-		new_abo.submit()
-		frappe.db.commit()
-		set_renewd = frappe.db.sql("""UPDATE `tabPflanzenfreund Abo` SET `abo_renewed` = 1, `new_abo` = '{1}' WHERE `name` = '{0}'""".format(old_abo.name, new_abo.name), as_list = True)
-		#create new invoice for abo
-		sales_invoice = frappe.new_doc("Sales Invoice")
-		sales_invoice.update({
-			"customer": old_abo.customer,
-			"customer_address": old_abo.customer_address,
-			"shipping_address_name": old_abo.donee_address,
-			"set_posting_time": 1,
-			"posting_date": add_days(rechnungsdatum, 0),
-			"pflanzenfreund_abo": new_abo.name,
-			"taxes_and_charges": "Schweiz normal (302) - GCM",
-			"items": [{
-				"item_code": abo_type,
-				"qty": "1"
-			}],
-			"taxes": [{
-				"charge_type": "On Net Total",
-				"account_head": "2200 - Umsatzsteuer - GCM",
-				"cost_center": "Haupt - GCM",
-				"rate": "7.7",
-				"description": "Inkl. 7.7% MwSt"
-			}],
-			"due_date": add_days(rechnungsdatum, 30),
-			"payment_schedule": [{
-				"payment_term": "30 Tage netto",
-				"description": "30 Tage netto",
-				"due_date": add_days(rechnungsdatum, 30),
-				"invoice_portion": "100",
-				"payment_amount": sales_invoice.rounded_total
-			}]
-		})
-		# sales_invoice.update({
-			# "due_date": add_days(rechnungsdatum, 30),
-			# "payment_terms_template": "30 Tage netto",
-			# "payment_schedule": [{
-				# "payment_term": "30 Tage netto",
-				# "description": "30 Tage netto",
-				# "due_date": add_days(rechnungsdatum, 30),
-				# "invoice_portion": "100",
-				# "payment_amount": sales_invoice.rounded_total
-			# }]
-		# })
-		if bullet_type != 'kein':
-			sales_invoice.update({
-				"bullet_selection": bullet_type,
-				"bullet_text": bullet_text
+	if abo_type != "Probe-Abo":
+		for abo in abos:
+			#get old abo
+			old_abo = frappe.get_doc('Pflanzenfreund Abo', abo)
+			#create new abo
+			new_abo = frappe.new_doc("Pflanzenfreund Abo")
+			new_abo.update({
+				"abo_ist_verlaengerung": 1,
+				"customer": old_abo.customer,
+				"customer_address": old_abo.customer_address,
+				"customer_letter_salutation": old_abo.customer_letter_salutation,
+				"donee": old_abo.donee,
+				"donee_address": old_abo.donee_address,
+				"donee_letter_salutation": old_abo.donee_letter_salutation,
+				"donee_text": old_abo.donee_text,
+				"abo_type": old_abo.abo_type,
+				"start_date": add_year(old_abo.start_date),
+				"end_date": add_year(old_abo.end_date),
+				"jan_ed": 1,
+				"feb_ed": 1,
+				"mar_ed": 1,
+				"apr_ed": 1,
+				"may_ed": 1,
+				"jun_ed": 1,
+				"jul_ed": 1,
+				"aug_ed": 1,
+				"sept_ed": 1,
+				"oct_ed": 1,
+				"nov_ed": 1,
+				"dec_ed": 1
 			})
-		sales_invoice.flags.ignore_mandatory = True
-		sales_invoice.save(ignore_permissions=True)
+			new_abo.flags.ignore_mandatory = True
+			new_abo.save(ignore_permissions=True)
+			new_abo.submit()
+			frappe.db.commit()
+			set_renewd = frappe.db.sql("""UPDATE `tabPflanzenfreund Abo` SET `abo_renewed` = 1, `new_abo` = '{1}' WHERE `name` = '{0}'""".format(old_abo.name, new_abo.name), as_list = True)
+			#create new invoice for abo
+			sales_invoice = frappe.new_doc("Sales Invoice")
+			sales_invoice.update({
+				"customer": old_abo.customer,
+				"customer_address": old_abo.customer_address,
+				"shipping_address_name": old_abo.donee_address,
+				"set_posting_time": 1,
+				"posting_date": add_days(rechnungsdatum, 0),
+				"pflanzenfreund_abo": new_abo.name,
+				"taxes_and_charges": "Schweiz normal (302) - GCM",
+				"items": [{
+					"item_code": abo_type,
+					"qty": "1"
+				}],
+				"taxes": [{
+					"charge_type": "On Net Total",
+					"account_head": "2200 - Umsatzsteuer - GCM",
+					"cost_center": "Haupt - GCM",
+					"rate": "7.7",
+					"description": "Inkl. 7.7% MwSt"
+				}],
+				"due_date": add_days(rechnungsdatum, 30),
+				"payment_schedule": [{
+					"payment_term": "30 Tage netto",
+					"description": "30 Tage netto",
+					"due_date": add_days(rechnungsdatum, 30),
+					"invoice_portion": "100",
+					"payment_amount": sales_invoice.rounded_total
+				}]
+			})
+			if bullet_type != 'kein':
+				sales_invoice.update({
+					"bullet_selection": bullet_type,
+					"bullet_text": bullet_text
+				})
+			sales_invoice.flags.ignore_mandatory = True
+			sales_invoice.save(ignore_permissions=True)
+			
+			referencenumber = sales_invoice.name.split("-")[1]
+			sales_invoice.update({
+				"esr_reference": esr.get_reference_number(referencenumber),
+				"esr_code": esr.generateCodeline(sales_invoice.grand_total, esr.get_reference_number(referencenumber), "013100113")
+			})
+			sales_invoice.save(ignore_permissions=True)
+			
+			sales_invoice.submit()
+			frappe.db.commit()
+			
+	if abo_type == "Probe-Abo":
+		for abo in abos:
+			#get old abo
+			old_abo = frappe.get_doc('Pflanzenfreund Abo', abo)
+			#create new abo
+			new_abo = frappe.new_doc("Pflanzenfreund Abo")
+			new_abo.update({
+				"abo_ist_verlaengerung": 1,
+				"customer": old_abo.customer,
+				"customer_address": old_abo.customer_address,
+				"customer_letter_salutation": old_abo.customer_letter_salutation,
+				"donee": old_abo.donee,
+				"donee_address": old_abo.donee_address,
+				"donee_letter_salutation": old_abo.donee_letter_salutation,
+				"donee_text": old_abo.donee_text,
+				"abo_type": "Jahres-Abo",
+				"start_date": old_abo.end_date,
+				"end_date": add_year(old_abo.end_date),
+				"jan_ed": 1,
+				"feb_ed": 1,
+				"mar_ed": 1,
+				"apr_ed": 1,
+				"may_ed": 1,
+				"jun_ed": 1,
+				"jul_ed": 1,
+				"aug_ed": 1,
+				"sept_ed": 1,
+				"oct_ed": 1,
+				"nov_ed": 1,
+				"dec_ed": 1
+			})
+			new_abo.flags.ignore_mandatory = True
+			new_abo.save(ignore_permissions=True)
+			new_abo.submit()
+			frappe.db.commit()
+			set_renewd = frappe.db.sql("""UPDATE `tabPflanzenfreund Abo` SET `abo_renewed` = 1, `new_abo` = '{1}' WHERE `name` = '{0}'""".format(old_abo.name, new_abo.name), as_list = True)
+			#create new invoice for abo
+			sales_invoice = frappe.new_doc("Sales Invoice")
+			sales_invoice.update({
+				"customer": old_abo.customer,
+				"customer_address": old_abo.customer_address,
+				"shipping_address_name": old_abo.donee_address,
+				"set_posting_time": 1,
+				"posting_date": add_days(rechnungsdatum, 0),
+				"pflanzenfreund_abo": new_abo.name,
+				"taxes_and_charges": "Schweiz normal (302) - GCM",
+				"items": [{
+					"item_code": "Jahres-Abo",
+					"qty": "1"
+				}],
+				"taxes": [{
+					"charge_type": "On Net Total",
+					"account_head": "2200 - Umsatzsteuer - GCM",
+					"cost_center": "Haupt - GCM",
+					"rate": "7.7",
+					"description": "Inkl. 7.7% MwSt"
+				}],
+				"due_date": add_days(rechnungsdatum, 30),
+				"payment_schedule": [{
+					"payment_term": "30 Tage netto",
+					"description": "30 Tage netto",
+					"due_date": add_days(rechnungsdatum, 30),
+					"invoice_portion": "100",
+					"payment_amount": sales_invoice.rounded_total
+				}]
+			})
+			if bullet_type != 'kein':
+				sales_invoice.update({
+					"bullet_selection": bullet_type,
+					"bullet_text": bullet_text
+				})
+			sales_invoice.flags.ignore_mandatory = True
+			sales_invoice.save(ignore_permissions=True)
+			
+			referencenumber = sales_invoice.name.split("-")[1]
+			sales_invoice.update({
+				"esr_reference": esr.get_reference_number(referencenumber),
+				"esr_code": esr.generateCodeline(sales_invoice.grand_total, esr.get_reference_number(referencenumber), "013100113")
+			})
+			sales_invoice.save(ignore_permissions=True)
+			
+			sales_invoice.submit()
+			frappe.db.commit()
 		
-		referencenumber = sales_invoice.name.split("-")[1]
-		sales_invoice.update({
-			"esr_reference": esr.get_reference_number(referencenumber),
-			"esr_code": esr.generateCodeline(sales_invoice.grand_total, esr.get_reference_number(referencenumber), "013100113")
-		})
-		sales_invoice.save(ignore_permissions=True)
-		
-		
-		
-		sales_invoice.submit()
-		frappe.db.commit()
-		#appened new invoice to new_invoices
-		results.append([new_abo.name, sales_invoice.name])
-		
-		print_sinv.append(sales_invoice.name)
-		abo_counter += 1
-		if abo_counter == 10:
-			create_pdf_of_all_sinvs(print_sinv, "(" + str(abo_counter) + ")Invoices_Loop(" + str(loop_control) + ")", printformat)
-			abo_counter = 0
-			loop_control += 1
-			print_sinv = []
-	# if background == "no":
-		# return results
-	# else:
-	if abo_counter > 0:
-		create_pdf_of_all_sinvs(print_sinv, "(" + str(abo_counter) + ")Invoices_Loop(" + str(loop_control) + ")", printformat)
 	message = 'Der Background-Job Automatisierter Abonnementenlauf wurde erfolgreich abgeschlossen.'
 	frappe.publish_realtime(event='msgprint',message=message,user=frappe.session.user)
 	

@@ -4,6 +4,7 @@
 		{% for j in onlyfiles %}
 			<a href="/assets/pflanzenfreund/sinvs_for_print/{{ j }}" download="{{ j }}">Download {{ j }}</a><br>
 		{% endfor %}
+		<button class="btn btn-primary btn-sm primary-action btn-danger" onclick="deleteAllPDF()"><i class="octicon octicon-trashcan"></i><span class="hidden-xs"> Alle Files vom Server Löschen</span></button>
 	{% else %}
 	<p class="text-muted">Keine Files zum Downloaden</p>
 	{% endif %}

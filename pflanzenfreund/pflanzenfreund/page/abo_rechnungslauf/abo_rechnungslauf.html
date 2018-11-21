@@ -2,16 +2,9 @@
 	<div class="section-body">
 		<div class="row">
 			<div class="col-sm-3">
-				<button class="btn btn-primary btn-sm primary-action" style="margin-left: 15px; margin-top: 15px;" onclick="createNewInvoices()"><span>Start Verängerung und Rechnungslauf</span></button>
+				<button class="btn btn-primary btn-sm primary-action" style="margin-left: 15px; margin-top: 8px;" onclick="createNewInvoices()"><span>Start<br>Verängerungs- und Rechnungslauf</span></button>
 				<!--<a href="/assets/sales_invoice_print_2018-11-19.pdf" download="sales_invoice_print_2018-11-19.pdf">HTML Referenz als PDF</a>-->
-				<div class="form-group" style="margin-top: 17px; margin-left: 15px;">
-					<label for="printformat">Printformat:</label>
-					<select class="form-control" id="printformat">
-						<option>Pflanzenfreund Rechnung (ESR-Drucker)</option>
-						<option>Pflanzenfreund Rechnung (Farb-Drucker)</option>
-						<option>Pflanzenfreund Zahlungserinnerung</option>
-					</select>
-				</div>
+				
 			</div>
 			<div class="col-sm-3">
 				<div class="form-group">
@@ -29,6 +22,7 @@
 					<select class="form-control" id="abo-typ">
 						<option>Jahres-Abo</option>
 						<option>Geschenk-Abo</option>
+						<option>Probe-Abo</option>
 					</select>
 				</div>
 				<div class="form-group">
@@ -51,7 +45,17 @@
 				</div>
 				<!-- ------ -->
 			</div>
-			<div class="col-sm-3"><button class="btn btn-primary btn-sm primary-action" style="margin-top: 15px;" onclick="createBindPDF()"><span>Generiere Sammel-PDF<br>basierend auf Rechnungsdatum</span></button></div>
+			<div class="col-sm-3">
+				<button class="btn btn-primary btn-sm primary-action" style="margin-top: 8px; margin-bottom: 7px;" onclick="createBindPDF()"><span>Generiere Sammel-PDF<br>basierend auf Rechnungsdatum</span></button>
+				<div class="form-group">
+					<label for="printformat">Printformat:</label>
+					<select class="form-control" id="printformat">
+						<option>Massendruck (Develop-Drucker)</option>
+						<option>Massendruck (ESR-Drucker)</option>
+					</select>
+				</div>
+			</div>
+			
 		</div>
 		<div class="row">
 			<div class="col-sm-2"></div>
