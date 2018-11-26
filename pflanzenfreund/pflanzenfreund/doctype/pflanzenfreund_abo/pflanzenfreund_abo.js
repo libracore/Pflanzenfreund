@@ -133,7 +133,7 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 			} else {
 				frappe.validated=true;
 			}
-		} else {
+		} /* else {
 			if ((count != 12)) {
 				frappe.msgprint("Please choose <b>all editions</b>", "Abo Info");
 				frappe.validated=false;
@@ -141,7 +141,7 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 			} else {
 				frappe.validated=true;
 			}
-		}
+		} */
 		
 	},
 	set_ed_manual: function(frm) {
