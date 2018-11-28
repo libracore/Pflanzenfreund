@@ -38,23 +38,24 @@ def execute(filters=None):
 				LEFT JOIN `tabAddress` AS t5 ON t1.`donee_address` = t5.`name`)
 				LEFT JOIN `tabSales Invoice` AS t6 ON t1.`name` = t6.`pflanzenfreund_abo` AND t6.`docstatus` = '1')
 				WHERE t1.`docstatus` = '1'
-				AND (YEAR(t1.`end_date`) >= {0} OR t1.`end_date` IS NULL)""".format(year), as_list = True)
+				AND (YEAR(t1.`end_date`) >= {0} OR t1.`end_date` IS NULL)
+				AND YEAR(t1.`start_date`) <= {0}
+				AND t1.`abo_type` = '{1}'""".format(year, filters.abo_type), as_list = True)
 				
 		chart_data_ = frappe.db.sql("""SELECT
-									SUM(`jan_ed`),
+									SUM(`winter_ed`),
 									SUM(`feb_ed`),
 									SUM(`mar_ed`),
 									SUM(`apr_ed`),
 									SUM(`may_ed`),
 									SUM(`jun_ed`),
-									SUM(`jul_ed`),
-									SUM(`aug_ed`),
+									SUM(`summer_ed`),
 									SUM(`sept_ed`),
 									SUM(`oct_ed`),
-									SUM(`nov_ed`),
-									SUM(`dec_ed`)
+									SUM(`nov_ed`)
 									FROM `tabPflanzenfreund Abo`
 									WHERE (YEAR(`end_date`) >= {0} OR `end_date` IS NULL)
+									AND YEAR(`start_date`) <= {0}
 									AND `docstatus` = '1'""".format(year), as_list = True)
 		chart=get_chart_data(data, chart_data=chart_data_)
 	else:
@@ -92,7 +93,8 @@ def execute(filters=None):
 				AND t1.`docstatus` = '1'
 				AND (t1.`end_date` >= '{1}'
 				OR t1.`end_date` IS NULL)
-				AND t1.`start_date` <= '{1}'""".format(edition, ref_date), as_list = True)
+				AND t1.`start_date` <= '{1}'
+				AND t1.`abo_type` = '{2}'""".format(edition, ref_date, filters.abo_type), as_list = True)
 				
 		_chart_data = {"Jahres-Abo":"", "Probe-Abo":"", "Geschenk-Abo":"", "Gratis-Abo":"", "VIP-Abo":"", "Kundenkarten-Abo (KK)":"", "Kunden-Abo (OK)":""}
 		for key in _chart_data:
@@ -111,7 +113,7 @@ def execute(filters=None):
 
 def get_chart_data(data, chart_data=False, filtered_chart_data=False):
 	if not filtered_chart_data:
-		labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]#[period.key for period in period_list]
+		labels = ["Dec / Jan", "February", "March", "April", "May", "June", "Jul / Aug", "September", "October", "November"]#[period.key for period in period_list]
 	else:
 		labels = ["Jahres-Abo", "Probe-Abo", "Geschenk-Abo", "Gratis-Abo", "VIP-Abo", "Kundenkarten-Abo (KK)", "Kunden-Abo (OK)"]
 	datasets = []
@@ -135,8 +137,8 @@ def get_chart_data(data, chart_data=False, filtered_chart_data=False):
 	return chart
 	
 def getEDcode(edition):
-	if edition == "January":
-		edition = "jan_ed"
+	if edition == "Dec / Jan":
+		edition = "winter_ed"
 	if edition == "February":
 		edition = "feb_ed"
 	if edition == "March":
@@ -147,8 +149,8 @@ def getEDcode(edition):
 		edition = "may_ed"
 	if edition == "June":
 		edition = "jun_ed"
-	if edition == "July":
-		edition = "jul_ed"
+	if edition == "Jul / Aug":
+		edition = "summer_ed"
 	if edition == "August":
 		edition = "aug_ed"
 	if edition == "September":
@@ -191,6 +193,10 @@ def get_month_in_number(edition):
 		edition = "11"
 	if edition == "dec_ed":
 		edition = "12"
+	if edition == "winter_ed":
+		edition = "01"
+	if edition == "summer_ed":
+		edition = "08"
 	return edition
 	
 def get_last_day(dt):

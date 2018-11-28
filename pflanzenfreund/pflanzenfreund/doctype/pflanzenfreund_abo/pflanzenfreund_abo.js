@@ -186,20 +186,20 @@ function getStartDate(onlyYear=false, onlyMonth=false) {
 }
 
 function chooseAllEditions() {
-	cur_frm.set_value('winter_ed', 0);
-	cur_frm.set_value('jan_ed', 1);
+	cur_frm.set_value('winter_ed', 1);
+	cur_frm.set_value('jan_ed', 0);
 	cur_frm.set_value('feb_ed', 1);
 	cur_frm.set_value('mar_ed', 1);
 	cur_frm.set_value('apr_ed', 1);
 	cur_frm.set_value('may_ed', 1);
 	cur_frm.set_value('jun_ed', 1);
-	cur_frm.set_value('summer_ed', 0);
-	cur_frm.set_value('jul_ed', 1);
-	cur_frm.set_value('aug_ed', 1);
+	cur_frm.set_value('summer_ed', 1);
+	cur_frm.set_value('jul_ed', 0);
+	cur_frm.set_value('aug_ed', 0);
 	cur_frm.set_value('sept_ed', 1);
 	cur_frm.set_value('oct_ed', 1);
 	cur_frm.set_value('nov_ed', 1);
-	cur_frm.set_value('dec_ed', 1);
+	cur_frm.set_value('dec_ed', 0);
 }
 
 function deselectAllEditions() {
@@ -254,11 +254,13 @@ function unsetAllEditionsReadOnly() {
 }
 
 function selectNextFour(startMonth) {
+	//console.log(startMonth);
 	if (startMonth == 12) {
-		cur_frm.set_value('jan_ed', 1);
+		//cur_frm.set_value('jan_ed', 1);
 		cur_frm.set_value('feb_ed', 1);
 		cur_frm.set_value('mar_ed', 1);
 		cur_frm.set_value('apr_ed', 1);
+		cur_frm.set_value('may_ed', 1);
 	} else if (startMonth == 1) {
 		cur_frm.set_value('feb_ed', 1);
 		cur_frm.set_value('mar_ed', 1);
@@ -273,54 +275,69 @@ function selectNextFour(startMonth) {
 		cur_frm.set_value('apr_ed', 1);
 		cur_frm.set_value('may_ed', 1);
 		cur_frm.set_value('jun_ed', 1);
-		cur_frm.set_value('jul_ed', 1);
+		//cur_frm.set_value('jul_ed', 1);
+		cur_frm.set_value('summer_ed', 1);
 	} else if (startMonth == 4) {
 		cur_frm.set_value('may_ed', 1);
 		cur_frm.set_value('jun_ed', 1);
-		cur_frm.set_value('jul_ed', 1);
-		cur_frm.set_value('aug_ed', 1);
+		//cur_frm.set_value('jul_ed', 1);
+		//cur_frm.set_value('aug_ed', 1);
+		cur_frm.set_value('summer_ed', 1);
+		cur_frm.set_value('sept_ed', 1);
 	} else if (startMonth == 5) {
 		cur_frm.set_value('jun_ed', 1);
-		cur_frm.set_value('jul_ed', 1);
-		cur_frm.set_value('aug_ed', 1);
-		cur_frm.set_value('sept_ed', 1);
-	} else if (startMonth == 6) {
-		cur_frm.set_value('jul_ed', 1);
-		cur_frm.set_value('aug_ed', 1);
+		//cur_frm.set_value('jul_ed', 1);
+		//cur_frm.set_value('aug_ed', 1);
+		cur_frm.set_value('summer_ed', 1);
 		cur_frm.set_value('sept_ed', 1);
 		cur_frm.set_value('oct_ed', 1);
-	} else if (startMonth == 7) {
-		cur_frm.set_value('aug_ed', 1);
+	} else if (startMonth == 6) {
+		//cur_frm.set_value('jul_ed', 1);
+		//cur_frm.set_value('aug_ed', 1);
+		cur_frm.set_value('summer_ed', 1);
 		cur_frm.set_value('sept_ed', 1);
 		cur_frm.set_value('oct_ed', 1);
 		cur_frm.set_value('nov_ed', 1);
+	} else if (startMonth == 7) {
+		//cur_frm.set_value('aug_ed', 1);
+		cur_frm.set_value('sept_ed', 1);
+		cur_frm.set_value('oct_ed', 1);
+		cur_frm.set_value('nov_ed', 1);
+		cur_frm.set_value('winter_ed', 1);
 	} else if (startMonth == 8) {
 		cur_frm.set_value('sept_ed', 1);
 		cur_frm.set_value('oct_ed', 1);
 		cur_frm.set_value('nov_ed', 1);
-		cur_frm.set_value('dec_ed', 1);
+		cur_frm.set_value('winter_ed', 1);
 	} else if (startMonth == 9) {
 		cur_frm.set_value('oct_ed', 1);
 		cur_frm.set_value('nov_ed', 1);
-		cur_frm.set_value('dec_ed', 1);
-		cur_frm.set_value('jan_ed', 1);
+		//cur_frm.set_value('dec_ed', 1);
+		//cur_frm.set_value('jan_ed', 1);
+		cur_frm.set_value('winter_ed', 1);
+		cur_frm.set_value('feb_ed', 1);
 	} else if (startMonth == 10) {
 		cur_frm.set_value('nov_ed', 1);
-		cur_frm.set_value('dec_ed', 1);
-		cur_frm.set_value('jan_ed', 1);
-		cur_frm.set_value('feb_ed', 1);
-	} else if (startMonth == 11) {
-		cur_frm.set_value('dec_ed', 1);
-		cur_frm.set_value('jan_ed', 1);
+		//cur_frm.set_value('dec_ed', 1);
+		//cur_frm.set_value('jan_ed', 1);
+		cur_frm.set_value('winter_ed', 1);
 		cur_frm.set_value('feb_ed', 1);
 		cur_frm.set_value('mar_ed', 1);
+	} else if (startMonth == 11) {
+		//cur_frm.set_value('dec_ed', 1);
+		//cur_frm.set_value('jan_ed', 1);
+		cur_frm.set_value('winter_ed', 1);
+		cur_frm.set_value('feb_ed', 1);
+		cur_frm.set_value('mar_ed', 1);
+		cur_frm.set_value('apr_ed', 1);
 	}
 }
 
 function selectNextTwo(startMonth) {
 	if (startMonth == 12) {
-		cur_frm.set_value('jan_ed', 1);
+		//cur_frm.set_value('jan_ed', 1);
 		cur_frm.set_value('feb_ed', 1);
+		cur_frm.set_value('mar_ed', 1);
 	} else if (startMonth == 1) {
 		cur_frm.set_value('feb_ed', 1);
 		cur_frm.set_value('mar_ed', 1);
@@ -335,13 +352,17 @@ function selectNextTwo(startMonth) {
 		cur_frm.set_value('jun_ed', 1);
 	} else if (startMonth == 5) {
 		cur_frm.set_value('jun_ed', 1);
-		cur_frm.set_value('jul_ed', 1);
+		//cur_frm.set_value('jul_ed', 1);
+		cur_frm.set_value('summer_ed', 1);
 	} else if (startMonth == 6) {
-		cur_frm.set_value('jul_ed', 1);
-		cur_frm.set_value('aug_ed', 1);
-	} else if (startMonth == 7) {
-		cur_frm.set_value('aug_ed', 1);
+		//cur_frm.set_value('jul_ed', 1);
+		//cur_frm.set_value('aug_ed', 1);
+		cur_frm.set_value('summer_ed', 1);
 		cur_frm.set_value('sept_ed', 1);
+	} else if (startMonth == 7) {
+		//cur_frm.set_value('aug_ed', 1);
+		cur_frm.set_value('sept_ed', 1);
+		cur_frm.set_value('oct_ed', 1);
 	} else if (startMonth == 8) {
 		cur_frm.set_value('sept_ed', 1);
 		cur_frm.set_value('oct_ed', 1);
@@ -350,10 +371,13 @@ function selectNextTwo(startMonth) {
 		cur_frm.set_value('nov_ed', 1);
 	} else if (startMonth == 10) {
 		cur_frm.set_value('nov_ed', 1);
-		cur_frm.set_value('dec_ed', 1);
+		//cur_frm.set_value('dec_ed', 1);
+		cur_frm.set_value('winter_ed', 1);
 	} else if (startMonth == 11) {
-		cur_frm.set_value('dec_ed', 1);
-		cur_frm.set_value('jan_ed', 1);
+		//cur_frm.set_value('dec_ed', 1);
+		//cur_frm.set_value('jan_ed', 1);
+		cur_frm.set_value('winter_ed', 1);
+		cur_frm.set_value('feb_ed', 1);
 	}
 }
 

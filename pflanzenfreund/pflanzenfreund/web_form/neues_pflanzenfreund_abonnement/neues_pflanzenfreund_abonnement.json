@@ -19,8 +19,8 @@
  "is_standard": 1, 
  "login_required": 1, 
  "max_attachment_size": 0, 
- "modified": "2018-09-26 08:49:57.630125", 
- "modified_by": "joel.mesmer@libracore.com", 
+ "modified": "2018-11-28 10:55:23.596559", 
+ "modified_by": "Administrator", 
  "module": "Pflanzenfreund", 
  "name": "neues-pflanzenfreund-abonnement", 
  "owner": "Administrator", 
@@ -213,10 +213,30 @@
    "reqd": 0
   }, 
   {
-   "fieldname": "jan_ed", 
+   "fieldname": "winter_ed", 
    "fieldtype": "Check", 
    "hidden": 0, 
-   "label": "January", 
+   "label": "December / January", 
+   "max_length": 0, 
+   "max_value": 0, 
+   "read_only": 1, 
+   "reqd": 0
+  }, 
+  {
+   "fieldname": "feb_ed", 
+   "fieldtype": "Check", 
+   "hidden": 0, 
+   "label": "February", 
+   "max_length": 0, 
+   "max_value": 0, 
+   "read_only": 1, 
+   "reqd": 0
+  }, 
+  {
+   "fieldname": "mar_ed", 
+   "fieldtype": "Check", 
+   "hidden": 0, 
+   "label": "March", 
    "max_length": 0, 
    "max_value": 0, 
    "read_only": 1, 
@@ -233,45 +253,6 @@
    "reqd": 0
   }, 
   {
-   "fieldname": "jul_ed", 
-   "fieldtype": "Check", 
-   "hidden": 0, 
-   "label": "July", 
-   "max_length": 0, 
-   "max_value": 0, 
-   "read_only": 1, 
-   "reqd": 0
-  }, 
-  {
-   "fieldname": "oct_ed", 
-   "fieldtype": "Check", 
-   "hidden": 0, 
-   "label": "October", 
-   "max_length": 0, 
-   "max_value": 0, 
-   "read_only": 1, 
-   "reqd": 0
-  }, 
-  {
-   "fieldname": "", 
-   "fieldtype": "Column Break", 
-   "hidden": 0, 
-   "max_length": 0, 
-   "max_value": 0, 
-   "read_only": 0, 
-   "reqd": 0
-  }, 
-  {
-   "fieldname": "feb_ed", 
-   "fieldtype": "Check", 
-   "hidden": 0, 
-   "label": "February", 
-   "max_length": 0, 
-   "max_value": 0, 
-   "read_only": 1, 
-   "reqd": 0
-  }, 
-  {
    "fieldname": "may_ed", 
    "fieldtype": "Check", 
    "hidden": 0, 
@@ -282,26 +263,6 @@
    "reqd": 0
   }, 
   {
-   "fieldname": "aug_ed", 
-   "fieldtype": "Check", 
-   "hidden": 0, 
-   "label": "August", 
-   "max_length": 0, 
-   "max_value": 0, 
-   "read_only": 1, 
-   "reqd": 0
-  }, 
-  {
-   "fieldname": "nov_ed", 
-   "fieldtype": "Check", 
-   "hidden": 0, 
-   "label": "November", 
-   "max_length": 0, 
-   "max_value": 0, 
-   "read_only": 1, 
-   "reqd": 0
-  }, 
-  {
    "fieldname": "", 
    "fieldtype": "Column Break", 
    "hidden": 0, 
@@ -311,20 +272,20 @@
    "reqd": 0
   }, 
   {
-   "fieldname": "mar_ed", 
+   "fieldname": "jun_ed", 
    "fieldtype": "Check", 
    "hidden": 0, 
-   "label": "March", 
+   "label": "June", 
    "max_length": 0, 
    "max_value": 0, 
    "read_only": 1, 
    "reqd": 0
   }, 
   {
-   "fieldname": "jun_ed", 
+   "fieldname": "summer_ed", 
    "fieldtype": "Check", 
    "hidden": 0, 
-   "label": "June", 
+   "label": "July / August", 
    "max_length": 0, 
    "max_value": 0, 
    "read_only": 1, 
@@ -341,10 +302,20 @@
    "reqd": 0
   }, 
   {
-   "fieldname": "dec_ed", 
+   "fieldname": "oct_ed", 
    "fieldtype": "Check", 
    "hidden": 0, 
-   "label": "December", 
+   "label": "October", 
+   "max_length": 0, 
+   "max_value": 0, 
+   "read_only": 1, 
+   "reqd": 0
+  }, 
+  {
+   "fieldname": "nov_ed", 
+   "fieldtype": "Check", 
+   "hidden": 0, 
+   "label": "November", 
    "max_length": 0, 
    "max_value": 0, 
    "read_only": 1, 

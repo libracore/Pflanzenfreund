@@ -164,6 +164,72 @@ function add_four_months_to_date(d) {
 	var year = d.getFullYear();
 	var month = d.getMonth();
 	var day = d.getDate();
+	if ((month == 0)&&(day > 15)) {
+		return new Date(year, month + 5, day)
+	}
+	if ((month == 1)&&(day > 15)) {
+		return new Date(year, month + 6, day)
+	}
+	if ((month == 2)&&(day <= 15)) {
+		return new Date(year, month + 5, day)
+	}
+	if ((month == 2)&&(day > 15)) {
+		return new Date(year, month + 6, day)
+	}
+	if ((month == 3)&&(day <= 15)) {
+		return new Date(year, month + 5, day)
+	}
+	if ((month == 3)&&(day > 15)) {
+		return new Date(year, month + 6, day)
+	}
+	if ((month == 4)&&(day <= 15)) {
+		return new Date(year, month + 5, day)
+	}
+	if ((month == 4)&&(day > 15)) {
+		return new Date(year, month + 6, day)
+	}
+	if ((month == 5)&&(day <= 15)) {
+		return new Date(year, month + 5, day)
+	}
+	if ((month == 5)&&(day > 15)) {
+		return new Date(year, month + 7, day)
+	}
+	if ((month == 6)&&(day <= 15)) {
+		return new Date(year, month + 6, day)
+	}
+	if ((month == 6)&&(day > 15)) {
+		return new Date(year, month + 6, day)
+	}
+	if ((month == 7)&&(day <= 15)) {
+		return new Date(year, month + 5, day)
+	}
+	if ((month == 7)&&(day > 15)) {
+		return new Date(year, month + 6, day)
+	}
+	if ((month == 8)&&(day <= 15)) {
+		return new Date(year, month + 5, day)
+	}
+	if ((month == 8)&&(day > 15)) {
+		return new Date(year, month + 6, day)
+	}
+	if ((month == 9)&&(day <= 15)) {
+		return new Date(year, month + 5, day)
+	}
+	if ((month == 9)&&(day > 15)) {
+		return new Date(year, month + 6, day)
+	}
+	if ((month == 10)&&(day <= 15)) {
+		return new Date(year, month + 5, day)
+	}
+	if ((month == 10)&&(day > 15)) {
+		return new Date(year, month + 6, day)
+	}
+	if ((month == 11)&&(day <= 15)) {
+		return new Date(year, month + 5, day)
+	}
+	if ((month == 11)&&(day > 15)) {
+		return new Date(year, month + 5, day)
+	}
 	return new Date(year, month + 4, day)
 }
 
@@ -176,121 +242,158 @@ function set_editions_based_on_abo_type_and_start_date() {
 	}
 	var abo_type = $('select[data-fieldname = "abo_type"]')[0];
 	var start_date = $('input[data-fieldname = "start_date"]')[0];
-	var jan = $('input[data-fieldname = "jan_ed"]')[0];
+	//var jan = $('input[data-fieldname = "jan_ed"]')[0];
+	var winter = $('input[data-fieldname = "winter_ed"]')[0];
 	var feb = $('input[data-fieldname = "feb_ed"]')[0];
 	var mar = $('input[data-fieldname = "mar_ed"]')[0];
 	var apr = $('input[data-fieldname = "apr_ed"]')[0];
 	var may = $('input[data-fieldname = "may_ed"]')[0];
 	var jun = $('input[data-fieldname = "jun_ed"]')[0];
-	var jul = $('input[data-fieldname = "jul_ed"]')[0];
-	var aug = $('input[data-fieldname = "aug_ed"]')[0];
+	//var jul = $('input[data-fieldname = "jul_ed"]')[0];
+	//var aug = $('input[data-fieldname = "aug_ed"]')[0];
+	var summer = $('input[data-fieldname = "summer_ed"]')[0];
 	var sept = $('input[data-fieldname = "sept_ed"]')[0];
 	var oct = $('input[data-fieldname = "oct_ed"]')[0];
 	var nov = $('input[data-fieldname = "nov_ed"]')[0];
-	var dec = $('input[data-fieldname = "dec_ed"]')[0];
+	//var dec = $('input[data-fieldname = "dec_ed"]')[0];
 	if (abo_type.value != "Probe-Abo") {
-		jan.checked = true;
+		//jan.checked = true;
+		winter.checked = true;
 		feb.checked = true;
 		mar.checked = true;
 		apr.checked = true;
 		may.checked = true;
 		jun.checked = true;
-		jul.checked = true;
-		aug.checked = true;
+		//jul.checked = true;
+		//aug.checked = true;
+		summer.checked = true;
 		sept.checked = true;
 		oct.checked = true;
 		nov.checked = true;
-		dec.checked = true;
+		//dec.checked = true;
 	} else {
-		jan.checked = false;
+		//jan.checked = false;
+		winter.checked = false;
 		feb.checked = false;
 		mar.checked = false;
 		apr.checked = false;
 		may.checked = false;
 		jun.checked = false;
-		jul.checked = false;
-		aug.checked = false;
+		//jul.checked = false;
+		//aug.checked = false;
+		summer.checked = false;
 		sept.checked = false;
 		oct.checked = false;
 		nov.checked = false;
-		dec.checked = false;
+		//dec.checked = false;
 		var start_day = parseInt(start_date.value.split(splitter)[0]);
 		var start_month = parseInt(start_date.value.split(splitter)[1]);
 		if (start_day >= 15) {
 			start_month = start_month + 1;
+			if (start_month > 12) {
+				start_month = 12;
+			}
 		}
-		
+		console.log(start_month);
 		if (start_month == 1) {
-			jan.checked = true;
+			//jan.checked = true;
 			feb.checked = true;
 			mar.checked = true;
 			apr.checked = true;
+			may.checked = true;
 		}
 		if (start_month == 2) {
-			feb.checked = true;
+			//feb.checked = true;
 			mar.checked = true;
 			apr.checked = true;
 			may.checked = true;
+			jun.checked = true;
 		}
 		if (start_month == 3) {
-			mar.checked = true;
+			//mar.checked = true;
 			apr.checked = true;
 			may.checked = true;
 			jun.checked = true;
+			summer.checked = true;
 		}
 		if (start_month == 4) {
-			apr.checked = true;
+			//apr.checked = true;
 			may.checked = true;
 			jun.checked = true;
-			jul.checked = true;
+			//jul.checked = true;
+			summer.checked = true;
+			sept.checked = true;
 		}
 		if (start_month == 5) {
-			may.checked = true;
+			//may.checked = true;
 			jun.checked = true;
-			jul.checked = true;
-			aug.checked = true;
+			//jul.checked = true;
+			//aug.checked = true;
+			summer.checked = true;
+			sept.checked = true;
+			oct.checked = true;
 		}
 		if (start_month == 6) {
-			jun.checked = true;
-			jul.checked = true;
-			aug.checked = true;
+			//jun.checked = true;
+			//jul.checked = true;
+			//aug.checked = true;
+			summer.checked = true;
 			sept.checked = true;
+			oct.checked = true;
+			nov.checked = true;
 		}
 		if (start_month == 7) {
-			jul.checked = true;
-			aug.checked = true;
+			//jul.checked = true;
+			//aug.checked = true;
+			//summer.checked = true;
 			sept.checked = true;
 			oct.checked = true;
+			nov.checked = true;
+			winter.checked = true;
 		}
 		if (start_month == 8) {
-			aug.checked = true;
+			//aug.checked = true;
 			sept.checked = true;
 			oct.checked = true;
 			nov.checked = true;
+			winter.checked = true;
+			//feb.checked = true;
 		}
 		if (start_month == 9) {
-			sept.checked = true;
+			//sept.checked = true;
 			oct.checked = true;
 			nov.checked = true;
-			dec.checked = true;
+			//dec.checked = true;
+			winter.checked = true;
+			feb.checked = true;
 		}
 		if (start_month == 10) {
-			oct.checked = true;
+			//oct.checked = true;
 			nov.checked = true;
-			dec.checked = true;
-			jan.checked = true;
-		}
-		if (start_month == 11) {
-			nov.checked = true;
-			dec.checked = true;
-			jan.checked = true;
-			feb.checked = true;
-		}
-		if (start_month == 12) {
-			dec.checked = true;
-			jan.checked = true;
+			winter.checked = true;
+			//dec.checked = true;
+			//jan.checked = true;
 			feb.checked = true;
 			mar.checked = true;
+		}
+		if (start_month == 11) {
+			//nov.checked = true;
+			//dec.checked = true;
+			//jan.checked = true;
+			winter.checked = true;
+			feb.checked = true;
+			mar.checked = true;
+			apr.checked = true;
+			//may.checked = true;
+		}
+		if (start_month == 12) {
+			//dec.checked = true;
+			//jan.checked = true;
+			//winter.checked = true;
+			feb.checked = true;
+			mar.checked = true;
+			apr.checked = true;
+			may.checked = true;
 		}
 	}
 }

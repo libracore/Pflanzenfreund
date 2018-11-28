@@ -461,6 +461,8 @@ def umwandlungen_bereinigung(customer, abo):
 		"oct_ed": old_abo.oct_ed,
 		"nov_ed": old_abo.nov_ed,
 		"dec_ed": old_abo.dec_ed,
+		"winter_ed": old_abo.winter_ed,
+		"summer_ed": old_abo.summer_ed,
 		"set_ed_manual": old_abo.set_ed_manual
 	})
 	new_abo.insert()
@@ -516,100 +518,91 @@ def get_editions(ok=False, kk=False):
 	if ok:
 		if month == '1':
 			editions = {
-				"jan_ed": 1,
-				"feb_ed": 1
-			}
-			return editions
-			
-		if month == '2':
-			editions = {
 				"feb_ed": 1,
 				"mar_ed": 1
 			}
 			return editions
 			
-		if month == '3':
+		if month == '2':
 			editions = {
 				"mar_ed": 1,
 				"apr_ed": 1
 			}
 			return editions
 			
-		if month == '4':
+		if month == '3':
 			editions = {
 				"apr_ed": 1,
 				"may_ed": 1
 			}
 			return editions
 			
-		if month == '5':
+		if month == '4':
 			editions = {
 				"may_ed": 1,
 				"jun_ed": 1
 			}
 			return editions
 			
-		if month == '6':
+		if month == '5':
 			editions = {
 				"jun_ed": 1,
-				"jul_ed": 1
+				"summer_ed": 1
 			}
 			return editions
 			
-		if month == '7':
+		if month == '6':
 			editions = {
-				"jul_ed": 1,
-				"aug_ed": 1
-			}
-			return editions
-			
-		if month == '8':
-			editions = {
-				"aug_ed": 1,
+				"summer_ed": 1,
 				"sept_ed": 1
 			}
 			return editions
 			
-		if month == '9':
+		if month == '7':
 			editions = {
 				"sept_ed": 1,
 				"oct_ed": 1
 			}
 			return editions
 			
-		if month == '10':
+		if month == '8':
+			editions = {
+				"sept_ed": 1,
+				"oct_ed": 1
+			}
+			return editions
+			
+		if month == '9':
 			editions = {
 				"oct_ed": 1,
 				"nov_ed": 1
 			}
 			return editions
 			
-		if month == '11':
+		if month == '10':
 			editions = {
 				"nov_ed": 1,
-				"dec_ed": 1
+				"winter_ed": 1
+			}
+			return editions
+			
+		if month == '11':
+			editions = {
+				"winter_ed": 1,
+				"feb_ed": 1
 			}
 			return editions
 			
 		if month == '12':
 			editions = {
-				"dec_ed": 1,
-				"jan_ed": 1
+				"feb_ed": 1,
+				"mar_ed": 1
 			}
 			return editions
 	
 	if kk:
 		if month == '1':
 			editions = {
-				"jan_ed": 1,
-				"feb_ed": 1,
-				"mar_ed": 1,
-				"apr_ed": 1
-			}
-			return editions
-			
-		if month == '2':
-			editions = {
 				"feb_ed": 1,
 				"mar_ed": 1,
 				"apr_ed": 1,
@@ -617,7 +610,7 @@ def get_editions(ok=False, kk=False):
 			}
 			return editions
 			
-		if month == '3':
+		if month == '2':
 			editions = {
 				"mar_ed": 1,
 				"apr_ed": 1,
@@ -626,83 +619,92 @@ def get_editions(ok=False, kk=False):
 			}
 			return editions
 			
-		if month == '4':
+		if month == '3':
 			editions = {
 				"apr_ed": 1,
 				"may_ed": 1,
 				"jun_ed": 1,
-				"jul_ed": 1
+				"summer_ed": 1
+			}
+			return editions
+			
+		if month == '4':
+			editions = {
+				"may_ed": 1,
+				"jun_ed": 1,
+				"summer_ed": 1,
+				"sept_ed": 1
 			}
 			return editions
 			
 		if month == '5':
 			editions = {
-				"may_ed": 1,
 				"jun_ed": 1,
-				"jul_ed": 1,
-				"aug_ed": 1
-			}
-			return editions
-			
-		if month == '6':
-			editions = {
-				"jun_ed": 1,
-				"jul_ed": 1,
-				"aug_ed": 1,
-				"sept_ed": 1
-			}
-			return editions
-			
-		if month == '7':
-			editions = {
-				"jul_ed": 1,
-				"aug_ed": 1,
+				"summer_ed": 1,
 				"sept_ed": 1,
 				"oct_ed": 1
 			}
 			return editions
 			
-		if month == '8':
+		if month == '6':
 			editions = {
-				"aug_ed": 1,
+				"summer_ed": 1,
 				"sept_ed": 1,
 				"oct_ed": 1,
 				"nov_ed": 1
 			}
 			return editions
 			
-		if month == '9':
+		if month == '7':
 			editions = {
 				"sept_ed": 1,
 				"oct_ed": 1,
 				"nov_ed": 1,
-				"dec_ed": 1
+				"winter_ed": 1
+			}
+			return editions
+			
+		if month == '8':
+			editions = {
+				"sept_ed": 1,
+				"oct_ed": 1,
+				"nov_ed": 1,
+				"winter_ed": 1
+			}
+			return editions
+			
+		if month == '9':
+			editions = {
+				"oct_ed": 1,
+				"nov_ed": 1,
+				"winter_ed": 1,
+				"feb_ed": 1
 			}
 			return editions
 			
 		if month == '10':
 			editions = {
-				"oct_ed": 1,
 				"nov_ed": 1,
-				"dec_ed": 1,
-				"jan_ed": 1
+				"winter_ed": 1,
+				"feb_ed": 1,
+				"mar_ed": 1
 			}
 			return editions
 			
 		if month == '11':
 			editions = {
-				"nov_ed": 1,
-				"dec_ed": 1,
-				"jan_ed": 1,
-				"feb_ed": 1
+				"winter_ed": 1,
+				"feb_ed": 1,
+				"mar_ed": 1,
+				"apr_ed": 1
 			}
 			return editions
 			
 		if month == '12':
 			editions = {
-				"dec_ed": 1,
-				"jan_ed": 1,
 				"feb_ed": 1,
-				"mar_ed": 1
+				"mar_ed": 1,
+				"apr_ed": 1,
+				"may_ed": 1
 			}
 			return editions
