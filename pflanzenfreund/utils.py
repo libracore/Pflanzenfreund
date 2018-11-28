@@ -28,7 +28,7 @@ from PyPDF2 import PdfFileWriter
 def remove_downloaded_pdf():
 	path = "/home/frappe/frappe-bench/sites/assets/pflanzenfreund/sinvs_for_print/"
 	for filename in os.listdir(path):
-		os.remove(filename)
+		os.remove(str(path) + str(filename))
 	
 @frappe.whitelist()
 def createSammelPDF(valuta, printformat):
