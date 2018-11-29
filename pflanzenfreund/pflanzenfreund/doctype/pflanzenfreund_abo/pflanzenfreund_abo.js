@@ -51,6 +51,7 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 			add_year(getStartDate());
 			chooseAllEditions();
 			setAllEditionsReadOnly();
+			frappe["already_checked"] = false;
 		}
 	},
 	abo_type: function(frm) {
@@ -128,8 +129,8 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 		count = count + cur_frm.doc.jan_ed + cur_frm.doc.feb_ed + cur_frm.doc.mar_ed + cur_frm.doc.apr_ed + cur_frm.doc.may_ed + cur_frm.doc.jun_ed + cur_frm.doc.jul_ed + cur_frm.doc.aug_ed + cur_frm.doc.sept_ed + cur_frm.doc.oct_ed + cur_frm.doc.nov_ed + cur_frm.doc.dec_ed;
 		
 		if (cur_frm.doc.abo_type == "Kundenkarten-Abo (KK)") {
-			if ((count != 4)) {
-				frappe.msgprint("Please choose <b>4 editions</b> for Kundenkarten-Abo (KK)", "Kundenkarten-Abo (KK) Info");
+			if ((count != 3)) {
+				frappe.msgprint("Please choose <b>3 editions</b> for Kundenkarten-Abo (KK)", "Kundenkarten-Abo (KK) Info");
 				frappe.validated=false;
 				console.log("Abo: Kundenkarten-Abo (KK) / count: "+count);
 			} else {
@@ -149,15 +150,26 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 			} else {
 				frappe.validated=true;
 			}
-		} /* else {
-			if ((count != 12)) {
-				frappe.msgprint("Please choose <b>all editions</b>", "Abo Info");
-				frappe.validated=false;
-				console.log("Abo: rest / count: "+count);
-			} else {
-				frappe.validated=true;
+		} else {
+			if (!frappe["already_checked"]){
+				if ((count != 12)) {
+					frappe.validated=false;
+					frappe.confirm(
+						"You don't choose <b>all editions</b>!<br>Are you sure this is correct?",
+						function(){
+							//frappe.validated=true;
+							frappe["already_checked"] = true;
+							cur_frm.savesubmit();
+						},
+						function(){
+							frappe.validated=false;
+						}
+					)
+				} else {
+					frappe.validated=true;
+				}
 			}
-		} */
+		}
 		
 	},
 	set_ed_manual: function(frm) {
