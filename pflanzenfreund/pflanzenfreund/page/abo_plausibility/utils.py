@@ -484,7 +484,7 @@ def anlagen_kk_bereinigung(customer):
 		"customer_address": address,
 		"abo_type": "Kundenkarten-Abo (KK)",
 		"start_date": utils.today(),
-		"end_date": utils.add_years(utils.today(), 1)
+		"end_date": ''
 	})
 	new_kk_abo.update(get_editions(kk=True))
 	new_kk_abo.insert()
@@ -502,7 +502,7 @@ def anlagen_ok_bereinigung(customer):
 		"customer_address": address,
 		"abo_type": "Kunden-Abo (OK)",
 		"start_date": utils.today(),
-		"end_date": utils.add_years(utils.today(), 1)
+		"end_date": ''
 	})
 	new_ok_abo.update(get_editions(ok=True))
 	new_ok_abo.insert()
@@ -513,89 +513,93 @@ def anlagen_ok_bereinigung(customer):
 	
 def get_editions(ok=False, kk=False):
 	today = utils.today()
-	year, month, date = today.split('-')
+	year, month, day = today.split('-')
+	if int(day) > 15:
+		month = str(int(month) + 1)
+		if int(month) > 12:
+			month = str(1)
 	
 	if ok:
 		if month == '1':
 			editions = {
 				"feb_ed": 1,
-				"mar_ed": 1
+				"summer_ed": 1
 			}
 			return editions
 			
 		if month == '2':
 			editions = {
 				"mar_ed": 1,
-				"apr_ed": 1
+				"sept_ed": 1
 			}
 			return editions
 			
 		if month == '3':
 			editions = {
 				"apr_ed": 1,
-				"may_ed": 1
+				"oct_ed": 1
 			}
 			return editions
 			
 		if month == '4':
 			editions = {
 				"may_ed": 1,
-				"jun_ed": 1
+				"nov_ed": 1
 			}
 			return editions
 			
 		if month == '5':
 			editions = {
 				"jun_ed": 1,
-				"summer_ed": 1
+				"winter_ed": 1
 			}
 			return editions
 			
 		if month == '6':
 			editions = {
 				"summer_ed": 1,
-				"sept_ed": 1
+				"feb_ed": 1
 			}
 			return editions
 			
 		if month == '7':
 			editions = {
 				"sept_ed": 1,
-				"oct_ed": 1
+				"mar_ed": 1
 			}
 			return editions
 			
 		if month == '8':
 			editions = {
-				"sept_ed": 1,
+				"apr_ed": 1,
 				"oct_ed": 1
 			}
 			return editions
 			
 		if month == '9':
 			editions = {
-				"oct_ed": 1,
+				"may_ed": 1,
 				"nov_ed": 1
 			}
 			return editions
 			
 		if month == '10':
 			editions = {
-				"nov_ed": 1,
+				"jun_ed": 1,
 				"winter_ed": 1
 			}
 			return editions
 			
 		if month == '11':
 			editions = {
-				"winter_ed": 1,
+				"summer_ed": 1,
 				"feb_ed": 1
 			}
 			return editions
 			
 		if month == '12':
 			editions = {
-				"feb_ed": 1,
+				"sept_ed": 1,
 				"mar_ed": 1
 			}
 			return editions
@@ -604,8 +608,7 @@ def get_editions(ok=False, kk=False):
 		if month == '1':
 			editions = {
 				"feb_ed": 1,
-				"mar_ed": 1,
-				"apr_ed": 1,
+				"sept_ed": 1,
 				"may_ed": 1
 			}
 			return editions
@@ -613,8 +616,7 @@ def get_editions(ok=False, kk=False):
 		if month == '2':
 			editions = {
 				"mar_ed": 1,
-				"apr_ed": 1,
-				"may_ed": 1,
+				"oct_ed": 1,
 				"jun_ed": 1
 			}
 			return editions
@@ -622,8 +624,7 @@ def get_editions(ok=False, kk=False):
 		if month == '3':
 			editions = {
 				"apr_ed": 1,
-				"may_ed": 1,
-				"jun_ed": 1,
+				"nov_ed": 1,
 				"summer_ed": 1
 			}
 			return editions
@@ -631,8 +632,7 @@ def get_editions(ok=False, kk=False):
 		if month == '4':
 			editions = {
 				"may_ed": 1,
-				"jun_ed": 1,
-				"summer_ed": 1,
+				"winter_ed": 1,
 				"sept_ed": 1
 			}
 			return editions
@@ -640,8 +640,7 @@ def get_editions(ok=False, kk=False):
 		if month == '5':
 			editions = {
 				"jun_ed": 1,
-				"summer_ed": 1,
-				"sept_ed": 1,
+				"feb_ed": 1,
 				"oct_ed": 1
 			}
 			return editions
@@ -649,8 +648,7 @@ def get_editions(ok=False, kk=False):
 		if month == '6':
 			editions = {
 				"summer_ed": 1,
-				"sept_ed": 1,
-				"oct_ed": 1,
+				"mar_ed": 1,
 				"nov_ed": 1
 			}
 			return editions
@@ -658,8 +656,7 @@ def get_editions(ok=False, kk=False):
 		if month == '7':
 			editions = {
 				"sept_ed": 1,
-				"oct_ed": 1,
-				"nov_ed": 1,
+				"apr_ed": 1,
 				"winter_ed": 1
 			}
 			return editions
@@ -667,17 +664,15 @@ def get_editions(ok=False, kk=False):
 		if month == '8':
 			editions = {
 				"sept_ed": 1,
-				"oct_ed": 1,
-				"nov_ed": 1,
-				"winter_ed": 1
+				"mar_ed": 1,
+				"nov_ed": 1
 			}
 			return editions
 			
 		if month == '9':
 			editions = {
 				"oct_ed": 1,
-				"nov_ed": 1,
-				"winter_ed": 1,
+				"may_ed": 1,
 				"feb_ed": 1
 			}
 			return editions
@@ -685,8 +680,7 @@ def get_editions(ok=False, kk=False):
 		if month == '10':
 			editions = {
 				"nov_ed": 1,
-				"winter_ed": 1,
-				"feb_ed": 1,
+				"jun_ed": 1,
 				"mar_ed": 1
 			}
 			return editions
@@ -694,8 +688,7 @@ def get_editions(ok=False, kk=False):
 		if month == '11':
 			editions = {
 				"winter_ed": 1,
-				"feb_ed": 1,
-				"mar_ed": 1,
+				"summer_ed": 1,
 				"apr_ed": 1
 			}
 			return editions
@@ -703,8 +696,7 @@ def get_editions(ok=False, kk=False):
 		if month == '12':
 			editions = {
 				"feb_ed": 1,
-				"mar_ed": 1,
-				"apr_ed": 1,
+				"oct_ed": 1,
 				"may_ed": 1
 			}
 			return editions

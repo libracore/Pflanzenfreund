@@ -76,35 +76,51 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 		enddate = yyyy + "-" + mm + "-01";
 		
 		if (cur_frm.doc.abo_type == "Probe-Abo") {
+			cur_frm.set_value('start_date', getStartDate());
 			cur_frm.set_value('end_date', enddate);
 			deselectAllEditions();
 			selectNextFour(parseInt(refMM));
 			setAllEditionsReadOnly();
 			
 		} else if (cur_frm.doc.abo_type == "Kundenkarten-Abo (KK)") {
-			//cur_frm.set_value('end_date', '');
-			add_year(getStartDate());
+			cur_frm.set_value('start_date', getStartDate());
+			cur_frm.set_value('end_date', '');
+			//add_year(getStartDate());
 			deselectAllEditions();
-			unsetAllEditionsReadOnly();
+			//unsetAllEditionsReadOnly();
+			selectNextThree(parseInt(refMM));
+			setAllEditionsReadOnly();
 		} else if (cur_frm.doc.abo_type == "Kunden-Abo (OK)") {
-			//cur_frm.set_value('end_date', '');
-			add_year(getStartDate());
+			cur_frm.set_value('start_date', getStartDate());
+			cur_frm.set_value('end_date', '');
+			//add_year(getStartDate());
 			deselectAllEditions();
 			selectNextTwo(parseInt(refMM));
 			setAllEditionsReadOnly();
-		} else {
-			//cur_frm.set_value('end_date', '');
+			//console.log(refMM);
+		} else if (cur_frm.doc.abo_type == "Jahres-Abo") {
+			cur_frm.set_value('start_date', getStartDate());
 			add_year(getStartDate());
 			chooseAllEditions();
 			setAllEditionsReadOnly();
-			if (cur_frm.doc.abo_type == "Geschenk-Abo") {
-				var start = cur_frm.doc.start_date;
-				var month = start.split("-")[1];
-				var day = start.split("-")[2];
-				var end = (parseInt((new Date()).getFullYear()) + 1) + "-" + month + "-" + day;
-				var text = "<div><p>Sie erhalten im Auftrag von " + cur_frm.doc.customer_name + " als Geschenk-Abo die nächsten 10 Ausgaben unseres Gartenmagazins «Mein Pflanzenfreund» bequem und rechtzeitig zur Saison. Wir wünschen Ihnen viel Vergnügen bei der Lektüre.</p></div>"
-				cur_frm.set_value('donee_text', text);
-			}
+		} else if (cur_frm.doc.abo_type == "Geschenk-Abo") {
+			//cur_frm.set_value('end_date', '');
+			cur_frm.set_value('start_date', getStartDate());
+			add_year(getStartDate());
+			chooseAllEditions();
+			setAllEditionsReadOnly();
+			var start = cur_frm.doc.start_date;
+			var month = start.split("-")[1];
+			var day = start.split("-")[2];
+			var end = (parseInt((new Date()).getFullYear()) + 1) + "-" + month + "-" + day;
+			var text = "<div><p>Sie erhalten im Auftrag von " + cur_frm.doc.customer_name + " als Geschenk-Abo die nächsten 10 Ausgaben unseres Gartenmagazins «Mein Pflanzenfreund» bequem und rechtzeitig zur Saison. Wir wünschen Ihnen viel Vergnügen bei der Lektüre.</p></div>"
+			cur_frm.set_value('donee_text', text);
+		} else {
+			cur_frm.set_value('end_date', '');
+			cur_frm.set_value('start_date', getStartDate());
+			//add_year(getStartDate());
+			chooseAllEditions();
+			setAllEditionsReadOnly();
 		}
 	},
 	validate: function(frm) {
@@ -336,48 +352,102 @@ function selectNextFour(startMonth) {
 function selectNextTwo(startMonth) {
 	if (startMonth == 12) {
 		//cur_frm.set_value('jan_ed', 1);
-		cur_frm.set_value('feb_ed', 1);
 		cur_frm.set_value('mar_ed', 1);
+		cur_frm.set_value('sept_ed', 1);
 	} else if (startMonth == 1) {
 		cur_frm.set_value('feb_ed', 1);
-		cur_frm.set_value('mar_ed', 1);
+		cur_frm.set_value('summer_ed', 1);
 	} else if (startMonth == 2) {
 		cur_frm.set_value('mar_ed', 1);
-		cur_frm.set_value('apr_ed', 1);
+		cur_frm.set_value('sept_ed', 1);
 	} else if (startMonth == 3) {
 		cur_frm.set_value('apr_ed', 1);
-		cur_frm.set_value('may_ed', 1);
+		cur_frm.set_value('oct_ed', 1);
 	} else if (startMonth == 4) {
 		cur_frm.set_value('May_ed', 1);
-		cur_frm.set_value('jun_ed', 1);
+		cur_frm.set_value('nov_ed', 1);
 	} else if (startMonth == 5) {
 		cur_frm.set_value('jun_ed', 1);
 		//cur_frm.set_value('jul_ed', 1);
-		cur_frm.set_value('summer_ed', 1);
+		cur_frm.set_value('winter_ed', 1);
 	} else if (startMonth == 6) {
 		//cur_frm.set_value('jul_ed', 1);
 		//cur_frm.set_value('aug_ed', 1);
 		cur_frm.set_value('summer_ed', 1);
-		cur_frm.set_value('sept_ed', 1);
+		cur_frm.set_value('feb_ed', 1);
 	} else if (startMonth == 7) {
 		//cur_frm.set_value('aug_ed', 1);
 		cur_frm.set_value('sept_ed', 1);
-		cur_frm.set_value('oct_ed', 1);
+		cur_frm.set_value('mar_ed', 1);
 	} else if (startMonth == 8) {
-		cur_frm.set_value('sept_ed', 1);
+		cur_frm.set_value('apr_ed', 1);
 		cur_frm.set_value('oct_ed', 1);
 	} else if (startMonth == 9) {
-		cur_frm.set_value('oct_ed', 1);
+		cur_frm.set_value('may_ed', 1);
 		cur_frm.set_value('nov_ed', 1);
 	} else if (startMonth == 10) {
-		cur_frm.set_value('nov_ed', 1);
+		cur_frm.set_value('jun_ed', 1);
 		//cur_frm.set_value('dec_ed', 1);
 		cur_frm.set_value('winter_ed', 1);
 	} else if (startMonth == 11) {
 		//cur_frm.set_value('dec_ed', 1);
 		//cur_frm.set_value('jan_ed', 1);
-		cur_frm.set_value('winter_ed', 1);
+		cur_frm.set_value('summer_ed', 1);
 		cur_frm.set_value('feb_ed', 1);
+	}
+}
+
+function selectNextThree(startMonth) {
+	if (startMonth == 12) {
+		cur_frm.set_value('feb_ed', 1);
+		cur_frm.set_value('may_ed', 1);
+		cur_frm.set_value('oct_ed', 1);
+	} else if (startMonth == 1) {
+		cur_frm.set_value('feb_ed', 1);
+		cur_frm.set_value('may_ed', 1);
+		cur_frm.set_value('sept_ed', 1);
+	} else if (startMonth == 2) {
+		cur_frm.set_value('mar_ed', 1);
+		cur_frm.set_value('jun_ed', 1);
+		cur_frm.set_value('oct_ed', 1);
+	} else if (startMonth == 3) {
+		cur_frm.set_value('apr_ed', 1);
+		cur_frm.set_value('nov_ed', 1);
+		cur_frm.set_value('summer_ed', 1);
+	} else if (startMonth == 4) {
+		cur_frm.set_value('May_ed', 1);
+		cur_frm.set_value('sept_ed', 1);
+		cur_frm.set_value('winter_ed', 1);
+	} else if (startMonth == 5) {
+		cur_frm.set_value('jun_ed', 1);
+		cur_frm.set_value('feb_ed', 1);
+		cur_frm.set_value('oct_ed', 1);
+	} else if (startMonth == 6) {
+		//cur_frm.set_value('jul_ed', 1);
+		cur_frm.set_value('mar_ed', 1);
+		cur_frm.set_value('summer_ed', 1);
+		cur_frm.set_value('nov_ed', 1);
+	} else if (startMonth == 7) {
+		cur_frm.set_value('apr_d', 1);
+		cur_frm.set_value('sept_ed', 1);
+		cur_frm.set_value('winter_ed', 1);
+	} else if (startMonth == 8) {
+		cur_frm.set_value('mar_ed', 1);
+		cur_frm.set_value('sept_ed', 1);
+		cur_frm.set_value('nov_ed', 1);
+	} else if (startMonth == 9) {
+		cur_frm.set_value('may_ed', 1);
+		cur_frm.set_value('feb_ed', 1);
+		cur_frm.set_value('oct_ed', 1);
+	} else if (startMonth == 10) {
+		cur_frm.set_value('jun_ed', 1);
+		cur_frm.set_value('mar_ed', 1);
+		cur_frm.set_value('nov_ed', 1);
+	} else if (startMonth == 11) {
+		//cur_frm.set_value('dec_ed', 1);
+		cur_frm.set_value('winter_ed', 1);
+		cur_frm.set_value('summer_ed', 1);
+		cur_frm.set_value('apr_ed', 1);
 	}
 }
 
