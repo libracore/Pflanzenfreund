@@ -545,7 +545,7 @@ def create_invoice(customer, billing, shipping, pflanzenfreund_abo, abo):
 	referencenumber = sales_invoice.name.split("-")[1]
 	sales_invoice.update({
 		"esr_reference": esr.get_reference_number(referencenumber),
-		"esr_code": esr.generateCodeline(sales_invoice.grand_total, esr.get_reference_number(referencenumber), "013100113")
+		"esr_code": esr.generateCodeline(sales_invoice.grand_total, referencenumber, "013100113")
 	})
 	sales_invoice.save(ignore_permissions=True)
 	sales_invoice.submit()
@@ -798,7 +798,7 @@ def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bull
 			referencenumber = sales_invoice.name.split("-")[1]
 			sales_invoice.update({
 				"esr_reference": esr.get_reference_number(referencenumber),
-				"esr_code": esr.generateCodeline(sales_invoice.grand_total, esr.get_reference_number(referencenumber), "013100113")
+				"esr_code": esr.generateCodeline(sales_invoice.grand_total, referencenumber, "013100113")
 			})
 			sales_invoice.save(ignore_permissions=True)
 			
@@ -882,7 +882,7 @@ def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bull
 			referencenumber = sales_invoice.name.split("-")[1]
 			sales_invoice.update({
 				"esr_reference": esr.get_reference_number(referencenumber),
-				"esr_code": esr.generateCodeline(sales_invoice.grand_total, esr.get_reference_number(referencenumber), "013100113")
+				"esr_code": esr.generateCodeline(sales_invoice.grand_total, referencenumber, "013100113")
 			})
 			sales_invoice.save(ignore_permissions=True)
 			
