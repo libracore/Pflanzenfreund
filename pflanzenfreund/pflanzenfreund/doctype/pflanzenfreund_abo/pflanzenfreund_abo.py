@@ -63,19 +63,21 @@ def create_abo(customer):
 		"customer": customer,
 		"start_date": frappe.utils.data.today(),
 		"end_date": frappe.utils.data.add_years(None, 1),
-		"jan_ed": 1,
+		"jan_ed": 0,
 		"feb_ed": 1,
 		"mar_ed": 1,
 		"apr_ed": 1,
 		"may_ed": 1,
 		"jun_ed": 1,
-		"jul_ed": 1,
-		"aug_ed": 1,
+		"jul_ed": 0,
+		"aug_ed": 0,
 		"sept_ed": 1,
 		"oct_ed": 1,
 		"nov_ed": 1,
-		"dec_ed": 1,
-		"set_ed_manual": 1
+		"dec_ed": 0,
+		"set_ed_manual": 1,
+		"winter_ed": 1,
+		"summer_ed": 1
 	})
 	abo.flags.ignore_mandatory = True
 	abo.save(ignore_permissions=True)
