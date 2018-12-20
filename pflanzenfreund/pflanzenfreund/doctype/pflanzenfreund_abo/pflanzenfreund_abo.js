@@ -3,6 +3,10 @@
 
 frappe.ui.form.on('Pflanzenfreund Abo', {
 	refresh: function(frm) {
+		if ((cur_frm.doc.abo_type == "Geschenk-Abo")&&(parseInt(cur_frm.doc.docstatus) == 0)) {
+			var text = "<div><h2>Ihr Geschenk-Abonnement ‚Mein Pflanzenfreund’</h2><p>Im Auftrag von *!*Schenker*!* erhalten Sie ein Geschenk-Abonnement mit 10 Ausgaben unseres Gartenmagazins ‚Mein Pflanzenfreund’ –  bequem und rechtzeitig zur Saison.</p><br><p>‚Mein Pflanzenfreund’ ist ein zuverlässiger und praktischer Ratgeber für Leserinnen und Leser, die Garten, Terrasse und Balkon in vollen Zügen geniessen. Mit den wesentlichen Informationen zum umweltgerechten Gärtnern, mit Hintergrundberichten und vernünftigen Produktempfehlungen – seit über 100 Jahren.</p><br><p>Der «Pflanzenfreund» gibt nicht ausschliesslich Lehrmeinungen wieder. Er basiert auf handfesten Erfahrungen und dem engen Kontakt der Redaktion zur Leserschaft. Wir geben Ihnen Tipps zu exklusiven Neuzüchtungen, zu passenden Gartengeräten, Schnitt- und Pflegearbeiten, Ernte- und Überwinterungshilfen und wie Sie «Vielfrasse» nachhaltig von Ihrem Garten fernhalten können. Viele fachkundige Informationen stecken in den monatlichen Ausgaben, die Sie durchs ganze Jahr begleiten.</p><br><br><p>Wir wünschen Ihnen viel Vergnügen bei der Lektüre.</p></div>";
+			cur_frm.set_value('donee_text', text);
+		}
 		frm.set_query('customer_address', function(doc) {
 			return {
 				query: 'frappe.contacts.doctype.address.address.address_query',
@@ -52,6 +56,10 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 			chooseAllEditions();
 			setAllEditionsReadOnly();
 			frappe["already_checked"] = false;
+		}
+		if ((cur_frm.doc.abo_type == "Geschenk-Abo")&&(parseInt(cur_frm.doc.docstatus) == 0)) {
+			var text = "<div><h2>Ihr Geschenk-Abonnement ‚Mein Pflanzenfreund’</h2><p>Im Auftrag von *!*Schenker*!* erhalten Sie ein Geschenk-Abonnement mit 10 Ausgaben unseres Gartenmagazins ‚Mein Pflanzenfreund’ –  bequem und rechtzeitig zur Saison.</p><br><p>‚Mein Pflanzenfreund’ ist ein zuverlässiger und praktischer Ratgeber für Leserinnen und Leser, die Garten, Terrasse und Balkon in vollen Zügen geniessen. Mit den wesentlichen Informationen zum umweltgerechten Gärtnern, mit Hintergrundberichten und vernünftigen Produktempfehlungen – seit über 100 Jahren.</p><br><p>Der «Pflanzenfreund» gibt nicht ausschliesslich Lehrmeinungen wieder. Er basiert auf handfesten Erfahrungen und dem engen Kontakt der Redaktion zur Leserschaft. Wir geben Ihnen Tipps zu exklusiven Neuzüchtungen, zu passenden Gartengeräten, Schnitt- und Pflegearbeiten, Ernte- und Überwinterungshilfen und wie Sie «Vielfrasse» nachhaltig von Ihrem Garten fernhalten können. Viele fachkundige Informationen stecken in den monatlichen Ausgaben, die Sie durchs ganze Jahr begleiten.</p><br><br><p>Wir wünschen Ihnen viel Vergnügen bei der Lektüre.</p></div>";
+			cur_frm.set_value('donee_text', text);
 		}
 	},
 	abo_type: function(frm) {
@@ -114,7 +122,7 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 			var month = start.split("-")[1];
 			var day = start.split("-")[2];
 			var end = (parseInt((new Date()).getFullYear()) + 1) + "-" + month + "-" + day;
-			var text = "<div><p>Sie erhalten im Auftrag von " + cur_frm.doc.customer_name + " als Geschenk-Abo die nächsten 10 Ausgaben unseres Gartenmagazins «Mein Pflanzenfreund» bequem und rechtzeitig zur Saison. Wir wünschen Ihnen viel Vergnügen bei der Lektüre.</p></div>"
+			var text = "<div><h2>Ihr Geschenk-Abonnement ‚Mein Pflanzenfreund’</h2><p>Im Auftrag von *!*Schenker*!* erhalten Sie ein Geschenk-Abonnement mit 10 Ausgaben unseres Gartenmagazins ‚Mein Pflanzenfreund’ –  bequem und rechtzeitig zur Saison.</p><br><p>‚Mein Pflanzenfreund’ ist ein zuverlässiger und praktischer Ratgeber für Leserinnen und Leser, die Garten, Terrasse und Balkon in vollen Zügen geniessen. Mit den wesentlichen Informationen zum umweltgerechten Gärtnern, mit Hintergrundberichten und vernünftigen Produktempfehlungen – seit über 100 Jahren.</p><br><p>Der «Pflanzenfreund» gibt nicht ausschliesslich Lehrmeinungen wieder. Er basiert auf handfesten Erfahrungen und dem engen Kontakt der Redaktion zur Leserschaft. Wir geben Ihnen Tipps zu exklusiven Neuzüchtungen, zu passenden Gartengeräten, Schnitt- und Pflegearbeiten, Ernte- und Überwinterungshilfen und wie Sie «Vielfrasse» nachhaltig von Ihrem Garten fernhalten können. Viele fachkundige Informationen stecken in den monatlichen Ausgaben, die Sie durchs ganze Jahr begleiten.</p><br><br><p>Wir wünschen Ihnen viel Vergnügen bei der Lektüre.</p></div>";
 			cur_frm.set_value('donee_text', text);
 		} else {
 			cur_frm.set_value('end_date', '');
@@ -126,7 +134,7 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 	},
 	validate: function(frm) {
 		var count = 0;
-		count = count + cur_frm.doc.jan_ed + cur_frm.doc.feb_ed + cur_frm.doc.mar_ed + cur_frm.doc.apr_ed + cur_frm.doc.may_ed + cur_frm.doc.jun_ed + cur_frm.doc.jul_ed + cur_frm.doc.aug_ed + cur_frm.doc.sept_ed + cur_frm.doc.oct_ed + cur_frm.doc.nov_ed + cur_frm.doc.dec_ed;
+		count = count + cur_frm.doc.winter_ed + cur_frm.doc.feb_ed + cur_frm.doc.mar_ed + cur_frm.doc.apr_ed + cur_frm.doc.may_ed + cur_frm.doc.jun_ed + cur_frm.doc.summer_ed + cur_frm.doc.sept_ed + cur_frm.doc.oct_ed + cur_frm.doc.nov_ed;
 		
 		if (cur_frm.doc.abo_type == "Kundenkarten-Abo (KK)") {
 			if ((count != 3)) {
@@ -152,7 +160,7 @@ frappe.ui.form.on('Pflanzenfreund Abo', {
 			}
 		} else {
 			if (!frappe["already_checked"]){
-				if ((count != 12)) {
+				if ((count != 10)) {
 					frappe.validated=false;
 					frappe.confirm(
 						"You don't choose <b>all editions</b>!<br>Are you sure this is correct?",
