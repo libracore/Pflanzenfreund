@@ -240,6 +240,9 @@ def get_party(user=None):
 		fullname = get_fullname(user)
 		first_name = frappe.db.get_value("User", user, "first_name")
 		last_name = frappe.db.get_value("User", user, "last_name")
+		if not last_name:
+			last_name = first_name.split(" ")[0]
+			first_name = first_name.split(" ")[1]
 		customer.update({
 			"customer_name": fullname,
 			"first_name": first_name,
