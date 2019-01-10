@@ -39,6 +39,64 @@ def createSammelPDF(valuta, printformat):
 	}
 	enqueue("pflanzenfreund.utils._createSammelPDF", queue='long', job_name='Generierung Sammel-PDF', timeout=max_time, **args)
 	
+@frappe.whitelist()
+def createGeschenkSammelPDF(bez_von, bez_bis, printformat):
+	max_time = 4800
+	args = {
+		'bez_von': bez_von,
+		'bez_bis': bez_bis,
+		'printformat': printformat
+	}
+	enqueue("pflanzenfreund.utils._createGeschenkSammelPDF", queue='long', job_name='Generierung Geschenk Sammel-PDF', timeout=max_time, **args)
+	
+def _createGeschenkSammelPDF(bez_von, bez_bis, printformat='Geschenk Brief'):
+	all_abos = frappe.db.sql("""SELECT `name`, `pflanzenfreund_abo` FROM `tabSales Invoice` WHERE `status` = 'Paid' AND `name` IN (SELECT `parent` FROM `tabSales Invoice Item` WHERE `item_code` = 'Geschenk-Abo') AND `name` IN (SELECT `reference_name` FROM `tabPayment Entry Reference` WHERE `parent` IN (SELECT `name` FROM `tabPayment Entry` WHERE `docstatus` = 1 AND `posting_date` >= '{bez_von}' AND `posting_date` <= '{bez_bis}'))""".format(bez_von=bez_von, bez_bis=bez_bis), as_dict=True)
+	print_abos = []
+	loop_controller = 1
+	qty_controller = 0
+	for abo in all_abos:
+		#abo = frappe.db.get_value("Sales Invoice", sinv, "pflanzenfreund_abo")
+		print_abos.append(abo['pflanzenfreund_abo'])
+		qty_controller += 1
+		if qty_controller == 100:
+			# run bind job for 100 batch
+			if len(print_abos) > 0:
+				now = datetime.now()
+				bind_source = "/assets/pflanzenfreund/sinvs_for_print/geschenk_sammel_pdf-{loop}.pdf".format(loop=loop_controller)
+				physical_path = "/home/frappe/frappe-bench/sites" + bind_source
+				geschenk_print_bind(print_abos, format=printformat, dest=str(physical_path))
+				qty_controller = 0
+				loop_controller += 1
+				print_abos = []
+				
+	# run bind job for rest batch
+	if len(print_abos) > 0:
+		now = datetime.now()
+		bind_source = "/assets/pflanzenfreund/sinvs_for_print/geschenk_sammel_pdf_-{loop}.pdf".format(loop=loop_controller)
+		physical_path = "/home/frappe/frappe-bench/sites" + bind_source
+		geschenk_print_bind(print_abos, format=printformat, dest=str(physical_path))
+		
+# this function will bind a pdf from all provided sales invoices (list of names)
+def geschenk_print_bind(abos, format=None, dest=None):
+	# Concatenating pdf files
+	output = PdfFileWriter()
+	for abo in abos:
+		output = frappe.get_print("Pflanzenfreund Abo", abo, format, as_pdf = True, output = output)
+		print("append to output")
+	if dest != None:
+		if isinstance(dest, str): # when dest is a file path
+			destdir = os.path.dirname(dest)
+			if destdir != '' and not os.path.isdir(destdir):
+				os.makedirs(destdir)
+			with open(dest, "wb") as w:
+				output.write(w)
+		else: # when dest is io.IOBase
+			output.write(dest)
+			print("first return")
+		return
+	else:
+		print("second return")
+		return output
 	
 def _createSammelPDF(valuta, printformat):
 	sql_query = ("""SELECT `name` FROM `tabSales Invoice` WHERE `posting_date` = '{0}' AND `docstatus` = 1""".format(valuta))

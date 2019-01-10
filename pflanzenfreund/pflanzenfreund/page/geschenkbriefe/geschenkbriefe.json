@@ -1,0 +1,23 @@
+{
+ "content": null, 
+ "creation": "2019-01-10 10:17:31.515625", 
+ "docstatus": 0, 
+ "doctype": "Page", 
+ "idx": 0, 
+ "modified": "2019-01-10 10:17:48.050398", 
+ "modified_by": "Administrator", 
+ "module": "Pflanzenfreund", 
+ "name": "geschenkbriefe", 
+ "owner": "Administrator", 
+ "page_name": "Geschenkbriefe", 
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ], 
+ "script": null, 
+ "standard": "Yes", 
+ "style": null, 
+ "system_page": 0, 
+ "title": "Erstellung Geschenkbriefe"
+}

@@ -1,0 +1,34 @@
+<div style="margin: 5px;">
+	<div class="section-body">
+		<div class="row">
+			<div class="col-sm-3">
+				<button class="btn btn-primary btn-sm primary-action" style="margin-top: 8px; margin-bottom: 7px;" onclick="createBindPDF()"><span>Generiere Geschenkbriefe<br>als Sammel-PDF</span></button>
+			</div>
+			<div class="col-sm-3">
+				<div class="form-group">
+					<label for="start">Abo bezahlt von:</label>
+					<input type="date" class="form-control" id="start">
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="form-group">
+					<label for="end">Bis:</label>
+					<input type="date" class="form-control" id="end">
+				</div>
+			</div>
+			
+		</div>
+		<div class="row">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-8"><div id="placeForWorkers"></div></div>
+			<div class="col-sm-2"></div>
+		</div>
+  </div>
+</div>
+<div id="myNav" class="overlay">
+	<!-- Overlay content -->
+  <div class="overlay-content">
+    <p><i class="fa fa-spinner fa-spin" style="font-size:80px"></i></p>
+    <p>Bitte haben Sie einen Moment Geduld, die Geschenkbriefe werden erstellt.</p>
+  </div>
+</div>

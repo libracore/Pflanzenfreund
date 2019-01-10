@@ -84,6 +84,12 @@ def get_data():
 			   "name": "abo_plausibility",
 			   "label": _("Abonnementen Plausibility Check"),
 			   "description": _("Abonnementen Plausibility Check")
+		   },
+		   {
+			   "type": "page",
+			   "name": "geschenkbriefe",
+			   "label": _("Erstellung Geschenkbriefe"),
+			   "description": _("Erstellung Geschenkbriefe")
 		   }
 		]
 	},
