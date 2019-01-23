@@ -24,6 +24,15 @@ from frappe.utils.data import add_days, add_years
 from datetime import datetime
 from PyPDF2 import PdfFileWriter
 
+
+def booking():
+	payments = frappe.db.sql("""SELECT `name`, `party` FROM `tabPayment Entry` WHERE `party` != 'CUST-00001' AND `docstatus` = 0""", as_dict=True)
+	for _payment in payments:
+		payment = frappe.get_doc("Payment Entry", _payment['name'])
+		payment.submit()
+		print("submitted " + _payment['name'])
+	print("done...")
+
 @frappe.whitelist()
 def remove_downloaded_pdf():
 	path = "/home/frappe/frappe-bench/sites/assets/pflanzenfreund/sinvs_for_print/"

@@ -1,5 +1,5 @@
 # -*- coding: cp1252 -*-
-# Copyright (c) 2018, libracore and contributors
+# Copyright (c) 2018-2019, libracore and contributors
 # For license information, please see license.txt
 #
 # Test with
@@ -362,9 +362,9 @@ def export_data(filename, mod_date="2000-01-01"):
     # write output file
     f = codecs.open(filename, "w", 'cp1252')
     # write header line
-    f.write("adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code07,karte,krsperre,mutdt,kondi,dland\n")
+    output = "adrnr,nname,vname,nbez1,nbez2,stras,strasnr,plzal,ortbz,anred,branred,sprcd,telef,telep,natel,emailadr,code05,code07,karte,krsperre,mutdt,kondi,dland\n"
+    f.write(output)
     f.close()
-
     print("starting query...")
     sql_query = """SELECT `tabCustomer`.`name`
                    FROM `tabCustomer` 
@@ -420,6 +420,7 @@ def export_data(filename, mod_date="2000-01-01"):
             country = country.upper()
         else:
             country = "CH"
+        modification = "{0}.{1}.{2}".format(mod.day, mod.month, mod.year)
         line = "{0},\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\",\"{17}\",\"{18}\",\"{19}\",\"{20}\",\"{21}\",\"{22}\"".format(
                 customer.greeninfo_id or '',
                 contact.last_name or '',
@@ -441,11 +442,12 @@ def export_data(filename, mod_date="2000-01-01"):
                 customer.code_07 or '',
                 customer.karte or '',
                 customer.krsperre or '',
-                "{0}.{1}.{2}".format(mod.day, mod.month, mod.year),
+                modification,
                 customer.payment_terms,
                 country
               )
-        print(line)
+
+        #print(line) # do not print strings that may encode unicode characters, will crash cron
         f.write(line + "\n")
     f.close()
     return
