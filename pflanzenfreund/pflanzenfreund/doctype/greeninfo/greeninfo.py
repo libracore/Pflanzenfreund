@@ -366,17 +366,26 @@ def export_data(filename, mod_date="2000-01-01"):
     f.write(output)
     f.close()
     print("starting query...")
-    sql_query = """SELECT `tabCustomer`.`name`
-                   FROM `tabCustomer` 
-                   WHERE `tabCustomer`.`modified` >= '{date}'
-                   UNION SELECT `tblDL2`.`link_name`
-                   FROM `tabAddress` 
-                   LEFT JOIN `tabDynamic Link` As `tblDL2` ON `tblDL2`.`parent` = `tabAddress`.`name` AND `tblDL2`.`parenttype` = 'Address' AND `tblDL2`.`link_doctype` = 'Customer'
-                   WHERE `tabAddress`.`modified` >= '{date}'
-                   UNION SELECT `tblDL1`.`link_name`
-                   FROM `tabContact` 
-                   LEFT JOIN `tabDynamic Link` As `tblDL1` ON `tblDL1`.`parent` = `tabContact`.`name` AND `tblDL1`.`parenttype` = 'Contact' AND `tblDL1`.`link_doctype` = 'Customer'
-                   WHERE `tabContact`.`modified` >= '{date}';""".format(date=mod_date)
+    sql_query = """SELECT `tbl1`.`name`, `tbl1`.`modified` FROM (
+                   SELECT `tabCustomer`.`name`, `tabCustomer`.`modified`
+                     FROM `tabCustomer`
+                     WHERE `tabCustomer`.`modified` >= '{date}'
+                   UNION SELECT `tblDL2`.`link_name`, `tabAddress`.`modified`
+                     FROM `tabAddress`
+                     LEFT JOIN `tabDynamic Link` AS `tblDL2` ON
+                       `tblDL2`.`parent` = `tabAddress`.`name`
+                       AND `tblDL2`.`parenttype` = 'Address'
+                       AND `tblDL2`.`link_doctype` = 'Customer'
+                     WHERE `tabAddress`.`modified` >= '{date}'
+                   UNION SELECT `tblDL1`.`link_name`, `tabContact`.`modified`
+                     FROM `tabContact`
+                     LEFT JOIN `tabDynamic Link` AS `tblDL1` ON
+                       `tblDL1`.`parent` = `tabContact`.`name`
+                       AND `tblDL1`.`parenttype` = 'Contact'
+                       AND `tblDL1`.`link_doctype` = 'Customer'
+                     WHERE `tabContact`.`modified` >= '{date}'
+                   ) AS `tbl1`
+                     GROUP BY `tbl1`.`name`;""".format(date=mod_date)
 
     contacts = frappe.db.sql(sql_query, as_dict=True)
     print("Contacts: {0}".format(len(contacts)))
@@ -409,7 +418,8 @@ def export_data(filename, mod_date="2000-01-01"):
         except:
             stras = ""
             strasnr = ""
-        mod = customer.modified
+        #mod = datetime.strptime(contact_name['modified'], '%Y-%m-%d %H:%M:%S')
+        mod = contact_name['modified']
         first_name = contact.first_name
         if not first_name:
             first_name = ""
@@ -475,11 +485,11 @@ def test():
     con = frappe.get_doc(
         {
             "doctype":"Contact", 
-            "name": "Lars",
+            "name": "Someone",
             "greeninfo_id": 123,
-            "first_name": "Lars",
-            "last_name": "M",
-            "email_id": "lars.mueller@libracore.com",
+            "first_name": "Some",
+            "last_name": "One",
+            "email_id": "some.one@example.com",
             "salutation": "Herr",
             "letter_salutation": "BlaBla",
             "fax": "",
