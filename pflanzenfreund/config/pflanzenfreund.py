@@ -90,6 +90,12 @@ def get_data():
 			   "name": "geschenkbriefe",
 			   "label": _("Erstellung Geschenkbriefe"),
 			   "description": _("Erstellung Geschenkbriefe")
+		   },
+		   {
+			   "type": "page",
+			   "name": "zahlungserinnerungen",
+			   "label": _("Erstellung Zahlungserinnerungen"),
+			   "description": _("Erstellung Zahlungserinnerungen")
 		   }
 		]
 	},
