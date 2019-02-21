@@ -325,7 +325,7 @@ def update_customer(name, cells, force=False):
                 # no contact available, create
                 create_contact(cells, cus.name)
             adr_id = frappe.get_all("Dynamic Link", 
-                    filters={'link_doctype': 'Customer', 'link_name': cus.name, 'parenttype': 'Address'},
+                    filters={'link_doctype': 'Customer', 'link_name': cus.name, 'parenttype': 'Address', 'idx': 1},
                     fields=['parent'])
             if adr_id:
                 if get_field(cells[STRAS]) == "":
