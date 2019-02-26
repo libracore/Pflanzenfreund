@@ -1,0 +1,95 @@
+<div class="row">
+	<div class="col-sm-6">
+		<form class="form-horizontal">
+			<div class="form-group">
+				<div class="col-sm-10">
+					<p class="form-control-static">Um die Bestellung abzuschliessen, benötigen Sie ein Konto. Bitte registrieren Sie sich hier.</p>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="col-sm-6 hidden-xs">
+		<form class="form-horizontal">
+			<div class="form-group">
+				<div class="col-sm-10">
+					<p class="form-control-static">Als bestehender Kunde können Sie sich hier einloggen und die Bestellung abschliessen.</p>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="col-sm-5" style="border: 1px solid #d1d8dd; padding: 15px; min-height: 360px;">
+		<div class="radio" style="padding-top: 0px; margin-top: 0px;">
+		  <label><input type="radio" name="optradio" id="frau" checked>Frau</label>
+		  <label><input type="radio" name="optradio" id="herr">Herr</label>
+		</div>
+		<div class="input-group" style="margin-bottom: 5px;">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+			<input id="vorname" type="text" class="form-control" name="vorname" placeholder="Vorname">
+			<input id="nachname" type="text" class="form-control" name="nachname" placeholder="Nachname">
+		</div>
+		<div class="input-group" style="margin-bottom: 5px;">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
+			<input id="strasse" type="text" class="form-control" name="strasse" placeholder="Strasse">
+			<input id="nummer" type="text" class="form-control" name="nummer" placeholder="Nummer">
+			<input id="plz" type="text" class="form-control" name="plz" placeholder="Postleitzahl">
+			<input id="ort" type="text" class="form-control" name="ort" placeholder="Ort">
+		</div>
+		<div id="mail_error_div" class="input-group" style="margin-bottom: 5px;">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+			<input id="email" type="text" class="form-control" name="email" placeholder="Email">
+		</div>
+		<div class="checkbox">
+			<label><input id="check" type="checkbox" onchange="toggleCheckbox();"> Als Gast registrieren</label>
+		</div>
+		<div id="pwd" class="input-group" style="margin-bottom: 5px;">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+			<input id="password" type="password" class="form-control" name="password" placeholder="Passwort">
+		</div>
+		
+		<button class="btn btn-default" onclick="registrieren();" style="width: 100%;">Registrieren</button>
+	</div>
+	<div class="col-sm-6 hidden-sm hidden-md hidden-lg">
+		<form class="form-horizontal">
+			<div class="form-group">
+				<div class="col-sm-10">
+					<p class="form-control-static">Als bestehender Kunde können Sie sich hier einloggen und die Bestellung abschliessen.</p>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="col-sm-1 hidden-xs"></div>
+	<div class="col-sm-5 hidden-xs" style="border: 1px solid #d1d8dd; padding: 15px; min-height: 360px;">
+	<div style="min-height: 107px;"></div>
+		<span id="ampel" class="indicator white"></span>
+		<!-- <form> -->
+			<div class="input-group" style="margin-bottom: 5px;">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+				<input id="login_email" type="text" class="form-control" name="email" placeholder="Email"><br>
+			</div>
+			<div class="input-group" style="margin-bottom: 5px;">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+				<input id="login_password" type="password" class="form-control" name="password" placeholder="Passwort"><br>
+			</div>
+			<p class="form-control-static"><a onclick="prepare_pw_reset('1');">Passwort vergessen?</a></p>
+			<button id="btn_anmeldung_1" onclick="anmeldung('1');" class="btn btn-default" style="width: 100%;">Anmelden</button>
+			<button id="btn_reset_1" onclick="reset_passwort('1');" class="btn btn-default hidden" style="width: 100%;">Reset Passwort</button>
+		<!-- </form> --> 
+		<div style="min-height: 92.65px;"></div>
+	</div>
+	<span id="ampel_2" class="indicator white"></span>
+	<div class="col-sm-5 hidden-sm hidden-md hidden-lg" style="border: 1px solid #d1d8dd; padding: 15px;">
+	<!-- <form> -->
+		<div class="input-group" style="margin-bottom: 5px;">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+			<input id="login_email_2" type="text" class="form-control" name="email" placeholder="Email"><br>
+		</div>
+		<div class="input-group" style="margin-bottom: 5px;">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+			<input id="login_password_2" type="password" class="form-control" name="password" placeholder="Passwort"><br>
+		</div>
+		<p class="form-control-static"><a onclick="prepare_pw_reset('2');">Passwort vergessen?</a></p>
+		<button id="btn_anmeldung_2" class="btn btn-default" onclick="anmeldung('2');">Anmelden</button>
+		<button id="btn_reset_2" onclick="reset_passwort('2');" class="btn btn-default hidden">Reset Passwort</button>
+	<!-- </form> -->
+	</div>
+</div>

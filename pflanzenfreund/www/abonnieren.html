@@ -1,8 +1,8 @@
 {% set user = get_logged_in_user() %}
-<h1>Mein Pflanzenfreund abonnieren</h1>
+<h1>Pflanzenfreund abonnieren</h1>
 <div class="row">
 	<div class="col-sm-8">
-		<p>Abonnieren Sie jetzt «Mein Pflanzenfreund» mit den wesentlichen Informationen zum umweltgerechten Gärtnern, mit Hintergrundberichten und vernünftigen Produktempfehlungen. Als Probe- oder Jahresabonnement erhalten Sie jede Ausgabe bequem und pünktlich zur Saison.</p>
+		<p>Abonnieren Sie jetzt den «Pflanzenfreund» mit den wesentlichen Informationen zum umweltgerechten Gärtnern, mit Hintergrundberichten und vernünftigen Produktempfehlungen. Als Probe- oder Jahresabonnement erhalten Sie jede Ausgabe bequem und pünktlich zur Saison.</p>
 	</div>
 	<div class="col-sm-4">
 	</div>
@@ -16,7 +16,7 @@
 				<p class="price">nur Fr. 42.-</p>
 				<p class="additional-text">anstatt Fr. 48.- (inklusive Porto)</p>
 				<p class="second-text"style="padding: 10px;">10 Ausgaben pünktlich zum Monatsbeginn.</p>
-				<a class="btn btn-primary order-btn btn-bot" href="/neues-pflanzenfreund-abonnement?abo_type=Jahres-Abo">Jetzt bestellen</a>
+				<a class="btn btn-primary order-btn btn-bot" href="{% if hide_order %}/registration?abo_type=Jahres-Abo{% else %}/neues-pflanzenfreund-abonnement?abo_type=Jahres-Abo{% endif %}">Jetzt bestellen</a>
 			</div>
 		</div>
 	</div>
@@ -28,7 +28,7 @@
 				<p class="price">nur Fr. 14.-</p>
 				<p class="additional-text">anstatt Fr. 16.- (inklusive Porto)</p>
 				<p class="second-text"style="padding: 10px;">Mit den nächsten 4 Ausgaben immer gut informiert.</p>
-				<a class="btn btn-primary order-btn btn-bot" href="/neues-pflanzenfreund-abonnement?abo_type=Probe-Abo">Jetzt bestellen</a>
+				<a class="btn btn-primary order-btn btn-bot" href="{% if hide_order %}/registration?abo_type=Probe-Abo{% else %}/neues-pflanzenfreund-abonnement?abo_type=Probe-Abo{% endif %}">Jetzt bestellen</a>
 			</div>
 		</div>
 	</div>
@@ -40,7 +40,7 @@
 				<p class="price">nur Fr. 42.-</p>
 				<p class="additional-text">anstatt Fr. 48.- (inklusive Porto)</p>
 				<p class="second-text"style="padding: 10px;">10 Ausgaben als besonderes Geschenk, mit dem Sie in Erinnerung bleiben.</p>
-				<a class="btn btn-primary order-btn btn-bot" href="/neues-pflanzenfreund-abonnement?abo_type=Geschenk-Abo">Jetzt bestellen</a>
+				<a class="btn btn-primary order-btn btn-bot" href="{% if hide_order %}/registration?abo_type=Geschenk-Abo{% else %}/neues-pflanzenfreund-abonnement?abo_type=Geschenk-Abo{% endif %}">Jetzt bestellen</a>
 			</div>
 		</div>
 	</div>

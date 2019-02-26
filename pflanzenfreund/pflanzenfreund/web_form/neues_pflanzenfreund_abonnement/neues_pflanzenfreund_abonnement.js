@@ -7,7 +7,7 @@ frappe.ready(function() {
 	
 	
 	if (frappe.doc_name) {
-		frappe.msgprint("Vielen Dank für Ihr Vertrauen.<br>Die Anfrage für das Abonnement " + frappe.doc_name + " wurde erfolgreich erstellt.", "Vielen Dank");
+		frappe.msgprint("Vielen Dank für Ihre Bestellung.<br>Wir werden diese schnellstmöglich bearbeiten und Ihnen die Rechnung per Post zustellen. Schon bald werden Sie Ihre erste Ausgabe des Pflanzenfreund in Ihrem Briefkasten haben.", "Bestellung erfolgreich");
 		set_visability_of_donee(abo_type);
 		set_customer_address_display($('input[data-fieldname = "customer_address"]')[0].value);
 		$('input[data-label = "Start"]')[0].parentNode.classList.add("hidden");
