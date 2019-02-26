@@ -251,17 +251,20 @@ def aktivierte_kunden_ohne_werbe_sperre_mit_kundenkarte(start, end):
 			geschenk_qty = 0
 			kk_qty = 0
 			ok_qty = 0
+			gratis_qty = 0
+			vip_qty = 0
 			
-			jahr_qty, probe_qty, geschenk_qty, kk_qty, ok_qty = get_abo_qty_sql(customer.name)
+			jahr_qty, probe_qty, geschenk_qty, kk_qty, ok_qty, gratis_qty, vip_qty = get_abo_qty_sql(customer.name)
 			
 			#jahr_qty = get_abo_or_qty(customer.name, "Jahres-Abo")
 			#probe_qty = get_abo_or_qty(customer.name, "Probe-Abo")
 			#geschenk_qty = get_abo_or_qty(customer.name, "Geschenk-Abo")
 			
-			if jahr_qty > 0 or probe_qty > 0 or geschenk_qty > 0:
+			if jahr_qty > 0 or probe_qty > 0 or geschenk_qty > 0 or gratis_qty > 0 or vip_qty > 0:
 				#abfrage aller KK abos und vorschlagen für stornierung
 				#abos = get_abo_or_qty(customer.name, "Kundenkarten-Abo (KK)", qty=False)
-				abos = frappe.get_all("Pflanzenfreund Abo", {'customer': customer.name, 'docstatus': 1, 'end_date': (">=", utils.today()), 'abo_type': "Kundenkarten-Abo (KK)"}, ["name"])
+				abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{customer}' AND `docstatus` = 1 AND `abo_type` = 'Kundenkarten-Abo (KK)' AND (`end_date` >= '{today}' OR `end_date` = NULL)""".format(customer=customer.name, today=utils.today()), as_dict=True)
+				#abos = frappe.get_all("Pflanzenfreund Abo", {'customer': customer.name, 'docstatus': 1, 'end_date': (">=", utils.today()), 'abo_type': "Kundenkarten-Abo (KK)"}, ["name"])
 				for abo in abos:
 					results.append(['Der Kunde {0} besitzt ein Kundenkarten-Abo (KK) ({1}), hat aber bereits bezahlte Abonnemente'.format(customer.name, abo.name), 'Das Abonnement stornieren', 'storno', customer.name, abo.name])
 					control_results += 1
@@ -305,8 +308,10 @@ def get_abo_qty_sql(customer):
 		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Probe-Abo' AND `end_date` >= {1}),
 		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `donee` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Geschenk-Abo' AND `end_date` >= {1}),
 		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Kundenkarten-Abo (KK)'),
-		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Kunden-Abo (OK)')""".format(customer, utils.today()), as_list=True)[0]
-	return results[0], results[1], results[2], results[3], results[4]
+		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Kunden-Abo (OK)'),
+		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'Gratis-Abo'),
+		(SELECT COUNT(`name`) FROM `tabPflanzenfreund Abo` WHERE `customer` = '{0}' AND `docstatus` = '1' AND `abo_type` = 'VIP-Abo')""".format(customer, utils.today()), as_list=True)[0]
+	return results[0], results[1], results[2], results[3], results[4], results[5], results[6]
 
 def aktivierte_kunden_ohne_werbe_sperre_ohne_kundenkarte(start, end):
 	max_results = 1000
@@ -329,14 +334,16 @@ def aktivierte_kunden_ohne_werbe_sperre_ohne_kundenkarte(start, end):
 			geschenk_qty = 0
 			ok_qty = 0
 			kk_qty = 0
+			gratis_qty = 0
+			vip_qty = 0
 			
-			jahr_qty, probe_qty, geschenk_qty, kk_qty, ok_qty = get_abo_qty_sql(customer.name)
+			jahr_qty, probe_qty, geschenk_qty, kk_qty, ok_qty, gratis_qty, vip_qty = get_abo_qty_sql(customer.name)
 			
 			#jahr_qty = get_abo_or_qty(customer.name, "Jahres-Abo")
 			#probe_qty = get_abo_or_qty(customer.name, "Probe-Abo")
 			#geschenk_qty = get_abo_or_qty(customer.name, "Geschenk-Abo")
 			
-			if jahr_qty > 0 or probe_qty > 0 or geschenk_qty > 0:
+			if jahr_qty > 0 or probe_qty > 0 or geschenk_qty > 0 or gratis_qty > 0 or vip_qty > 0:
 				#abfrage aller OK abos und vorschlagen für stornierung
 				#abos = get_abo_or_qty(customer.name, "Kunden-Abo (OK)", qty=False)
 				abos = frappe.get_all("Pflanzenfreund Abo", {'customer': customer.name, 'docstatus': 1, 'end_date': (">=", utils.today()), 'abo_type': "Kunden-Abo (OK)"}, ["name"])
