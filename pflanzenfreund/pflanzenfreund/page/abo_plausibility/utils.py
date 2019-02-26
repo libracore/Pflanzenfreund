@@ -137,10 +137,12 @@ def start_checking(mod=None, start=None, end=None):
 		
 def get_abos_of_customer(customer, werbesperre=False):
 	if not werbesperre:
-		abos = frappe.get_all("Pflanzenfreund Abo", {'customer': customer, 'docstatus': 1, 'end_date': (">=", utils.today()), 'abo_type': ("!=", "Geschenk-Abo")}, ["name"])
+		abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{customer}' AND `docstatus` = 1 AND (`end_date` >= '{today}' OR `end_date` = NULL) AND `abo_type` != 'Geschenk-Abo'""".format(customer=customer, today=utils.today()), as_dict=True) 
+		#abos = frappe.get_all("Pflanzenfreund Abo", {'customer': customer, 'docstatus': 1, 'end_date': (">=", utils.today()), 'abo_type': ("!=", "Geschenk-Abo")}, ["name"])
 		geschenke = frappe.get_all("Pflanzenfreund Abo", {'customer': customer, 'docstatus': 1, 'end_date': (">=", utils.today()), 'abo_type': "Geschenk-Abo"}, ["name"])
 	else:
-		abos = frappe.get_all("Pflanzenfreund Abo", {'customer': customer, 'docstatus': 1, 'end_date': (">=", utils.today())}, ["name", "abo_type"])
+		abos = frappe.db.sql("""SELECT `name`, `abo_type` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{customer}' AND `docstatus` = 1 AND (`end_date` >= '{today}' OR `end_date` = NULL)""".format(customer=customer, today=utils.today()), as_dict=True)
+		#abos = frappe.get_all("Pflanzenfreund Abo", {'customer': customer, 'docstatus': 1, 'end_date': (">=", utils.today())}, ["name", "abo_type"])
 		geschenke = []
 	
 	return abos, geschenke
