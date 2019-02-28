@@ -81,7 +81,7 @@ def get_data():
 		   },
 		   {
 			   "type": "report",
-			   "name": "Plausability Check",
+			   "name": _("Plausability Check"),
 			   "doctype": "Pflanzenfreund Abo",
 			   "is_query_report": True
 		   },

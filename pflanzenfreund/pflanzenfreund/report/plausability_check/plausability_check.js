@@ -68,7 +68,7 @@ frappe.query_reports["Plausability Check"] = {
 						value = "<div style='text-align: right; background-color:red!important;'>" + value + "</div>";
 					}
 				} else {
-					if (kk = 0 || kk > 1) {
+					if (kk == 0 || kk > 1) {
 						value = "<div style='text-align: right; background-color:red!important;'>" + value + "</div>";
 					}
 				}
@@ -92,7 +92,7 @@ frappe.query_reports["Plausability Check"] = {
 						value = "<div style='text-align: right; background-color:red!important;'>" + value + "</div>";
 					}
 				} else {
-					if (kk = 0 || kk > 1) {
+					if (kk == 0 || kk > 1) {
 						value = "<div style='text-align: right; background-color:red!important;'>" + value + "</div>";
 					}
 				}
@@ -130,7 +130,7 @@ frappe.query_reports["Plausability Check"] = {
 						value = "<div style='text-align: right; background-color:red!important;'>" + value + "</div>";
 					}
 				} else {
-					if (ok = 0 || ok > 1) {
+					if (ok == 0 || ok > 1) {
 						value = "<div style='text-align: right; background-color:red!important;'>" + value + "</div>";
 					}
 				}
@@ -154,7 +154,7 @@ frappe.query_reports["Plausability Check"] = {
 						value = "<div style='text-align: right; background-color:red!important;'>" + value + "</div>";
 					}
 				} else {
-					if (ok = 0 || ok > 1) {
+					if (ok == 0 || ok > 1) {
 						value = "<div style='text-align: right; background-color:red!important;'>" + value + "</div>";
 					}
 				}
