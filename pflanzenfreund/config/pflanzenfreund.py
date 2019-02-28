@@ -80,10 +80,10 @@ def get_data():
 			   "description": _("Abonnementen Rechnungslauf")
 		   },
 		   {
-			   "type": "page",
-			   "name": "abo_plausibility",
-			   "label": _("Abonnementen Plausibility Check"),
-			   "description": _("Abonnementen Plausibility Check")
+			   "type": "report",
+			   "name": "Plausability Check",
+			   "doctype": "Pflanzenfreund Abo",
+			   "is_query_report": True
 		   },
 		   {
 			   "type": "page",
