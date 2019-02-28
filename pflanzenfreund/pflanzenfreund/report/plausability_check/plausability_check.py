@@ -383,3 +383,130 @@ def execute(filters=None):
 		
 		# data.append(log)
 	return columns, data
+
+	
+@frappe.whitelist()
+def remove_all_abos(kunden):
+	import json
+	if isinstance(kunden, basestring):
+		kunden = json.loads(kunden)
+	#frappe.throw(str(kunden))
+	#idx = 1
+	for kunde in kunden:
+		#frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)
+		#idx = idx + 1
+		abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{kunde}' AND `docstatus` = 1""".format(kunde=kunde), as_dict=True)
+		for _abo in abos:
+			abo = frappe.get_doc("Pflanzenfreund Abo", _abo.name)
+			abo.cancel()
+	return "OK"
+	
+@frappe.whitelist()
+def remove_all_abos_ws_affected(kunden):
+	import json
+	if isinstance(kunden, basestring):
+		kunden = json.loads(kunden)
+	#frappe.throw(str(kunden))
+	#idx = 1
+	for kunde in kunden:
+		#frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)
+		#idx = idx + 1
+		abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{kunde}' AND `docstatus` = 1 AND `abo_type` IN ('Gratis-Abo', 'VIP-Abo', 'Kundenkarten-Abo (KK)', 'Kunden-Abo (OK)')""".format(kunde=kunde), as_dict=True)
+		for _abo in abos:
+			abo = frappe.get_doc("Pflanzenfreund Abo", _abo.name)
+			abo.cancel()
+	return "OK"
+	
+@frappe.whitelist()
+def remove_abos_on_case_kk(case1, case2, case3, case4):
+	import json
+	if isinstance(case1, basestring):
+		case1 = json.loads(case1)
+	if isinstance(case2, basestring):
+		case2 = json.loads(case2)
+	if isinstance(case3, basestring):
+		case3 = json.loads(case3)
+	if isinstance(case4, basestring):
+		case4 = json.loads(case4)
+	#frappe.throw(str(kunden))
+	#idx = 1
+	for kunde in case1:
+		#frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)
+		#idx = idx + 1
+		abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{kunde}' AND `docstatus` = 1 AND `abo_type` IN ('Gratis-Abo', 'VIP-Abo', 'Kundenkarten-Abo (KK)', 'Kunden-Abo (OK)')""".format(kunde=kunde), as_dict=True)
+		for _abo in abos:
+			abo = frappe.get_doc("Pflanzenfreund Abo", _abo.name)
+			abo.cancel()
+			
+	for kunde in case2:
+		#frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)
+		#idx = idx + 1
+		abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{kunde}' AND `docstatus` = 1 AND `abo_type` = 'Kundenkarten-Abo (KK)'""".format(kunde=kunde), as_dict=True)
+		for _abo in abos:
+			abo = frappe.get_doc("Pflanzenfreund Abo", _abo.name)
+			abo.cancel()
+	
+	#ANLAGE KK ABO!!!!	
+	# for kunde in case3:
+		# #frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)
+		# #idx = idx + 1
+		# abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{kunde}' AND `docstatus` = 1 AND `abo_type` IN ('Gratis-Abo', 'VIP-Abo', 'Kundenkarten-Abo (KK)', 'Kunden-Abo (OK)')""".format(kunde=kunde), as_dict=True)
+		# for _abo in abos:
+			# abo = frappe.get_doc("Pflanzenfreund Abo", _abo.name)
+			# abo.cancel()
+			
+	for kunde in case4:
+		#frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)
+		#idx = idx + 1
+		abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{kunde}' AND `docstatus` = 1 AND `abo_type` = 'Kunden-Abo (OK)'""".format(kunde=kunde), as_dict=True)
+		for _abo in abos:
+			abo = frappe.get_doc("Pflanzenfreund Abo", _abo.name)
+			abo.cancel()
+	return "OK"
+	
+@frappe.whitelist()
+def remove_abos_on_case_ok(case1, case2, case3, case4):
+	import json
+	if isinstance(case1, basestring):
+		case1 = json.loads(case1)
+	if isinstance(case2, basestring):
+		case2 = json.loads(case2)
+	if isinstance(case3, basestring):
+		case3 = json.loads(case3)
+	if isinstance(case4, basestring):
+		case4 = json.loads(case4)
+	#frappe.throw(str(kunden))
+	#idx = 1
+	for kunde in case1:
+		#frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)
+		#idx = idx + 1
+		abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{kunde}' AND `docstatus` = 1 AND `abo_type` IN ('Gratis-Abo', 'VIP-Abo', 'Kundenkarten-Abo (KK)', 'Kunden-Abo (OK)')""".format(kunde=kunde), as_dict=True)
+		for _abo in abos:
+			abo = frappe.get_doc("Pflanzenfreund Abo", _abo.name)
+			abo.cancel()
+			
+	for kunde in case2:
+		#frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)
+		#idx = idx + 1
+		abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{kunde}' AND `docstatus` = 1 AND `abo_type` = 'Kunden-Abo (OK)'""".format(kunde=kunde), as_dict=True)
+		for _abo in abos:
+			abo = frappe.get_doc("Pflanzenfreund Abo", _abo.name)
+			abo.cancel()
+	
+	#ANLAGE KK ABO!!!!	
+	# for kunde in case3:
+		# #frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)
+		# #idx = idx + 1
+		# abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{kunde}' AND `docstatus` = 1 AND `abo_type` IN ('Gratis-Abo', 'VIP-Abo', 'Kundenkarten-Abo (KK)', 'Kunden-Abo (OK)')""".format(kunde=kunde), as_dict=True)
+		# for _abo in abos:
+			# abo = frappe.get_doc("Pflanzenfreund Abo", _abo.name)
+			# abo.cancel()
+			
+	for kunde in case4:
+		#frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)
+		#idx = idx + 1
+		abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{kunde}' AND `docstatus` = 1 AND `abo_type` = 'Kundenkarten-Abo (KK)'""".format(kunde=kunde), as_dict=True)
+		for _abo in abos:
+			abo = frappe.get_doc("Pflanzenfreund Abo", _abo.name)
+			abo.cancel()
+	return "OK"

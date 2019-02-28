@@ -182,26 +182,224 @@ frappe.query_reports["Plausability Check"] = {
 		} else {
 			return value;
 		}
+	},
+	onload: function(report) {
+		report.page.add_inner_button(__('Bereinigen'), function () {
+		   if (report.data && report.data.length > 0) {
+			   if (report.filters[0].value == "Deaktivierte Kunden") {
+				   frappe.confirm(
+						'Wollen Sie alle unten ersichtlichen, überflüssigen Abos stornieren?',
+						function(){
+							frappe.msgprint("Bitte warten");
+							var kunden = [];
+							for (i=0;i<report.data.length;i++) {
+								if (report.data[i]["Geschenk-Abos"] > 0 || report.data[i]["Gratis-Abos"] > 0 || report.data[i]["Jahres-Abos"] > 0 || report.data[i]["KK-Abos"] > 0 || report.data[i]["OK-Abos"] > 0 || report.data[i]["Probe-Abos"] > 0 || report.data[i]["VIP-Abos"] > 0) {
+									kunden.push(report.data[i].Kunde);
+								}
+							}
+							//console.log(kunden);
+							if (kunden.length > 0) {
+								report.data = [];
+								frappe.call({
+									"method": "pflanzenfreund.pflanzenfreund.report.plausability_check.plausability_check.remove_all_abos",
+									"args": {
+										"kunden": kunden
+									},
+									"callback": function(r) {
+										if (r.message == "OK") {
+											frappe.msgprint("Die überflüssigen Abos wurden storniert.<br>Der Bericht wird neu geladen.", "Bereinigung abgeschlossen");
+											frappe.show_alert("Bereinigung vollständig");
+											report.refresh();
+										}
+									}
+								});
+							} else {
+								frappe.msgprint("Es existieren keine überflüssigen Abos.", "Bereinigung abgeschlossen");
+								frappe.show_alert("Bereinigung abgebrochen");
+							}
+						},
+						function(){}
+					)
+			   }
+			   if (report.filters[0].value == "Kunden mit WS") {
+				   frappe.confirm(
+						'Wollen Sie alle unten ersichtlichen, überflüssigen Abos stornieren?',
+						function(){
+							frappe.msgprint("Bitte warten");
+							var kunden = [];
+							for (i=0;i<report.data.length;i++) {
+								if (report.data[i]["Gratis-Abos"] > 0 || report.data[i]["KK-Abos"] > 0 || report.data[i]["OK-Abos"] > 0 || report.data[i]["VIP-Abos"] > 0) {
+									kunden.push(report.data[i].Kunde);
+								}
+							}
+							//console.log(kunden);
+							if (kunden.length > 0) {
+								report.data = [];
+								frappe.call({
+									"method": "pflanzenfreund.pflanzenfreund.report.plausability_check.plausability_check.remove_all_abos_ws_affected",
+									"args": {
+										"kunden": kunden
+									},
+									"callback": function(r) {
+										if (r.message == "OK") {
+											frappe.msgprint("Die überflüssigen Abos wurden storniert.<br>Der Bericht wird neu geladen.", "Bereinigung abgeschlossen");
+											frappe.show_alert("Bereinigung vollständig");
+											report.refresh();
+										}
+									}
+								});
+							} else {
+								frappe.msgprint("Es existieren keine überflüssigen Abos.", "Bereinigung abgeschlossen");
+								frappe.show_alert("Bereinigung abgebrochen");
+							}
+						},
+						function(){}
+					)
+			   }
+			   if (report.filters[0].value == "Kunden mit Kundenkarte") {
+				   frappe.confirm(
+						'Wollen Sie alle unten ersichtlichen, überflüssigen Abos stornieren?',
+						function(){
+							frappe.msgprint("Bitte warten");
+							/*
+							Case 1: hat bezahlte abos und sonstige
+							Case 2: keine bezahlten Abos aber Gratis/VIP Abos UND KK-Abos
+							case 3: hat gar kein abo (ausser allenfalls ok)
+							case 4: hat ok abo
+							*/
+							var case1 = [];
+							var case2 = [];
+							var case3 = [];
+							var case4 = [];
+							for (i=0;i<report.data.length;i++) {
+								//case 1
+								if ((report.data[i]["Jahres-Abos"] > 0 || report.data[i]["Probe-Abos"] > 0 || report.data[i]["Geschenk-Abos"] > 0) && (report.data[i]["Gratis-Abos"] > 0 || report.data[i]["KK-Abos"] > 0 || report.data[i]["VIP-Abos"] > 0)) {
+									case1.push(report.data[i].Kunde);
+								}
+								
+								//case 2
+								if ((report.data[i]["Jahres-Abos"] == 0 && report.data[i]["Probe-Abos"] == 0 && report.data[i]["Geschenk-Abos"] == 0) && (report.data[i]["Gratis-Abos"] > 0 || report.data[i]["VIP-Abos"] > 0) && (report.data[i]["KK-Abos"] > 0)) {
+									case2.push(report.data[i].Kunde);
+								}
+								
+								//case 3
+								if (report.data[i]["Jahres-Abos"] == 0 && report.data[i]["Probe-Abos"] == 0 && report.data[i]["Geschenk-Abos"] == 0 && report.data[i]["Gratis-Abos"] == 0 && report.data[i]["VIP-Abos"] == 0 && report.data[i]["KK-Abos"] == 0) {
+									case3.push(report.data[i].Kunde);
+								}
+								
+								//case 4
+								if (report.data[i]["OK-Abos"] > 0) {
+									case4.push(report.data[i].Kunde);
+								}
+							}
+							/* console.log("case 1");
+							console.log(case1);
+							console.log("case 2");
+							console.log(case2);
+							console.log("case 3");
+							console.log(case3);
+							console.log("case 4");
+							console.log(case4); */
+							if ((case1.length > 0) || (case2.length > 0) || (case3.length > 0) || (case4.length > 0)) {
+								report.data = [];
+								frappe.call({
+									"method": "pflanzenfreund.pflanzenfreund.report.plausability_check.plausability_check.remove_abos_on_case_kk",
+									"args": {
+										"case1": case1,
+										"case2": case2,
+										"case3": case3,
+										"case4": case4
+									},
+									"callback": function(r) {
+										if (r.message == "OK") {
+											frappe.msgprint("Die überflüssigen Abos wurden storniert/ergänzt.<br>Der Bericht wird neu geladen.", "Bereinigung abgeschlossen");
+											frappe.show_alert("Bereinigung vollständig");
+											report.refresh();
+										}
+									}
+								});
+							} else {
+								frappe.msgprint("Es existieren keine überflüssigen Abos.", "Bereinigung abgeschlossen");
+								frappe.show_alert("Bereinigung abgebrochen");
+							}
+						},
+						function(){}
+					)
+			   }
+			   if (report.filters[0].value == "Kunden ohne Kundenkarte") {
+				   frappe.confirm(
+						'Wollen Sie alle unten ersichtlichen, überflüssigen Abos stornieren?',
+						function(){
+							frappe.msgprint("Bitte warten");
+							/*
+							Case 1: hat bezahlte abos und sonstige
+							Case 2: keine bezahlten Abos aber Gratis/VIP Abos UND OK-Abos
+							case 3: hat gar kein abo (ausser allenfalls kk)
+							case 4: hat kk abo
+							*/
+							var case1 = [];
+							var case2 = [];
+							var case3 = [];
+							var case4 = [];
+							for (i=0;i<report.data.length;i++) {
+								//case 1
+								if ((report.data[i]["Jahres-Abos"] > 0 || report.data[i]["Probe-Abos"] > 0 || report.data[i]["Geschenk-Abos"] > 0) && (report.data[i]["Gratis-Abos"] > 0 || report.data[i]["OK-Abos"] > 0 || report.data[i]["VIP-Abos"] > 0)) {
+									case1.push(report.data[i].Kunde);
+								}
+								
+								//case 2
+								if ((report.data[i]["Jahres-Abos"] == 0 && report.data[i]["Probe-Abos"] == 0 && report.data[i]["Geschenk-Abos"] == 0) && (report.data[i]["Gratis-Abos"] > 0 || report.data[i]["VIP-Abos"] > 0) && (report.data[i]["OK-Abos"] > 0)) {
+									case2.push(report.data[i].Kunde);
+								}
+								
+								//case 3
+								if (report.data[i]["Jahres-Abos"] == 0 && report.data[i]["Probe-Abos"] == 0 && report.data[i]["Geschenk-Abos"] == 0 && report.data[i]["Gratis-Abos"] == 0 && report.data[i]["VIP-Abos"] == 0 && report.data[i]["OK-Abos"] == 0) {
+									case3.push(report.data[i].Kunde);
+								}
+								
+								//case 4
+								if (report.data[i]["KK-Abos"] > 0) {
+									case4.push(report.data[i].Kunde);
+								}
+							}
+							/* console.log("case 1");
+							console.log(case1);
+							console.log("case 2");
+							console.log(case2);
+							console.log("case 3");
+							console.log(case3);
+							console.log("case 4");
+							console.log(case4); */
+							if ((case1.length > 0) || (case2.length > 0) || (case3.length > 0) || (case4.length > 0)) {
+								report.data = [];
+								frappe.call({
+									"method": "pflanzenfreund.pflanzenfreund.report.plausability_check.plausability_check.remove_abos_on_case_ok",
+									"args": {
+										"case1": case1,
+										"case2": case2,
+										"case3": case3,
+										"case4": case4
+									},
+									"callback": function(r) {
+										if (r.message == "OK") {
+											frappe.msgprint("Die überflüssigen Abos wurden storniert/ergänzt.<br>Der Bericht wird neu geladen.", "Bereinigung abgeschlossen");
+											frappe.show_alert("Bereinigung vollständig");
+											report.refresh();
+										}
+									}
+								});
+							} else {
+								frappe.msgprint("Es existieren keine überflüssigen Abos.", "Bereinigung abgeschlossen");
+								frappe.show_alert("Bereinigung abgebrochen");
+							}
+						},
+						function(){}
+					)
+			   }
+		   } else {
+			   frappe.msgprint("Bitte warten bis der Report geladen ist...", "Bitte warten");
+		   }
+		   //console.log(report);
+		});
 	}
 }
-
-
-
-
-
-/* Kunde & name
-
-Wenn
-(dataContext["Jahres-Abos"] > 0 || dataContext["Probe-Abos"] > 0 || dataContext["Geschenk-Abos"] > 0)
-&&
-(dataContext["KK-Abos"] > 0 || dataContext["OK-Abos"] > 0 || dataContext["Gratis-Abos"] > 0 || dataContext["VIP-Abos"] > 0)
-
-oder wenn
-(dataContext["Jahres-Abos"] = 0 || dataContext["Probe-Abos"] = 0 || dataContext["Geschenk-Abos"] = 0)
-&&
-(dataContext["KK-Abos"] != 1 || dataContext["OK-Abos"] > 0 || dataContext["Gratis-Abos"] > 0 || dataContext["VIP-Abos"] > 0)
-
-------------------------------
-
-Jahres-Abos
-Wenn */
