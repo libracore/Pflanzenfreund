@@ -418,7 +418,7 @@ def remove_all_abos_ws_affected(kunden):
 	return "OK"
 	
 @frappe.whitelist()
-def remove_abos_on_case_kk(case1, case2, case3, case4):
+def remove_abos_on_case_kk(case1, case2, case3, case4, winter_ed=0, feb_ed=0, mar_ed=0, apr_ed=0, may_ed=0, jun_ed=0, summer_ed=0, sept_ed=0, okt_ed=0, nov_ed=0):
 	import json
 	if isinstance(case1, basestring):
 		case1 = json.loads(case1)
@@ -447,13 +447,28 @@ def remove_abos_on_case_kk(case1, case2, case3, case4):
 			abo.cancel()
 	
 	#ANLAGE KK ABO!!!!	
-	# for kunde in case3:
-		# #frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)
-		# #idx = idx + 1
-		# abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{kunde}' AND `docstatus` = 1 AND `abo_type` IN ('Gratis-Abo', 'VIP-Abo', 'Kundenkarten-Abo (KK)', 'Kunden-Abo (OK)')""".format(kunde=kunde), as_dict=True)
-		# for _abo in abos:
-			# abo = frappe.get_doc("Pflanzenfreund Abo", _abo.name)
-			# abo.cancel()
+	for kunde in case3:
+		adresse = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `parenttype` = 'Address' AND `parentfield` = 'links' AND `idx` = '1' AND `link_doctype` = 'Customer' AND `link_name` = '{kunde}'""".format(kunde=kunde), as_list=True)[0][0]
+		abo = frappe.new_doc("Pflanzenfreund Abo")
+		abo.update({
+				"customer": kunde,
+				"customer_address": adresse,
+				"abo_type": "Kundenkarten-Abo (KK)",
+				"start_date": today(),
+				"set_ed_manual": 1,
+				"winter_ed": winter_ed,
+				"feb_ed": feb_ed,
+				"mar_ed": mar_ed,
+				"apr_ed": apr_ed,
+				"may_ed": may_ed,
+				"jun_ed": jun_ed,
+				"summer_ed": summer_ed,
+				"sept_ed": sept_ed,
+				"oct_ed": okt_ed,
+				"nov_ed": nov_ed
+			})
+		abo.insert(ignore_permissions=True)
+		abo.submit()
 			
 	for kunde in case4:
 		#frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)
@@ -465,7 +480,7 @@ def remove_abos_on_case_kk(case1, case2, case3, case4):
 	return "OK"
 	
 @frappe.whitelist()
-def remove_abos_on_case_ok(case1, case2, case3, case4):
+def remove_abos_on_case_ok(case1, case2, case3, case4, winter_ed=0, feb_ed=0, mar_ed=0, apr_ed=0, may_ed=0, jun_ed=0, summer_ed=0, sept_ed=0, okt_ed=0, nov_ed=0):
 	import json
 	if isinstance(case1, basestring):
 		case1 = json.loads(case1)
@@ -494,13 +509,28 @@ def remove_abos_on_case_ok(case1, case2, case3, case4):
 			abo.cancel()
 	
 	#ANLAGE KK ABO!!!!	
-	# for kunde in case3:
-		# #frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)
-		# #idx = idx + 1
-		# abos = frappe.db.sql("""SELECT `name` FROM `tabPflanzenfreund Abo` WHERE `customer` = '{kunde}' AND `docstatus` = 1 AND `abo_type` IN ('Gratis-Abo', 'VIP-Abo', 'Kundenkarten-Abo (KK)', 'Kunden-Abo (OK)')""".format(kunde=kunde), as_dict=True)
-		# for _abo in abos:
-			# abo = frappe.get_doc("Pflanzenfreund Abo", _abo.name)
-			# abo.cancel()
+	for kunde in case3:
+		adresse = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `parenttype` = 'Address' AND `parentfield` = 'links' AND `idx` = '1' AND `link_doctype` = 'Customer' AND `link_name` = '{kunde}'""".format(kunde=kunde), as_list=True)[0][0]
+		abo = frappe.new_doc("Pflanzenfreund Abo")
+		abo.update({
+				"customer": kunde,
+				"customer_address": adresse,
+				"abo_type": "Kunden-Abo (OK)",
+				"start_date": today(),
+				"set_ed_manual": 1,
+				"winter_ed": winter_ed,
+				"feb_ed": feb_ed,
+				"mar_ed": mar_ed,
+				"apr_ed": apr_ed,
+				"may_ed": may_ed,
+				"jun_ed": jun_ed,
+				"summer_ed": summer_ed,
+				"sept_ed": sept_ed,
+				"oct_ed": okt_ed,
+				"nov_ed": nov_ed
+			})
+		abo.insert(ignore_permissions=True)
+		abo.submit()
 			
 	for kunde in case4:
 		#frappe.publish_realtime('remove_all_abos_task', {"progress": [idx, len(kunden)]}, user=frappe.session.user)

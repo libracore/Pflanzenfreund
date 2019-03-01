@@ -14,14 +14,13 @@ frappe.query_reports["Plausability Check"] = {
 		{
 			fieldname: "von",
 			label: __("Daten von"),
-			fieldtype: "Int",
-			default: "0"
+			fieldtype: "Int"
 		},
 		{
 			fieldname: "bis",
 			label: __("Max. Daten"),
 			fieldtype: "Int",
-			default: "100"
+			default: "250"
 		}
 	],
 	"formatter":function (row, cell, value, columnDef, dataContext, default_formatter) {
@@ -260,7 +259,6 @@ frappe.query_reports["Plausability Check"] = {
 				   frappe.confirm(
 						'Wollen Sie alle unten ersichtlichen, überflüssigen Abos stornieren?',
 						function(){
-							frappe.msgprint("Bitte warten");
 							/*
 							Case 1: hat bezahlte abos und sonstige
 							Case 2: keine bezahlten Abos aber Gratis/VIP Abos UND KK-Abos
@@ -302,22 +300,80 @@ frappe.query_reports["Plausability Check"] = {
 							console.log(case4); */
 							if ((case1.length > 0) || (case2.length > 0) || (case3.length > 0) || (case4.length > 0)) {
 								report.data = [];
-								frappe.call({
-									"method": "pflanzenfreund.pflanzenfreund.report.plausability_check.plausability_check.remove_abos_on_case_kk",
-									"args": {
-										"case1": case1,
-										"case2": case2,
-										"case3": case3,
-										"case4": case4
-									},
-									"callback": function(r) {
-										if (r.message == "OK") {
-											frappe.msgprint("Die überflüssigen Abos wurden storniert/ergänzt.<br>Der Bericht wird neu geladen.", "Bereinigung abgeschlossen");
-											frappe.show_alert("Bereinigung vollständig");
-											report.refresh();
+								
+								if ((case3.length > 0)) {
+									var d = new frappe.ui.Dialog({
+										'title': __('Bitte selektieren Sie die gewünschten Ausgaben'),
+										'fields': [
+											{'fieldname': 'ht', 'fieldtype': 'HTML'},
+											{'fieldname': 'ht_xx', 'fieldtype': 'Section Break', 'label': 'Ausgaben'},
+											{'fieldname': 'winter_ed', 'fieldtype': 'Check', 'label': 'Winter'},
+											{'fieldname': 'feb_ed', 'fieldtype': 'Check', 'label': 'Februar'},
+											{'fieldname': 'mar_ed', 'fieldtype': 'Check', 'label': 'März'},
+											{'fieldname': 'apr_ed', 'fieldtype': 'Check', 'label': 'April'},
+											{'fieldname': 'may_ed', 'fieldtype': 'Check', 'label': 'Mai'},
+											{'fieldname': 'break', 'fieldtype': 'Column Break'},
+											//{'fieldname': 'ht_xx', 'fieldtype': 'HTML'},
+											{'fieldname': 'jun_ed', 'fieldtype': 'Check', 'label': 'Juni'},
+											{'fieldname': 'summer_ed', 'fieldtype': 'Check', 'label': 'Summer'},
+											{'fieldname': 'sept_ed', 'fieldtype': 'Check', 'label': 'September'},
+											{'fieldname': 'okt_ed', 'fieldtype': 'Check', 'label': 'Oktober'},
+											{'fieldname': 'nov_ed', 'fieldtype': 'Check', 'label': 'November'}
+										],
+										primary_action: function(){
+											d.hide();
+											frappe.msgprint("Bitte warten");
+											frappe.call({
+												"method": "pflanzenfreund.pflanzenfreund.report.plausability_check.plausability_check.remove_abos_on_case_kk",
+												"args": {
+													"case1": case1,
+													"case2": case2,
+													"case3": case3,
+													"case4": case4,
+													"winter_ed": d.get_values().winter_ed,
+													"feb_ed": d.get_values().feb_ed,
+													"mar_ed": d.get_values().mar_ed,
+													"apr_ed": d.get_values().apr_ed,
+													"may_ed": d.get_values().may_ed,
+													"jun_ed": d.get_values().jun_ed,
+													"summer_ed": d.get_values().summer_ed,
+													"sept_ed": d.get_values().sept_ed,
+													"okt_ed": d.get_values().okt_ed,
+													"nov_ed": d.get_values().nov_ed
+												},
+												"callback": function(r) {
+													if (r.message == "OK") {
+														frappe.msgprint("Die überflüssigen Abos wurden storniert/ergänzt.<br>Der Bericht wird neu geladen.", "Bereinigung abgeschlossen");
+														frappe.show_alert("Bereinigung vollständig");
+														report.refresh();
+													}
+												}
+											});
+										},
+										primary_action_label: __('Start Bereinigung/Anlage')
+									});
+									d.fields_dict.ht.$wrapper.html('Wählen Sie <b>3 Ausgaben</b>');
+									//d.fields_dict.ht_xx.$wrapper.html('<br><br>');
+									d.show();
+								} else {
+									frappe.msgprint("Bitte warten");
+									frappe.call({
+										"method": "pflanzenfreund.pflanzenfreund.report.plausability_check.plausability_check.remove_abos_on_case_kk",
+										"args": {
+											"case1": case1,
+											"case2": case2,
+											"case3": case3,
+											"case4": case4
+										},
+										"callback": function(r) {
+											if (r.message == "OK") {
+												frappe.msgprint("Die überflüssigen Abos wurden storniert.<br>Der Bericht wird neu geladen.", "Bereinigung abgeschlossen");
+												frappe.show_alert("Bereinigung vollständig");
+												report.refresh();
+											}
 										}
-									}
-								});
+									});
+								}
 							} else {
 								frappe.msgprint("Es existieren keine überflüssigen Abos.", "Bereinigung abgeschlossen");
 								frappe.show_alert("Bereinigung abgebrochen");
@@ -330,7 +386,6 @@ frappe.query_reports["Plausability Check"] = {
 				   frappe.confirm(
 						'Wollen Sie alle unten ersichtlichen, überflüssigen Abos stornieren?',
 						function(){
-							frappe.msgprint("Bitte warten");
 							/*
 							Case 1: hat bezahlte abos und sonstige
 							Case 2: keine bezahlten Abos aber Gratis/VIP Abos UND OK-Abos
@@ -372,22 +427,79 @@ frappe.query_reports["Plausability Check"] = {
 							console.log(case4); */
 							if ((case1.length > 0) || (case2.length > 0) || (case3.length > 0) || (case4.length > 0)) {
 								report.data = [];
-								frappe.call({
-									"method": "pflanzenfreund.pflanzenfreund.report.plausability_check.plausability_check.remove_abos_on_case_ok",
-									"args": {
-										"case1": case1,
-										"case2": case2,
-										"case3": case3,
-										"case4": case4
-									},
-									"callback": function(r) {
-										if (r.message == "OK") {
-											frappe.msgprint("Die überflüssigen Abos wurden storniert/ergänzt.<br>Der Bericht wird neu geladen.", "Bereinigung abgeschlossen");
-											frappe.show_alert("Bereinigung vollständig");
-											report.refresh();
+								if ((case3.length > 0)) {
+									var d = new frappe.ui.Dialog({
+										'title': __('Bitte selektieren Sie die gewünschten Ausgaben'),
+										'fields': [
+											{'fieldname': 'ht', 'fieldtype': 'HTML'},
+											{'fieldname': 'ht_xx', 'fieldtype': 'Section Break', 'label': 'Ausgaben'},
+											{'fieldname': 'winter_ed', 'fieldtype': 'Check', 'label': 'Winter'},
+											{'fieldname': 'feb_ed', 'fieldtype': 'Check', 'label': 'Februar'},
+											{'fieldname': 'mar_ed', 'fieldtype': 'Check', 'label': 'März'},
+											{'fieldname': 'apr_ed', 'fieldtype': 'Check', 'label': 'April'},
+											{'fieldname': 'may_ed', 'fieldtype': 'Check', 'label': 'Mai'},
+											{'fieldname': 'break', 'fieldtype': 'Column Break'},
+											//{'fieldname': 'ht_xx', 'fieldtype': 'HTML'},
+											{'fieldname': 'jun_ed', 'fieldtype': 'Check', 'label': 'Juni'},
+											{'fieldname': 'summer_ed', 'fieldtype': 'Check', 'label': 'Summer'},
+											{'fieldname': 'sept_ed', 'fieldtype': 'Check', 'label': 'September'},
+											{'fieldname': 'okt_ed', 'fieldtype': 'Check', 'label': 'Oktober'},
+											{'fieldname': 'nov_ed', 'fieldtype': 'Check', 'label': 'November'}
+										],
+										primary_action: function(){
+											d.hide();
+											frappe.msgprint("Bitte warten");
+											frappe.call({
+												"method": "pflanzenfreund.pflanzenfreund.report.plausability_check.plausability_check.remove_abos_on_case_ok",
+												"args": {
+													"case1": case1,
+													"case2": case2,
+													"case3": case3,
+													"case4": case4,
+													"winter_ed": d.get_values().winter_ed,
+													"feb_ed": d.get_values().feb_ed,
+													"mar_ed": d.get_values().mar_ed,
+													"apr_ed": d.get_values().apr_ed,
+													"may_ed": d.get_values().may_ed,
+													"jun_ed": d.get_values().jun_ed,
+													"summer_ed": d.get_values().summer_ed,
+													"sept_ed": d.get_values().sept_ed,
+													"okt_ed": d.get_values().okt_ed,
+													"nov_ed": d.get_values().nov_ed
+												},
+												"callback": function(r) {
+													if (r.message == "OK") {
+														frappe.msgprint("Die überflüssigen Abos wurden storniert/ergänzt.<br>Der Bericht wird neu geladen.", "Bereinigung abgeschlossen");
+														frappe.show_alert("Bereinigung vollständig");
+														report.refresh();
+													}
+												}
+											});
+										},
+										primary_action_label: __('Start Bereinigung/Anlage')
+									});
+									d.fields_dict.ht.$wrapper.html('Wählen Sie <b>2 Ausgaben</b>');
+									//d.fields_dict.ht_xx.$wrapper.html('<br><br>');
+									d.show();
+								} else {
+									frappe.msgprint("Bitte warten");
+									frappe.call({
+										"method": "pflanzenfreund.pflanzenfreund.report.plausability_check.plausability_check.remove_abos_on_case_ok",
+										"args": {
+											"case1": case1,
+											"case2": case2,
+											"case3": case3,
+											"case4": case4
+										},
+										"callback": function(r) {
+											if (r.message == "OK") {
+												frappe.msgprint("Die überflüssigen Abos wurden storniert.<br>Der Bericht wird neu geladen.", "Bereinigung abgeschlossen");
+												frappe.show_alert("Bereinigung vollständig");
+												report.refresh();
+											}
 										}
-									}
-								});
+									});
+								}
 							} else {
 								frappe.msgprint("Es existieren keine überflüssigen Abos.", "Bereinigung abgeschlossen");
 								frappe.show_alert("Bereinigung abgebrochen");
