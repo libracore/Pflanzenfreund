@@ -47,7 +47,7 @@ def execute(filters=None):
 											FROM `tabPflanzenfreund Abo`
 											WHERE
 												`docstatus` = 1
-												AND `customer` = '{customer}'
+												AND `donee` = '{customer}'
 												AND `abo_type` = 'Geschenk-Abo'
 												AND `end_date` >= '{today}'""".format(customer=customer.name, today=today()), as_list=True)[0][0]
 												
@@ -206,7 +206,7 @@ def execute(filters=None):
 											FROM `tabPflanzenfreund Abo`
 											WHERE
 												`docstatus` = 1
-												AND `customer` = '{customer}'
+												AND `donee` = '{customer}'
 												AND `abo_type` = 'Geschenk-Abo'
 												AND `end_date` >= '{today}'""".format(customer=customer.name, today=today()), as_list=True)[0][0]
 												
@@ -301,7 +301,7 @@ def execute(filters=None):
 											FROM `tabPflanzenfreund Abo`
 											WHERE
 												`docstatus` = 1
-												AND `customer` = '{customer}'
+												AND `donee` = '{customer}'
 												AND `abo_type` = 'Geschenk-Abo'
 												AND `end_date` >= '{today}'""".format(customer=customer.name, today=today()), as_list=True)[0][0]
 												
