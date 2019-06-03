@@ -756,7 +756,8 @@ def check_if_donee_exist(email, first_name, last_name, street, city, plz, phone,
 					"address_line1": street,
 					"city": city,
 					"country": "Schweiz",
-					"pincode": plz
+					"pincode": plz,
+					"plz": plz
 				})
 				address.append('links', dict(link_doctype='Customer', link_name=customer.name))
 				logged_in_user = frappe.session.user
@@ -798,7 +799,8 @@ def check_if_donee_exist(email, first_name, last_name, street, city, plz, phone,
 		"address_line1": street,
 		"city": city,
 		"country": "Schweiz",
-		"pincode": plz
+		"pincode": plz,
+		"plz": plz
 	})
 	address.append('links', dict(link_doctype='Customer', link_name=customer.name))
 	logged_in_user = frappe.session.user
