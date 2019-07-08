@@ -25,7 +25,7 @@ CELL_ENCAPSULATION = "\""
 ADRNR = 0                 # greeninfo_id
 NNAME = 1                 # contact.last_name
 VNAME = 2                 # contact.first_name
-NBEZ1 = 3                 # customer.description
+NBEZ1 = 3                 # old: customer.description new: address.address_line2
 NBEZ2 = 4                 # customer.company
 STRAS = 5                 # address.address_line1
 STRASNR = 6               # address.address_line1
@@ -219,6 +219,7 @@ def create_address(cells, customer):
                 "name": "{0} ({1})".format(fullname, customer),
                 "address_title": "{0} ({1})".format(fullname, customer),
                 "address_line1": get_address_line(cells),
+                "address_line2": get_field(cells[NBEZ1]),
                 "city": get_field(cells[ORTBZ]),
                 "pincode": get_field(cells[PLZAL]),
                 "is_primary_address": 1,
@@ -335,6 +336,7 @@ def update_customer(name, cells, force=False):
                 adr = frappe.get_doc("Address", adr_id[0]['parent'])
                 adr.address_title = fullname
                 adr.address_line1 = get_address_line(cells) or ''
+                adr.address_line2 = get_field(cells[NBEZ1]) or ''
                 adr.city = get_field(cells[ORTBZ]) or ''
                 adr.pincode = get_field(cells[PLZAL]) or ''
                 adr.is_primary_address = 1
