@@ -8,7 +8,7 @@ from frappe import utils
 def execute(filters=None):
 	columns, data = [], []
 	year = getYearFromString(filters.year+"-01-01")
-	columns = ["Abo Typ::140", "Beginn:Date:60", "End:Date:60", "Customer:Link/Customer:50", "Customer Salutation::50", "Customer Name::110", "C-Addr Line 1::50", "C-Addr Line 2::50", "C-Pincode::50", "C-City::50", "C-Country::50", "Donee:Link/Customer:50", "Donee Salutation::50", "Donee Name::110", "Address Line 1::50", "Address Line 2::50", "Pincode::50", "City::50", "Country::50", "Rechnungsstatus::50"]
+	columns = ["Abo Typ::140", "Beginn:Date:60", "End:Date:60", "Customer:Link/Customer:50", "Customer Salutation::50", "Customer Name::110", "C-Addr Line 1::50", "C-Addr Line 2::50", "C-Pincode::50", "C-City::50", "C-Country::50", "Donee:Link/Customer:50", "Donee Salutation::50", "Donee Name::110", "Address Line 1::50", "Address Line 2::50", "Pincode::50", "City::50", "Country::50"]
 	if not filters.edition:
 		data = frappe.db.sql("""SELECT
 				t1.`abo_type`,
@@ -29,14 +29,12 @@ def execute(filters=None):
 				t5.`address_line2`,
 				t5.`pincode`,
 				t5.`city`,
-				t5.`country`,
-				t6.`status`
-				FROM (((((`tabPflanzenfreund Abo` AS t1
+				t5.`country`
+				FROM ((((`tabPflanzenfreund Abo` AS t1
 				LEFT JOIN `tabCustomer` AS t2 ON t1.`customer` = t2.`name`)
 				LEFT JOIN `tabCustomer` AS t3 ON t1.`donee` = t3.`name`)
 				LEFT JOIN `tabAddress` AS t4 ON t1.`customer_address` = t4.`name`)
 				LEFT JOIN `tabAddress` AS t5 ON t1.`donee_address` = t5.`name`)
-				LEFT JOIN `tabSales Invoice` AS t6 ON t1.`name` = t6.`pflanzenfreund_abo` AND t6.`docstatus` = '1')
 				WHERE t1.`docstatus` = '1'
 				AND (YEAR(t1.`end_date`) >= {0} OR t1.`end_date` IS NULL)
 				AND YEAR(t1.`start_date`) <= {0}
@@ -81,14 +79,12 @@ def execute(filters=None):
 				t5.`address_line2`,
 				t5.`pincode`,
 				t5.`city`,
-				t5.`country`,
-				t6.`status`
-				FROM (((((`tabPflanzenfreund Abo` AS t1
+				t5.`country`
+				FROM ((((`tabPflanzenfreund Abo` AS t1
 				LEFT JOIN `tabCustomer` AS t2 ON t1.`customer` = t2.`name`)
 				LEFT JOIN `tabCustomer` AS t3 ON t1.`donee` = t3.`name`)
 				LEFT JOIN `tabAddress` AS t4 ON t1.`customer_address` = t4.`name`)
 				LEFT JOIN `tabAddress` AS t5 ON t1.`donee_address` = t5.`name`)
-				LEFT JOIN `tabSales Invoice` AS t6 ON t1.`name` = t6.`pflanzenfreund_abo` AND t6.`docstatus` = '1')
 				WHERE t1.`{0}` = '1'
 				AND t1.`docstatus` = '1'
 				AND (t1.`end_date` >= '{1}'
