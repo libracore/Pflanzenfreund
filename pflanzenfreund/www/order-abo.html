@@ -1,0 +1,106 @@
+<div class="page-breadcrumbs">
+	<ul class="breadcrumb">
+		<li><a href="https://pflanzenfreund.ch/de/">Home</a></li>
+		<li><a href="/">Pflanzenfreund abonnieren</a></li>
+		<li class="active" id="bestellung_von_breadcrumb">Bestellung Jahres-Abonnement</li>
+	</ul>
+</div>
+<div class="row">
+	<div class="col-sm-8">
+		<h3>Ihr gewähltes Abonnement</h3>
+		<div class="input-group" style="margin-bottom: 5px;">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-ok"></i></span>
+			<input id="abo_typ" type="text" class="form-control" name="abo_typ" placeholder="Abo-Typ" value="Jahres-Abonnement" readonly>
+		</div>
+		<label for="von_bis">Abo Start / Ende</label>
+		<div class="input-group" style="margin-bottom: 5px;" id="von_bis">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+			<input id="start" type="date" class="form-control" name="start">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+			<input id="ende" type="date" class="form-control" name="ende">
+		</div>
+		<label for="ihre_ausgaben">Ihre Ausgaben</label>
+		<div class="input-group" id="ihre_ausgaben">
+			<span class="input-group-addon">
+				<input type="checkbox" id="winter" readonly>
+			</span>
+			<input type="text" class="form-control" value="Winter" readonly>
+			<span class="input-group-addon">
+				<input type="checkbox" id="feb" readonly>
+			</span>
+			<input type="text" class="form-control" value="Februar" readonly>
+			<span class="input-group-addon">
+				<input type="checkbox" id="mar" readonly>
+			</span>
+			<input type="text" class="form-control" value="März" readonly>
+			<span class="input-group-addon">
+				<input type="checkbox" id="apr" readonly>
+			</span>
+			<input type="text" class="form-control" value="April" readonly>
+			<span class="input-group-addon">
+				<input type="checkbox" id="mai" readonly>
+			</span>
+			<input type="text" class="form-control" value="Mai" readonly>
+		</div>
+		<div class="input-group" id="ihre_ausgaben">
+			<span class="input-group-addon">
+				<input type="checkbox" id="jun" readonly>
+			</span>
+			<input type="text" class="form-control" value="Juni" readonly>
+			<span class="input-group-addon">
+				<input type="checkbox" id="sommer" readonly>
+			</span>
+			<input type="text" class="form-control" value="Sommer" readonly>
+			<span class="input-group-addon">
+				<input type="checkbox" id="sept" readonly>
+			</span>
+			<input type="text" class="form-control" value="September" readonly>
+			<span class="input-group-addon">
+				<input type="checkbox" id="okt" readonly>
+			</span>
+			<input type="text" class="form-control" value="Oktober" readonly>
+			<span class="input-group-addon">
+				<input type="checkbox" id="nov" readonly>
+			</span>
+			<input type="text" class="form-control" value="November" readonly>
+		</div>
+		<h3>Ihre Kontaktdaten</h3>
+		<div class="radio" style="padding-top: 0px; margin-top: 0px;">
+		  <label><input type="radio" name="optradio" id="frau" checked>Frau</label>
+		  <label><input type="radio" name="optradio" id="herr">Herr</label>
+		</div>
+		<div class="input-group" style="margin-bottom: 5px;">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+			<input id="vorname" type="text" class="form-control" name="vorname" placeholder="Vorname">
+			<input id="nachname" type="text" class="form-control" name="nachname" placeholder="Nachname">
+		</div>
+		<div class="input-group" style="margin-bottom: 5px;">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
+			<input id="strasse" type="text" class="form-control" name="strasse" placeholder="Strasse">
+			<input id="nummer" type="text" class="form-control" name="nummer" placeholder="Nummer">
+			<input id="plz" type="text" class="form-control" name="plz" placeholder="Postleitzahl">
+			<input id="ort" type="text" class="form-control" name="ort" placeholder="Ort">
+		</div>
+		<div id="mail_error_div" class="input-group" style="margin-bottom: 5px;">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+			<input id="email" type="text" class="form-control" name="email" placeholder="Email">
+		</div>
+		
+		<button class="btn btn-default" onclick="registrieren();" style="width: 100%;">Bestellen</button>
+	</div>
+	<div class="col-sm-4">
+		<div class="card">
+			<img src="/assets/pflanzenfreund/images/800x400_Jahresabo_lay.jpg" alt="Jahres-Abo" style="width:100%">
+			<div style="text-align: center;">
+				<p class="title">Ihr Jahres-Abonnement:</p>
+				<p class="price">CHF 42.-</p>
+				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
+				<p class="second-text"style="padding: 10px;">Erhalten Sie 10 Ausgaben pünktlich zum Monatsbeginn.</p>
+				<a class="btn btn-primary order-btn btn-bot" href="#">Bestellen</a>
+			</div>
+		</div>
+	</div>
+</div>
+<style>
+{% include "public/css/abonnieren.css" %}
+</style>
