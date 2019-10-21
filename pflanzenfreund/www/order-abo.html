@@ -2,7 +2,7 @@
 	<ul class="breadcrumb">
 		<li><a href="https://pflanzenfreund.ch/de/">Home</a></li>
 		<li><a href="/">Pflanzenfreund abonnieren</a></li>
-		<li class="active" id="bestellung_von_breadcrumb">Bestellung Jahres-Abonnement</li>
+		<li class="active" id="bestellung_von_breadcrumb">tbd</li>
 	</ul>
 </div>
 <div class="row">
@@ -10,16 +10,16 @@
 		<h3>Ihr gewähltes Abonnement</h3>
 		<div class="input-group" style="margin-bottom: 5px;">
 			<span class="input-group-addon"><i class="glyphicon glyphicon-ok"></i></span>
-			<input id="abo_typ" type="text" class="form-control" name="abo_typ" placeholder="Abo-Typ" value="Jahres-Abonnement" readonly>
+			<input id="abo_typ" type="text" class="form-control" name="abo_typ" placeholder="Abo-Typ" value="tbd" readonly>
 		</div>
 		<label for="von_bis">Abo Start / Ende</label>
 		<div class="input-group" style="margin-bottom: 5px;" id="von_bis">
 			<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-			<input id="start" type="date" class="form-control" name="start">
+			<input id="start" type="date" class="form-control" name="start" onchange="change_start();">
 			<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-			<input id="ende" type="date" class="form-control" name="ende">
+			<input id="ende" type="date" class="form-control" name="ende" readonly>
 		</div>
-		<label for="ihre_ausgaben">Ihre Ausgaben</label>
+		<label for="ihre_ausgaben" id="ihre_ausgaben_label">Ihre Ausgaben</label>
 		<div class="input-group" id="ihre_ausgaben">
 			<span class="input-group-addon">
 				<input type="checkbox" id="winter" readonly>
@@ -64,32 +64,53 @@
 			</span>
 			<input type="text" class="form-control" value="November" readonly>
 		</div>
+		
+		<div class="hidden" id="beschenkter">
+			<h3>Kontaktdaten Geschenk Empfänger</h3>
+			<div class="radio" style="padding-top: 0px; margin-top: 0px;">
+			  <label><input type="radio" name="optradio_geschenk" id="frau_geschenk" checked>Frau</label>
+			  <label><input type="radio" name="optradio_geschenk" id="herr_geschenk">Herr</label>
+			</div>
+			<div class="input-group" style="margin-bottom: 5px;">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+				<input id="vorname_geschenk" type="text" class="form-control" name="vorname_geschenk" placeholder="Vorname">
+				<input id="nachname_geschenk" type="text" class="form-control" name="nachname_geschenk" placeholder="Nachname">
+			</div>
+			<div class="input-group" style="margin-bottom: 5px;">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
+				<input id="strasse_geschenk" type="text" class="form-control" name="strasse_geschenk" placeholder="Strasse">
+				<input id="nummer_geschenk" type="text" class="form-control" name="nummer_geschenk" placeholder="Nummer">
+				<input id="plz_geschenk" type="text" class="form-control" name="plz_geschenk" placeholder="Postleitzahl">
+				<input id="ort_geschenk" type="text" class="form-control" name="ort_geschenk" placeholder="Ort">
+			</div>
+		</div>
+		
 		<h3>Ihre Kontaktdaten</h3>
 		<div class="radio" style="padding-top: 0px; margin-top: 0px;">
-		  <label><input type="radio" name="optradio" id="frau" checked>Frau</label>
-		  <label><input type="radio" name="optradio" id="herr">Herr</label>
+		  <label><input type="radio" name="optradio" id="frau" checked readonly>Frau</label>
+		  <label><input type="radio" name="optradio" id="herr" readonly>Herr</label>
 		</div>
 		<div class="input-group" style="margin-bottom: 5px;">
 			<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-			<input id="vorname" type="text" class="form-control" name="vorname" placeholder="Vorname">
-			<input id="nachname" type="text" class="form-control" name="nachname" placeholder="Nachname">
+			<input id="vorname" type="text" class="form-control" name="vorname" placeholder="Vorname" readonly>
+			<input id="nachname" type="text" class="form-control" name="nachname" placeholder="Nachname" readonly>
 		</div>
 		<div class="input-group" style="margin-bottom: 5px;">
 			<span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-			<input id="strasse" type="text" class="form-control" name="strasse" placeholder="Strasse">
-			<input id="nummer" type="text" class="form-control" name="nummer" placeholder="Nummer">
-			<input id="plz" type="text" class="form-control" name="plz" placeholder="Postleitzahl">
-			<input id="ort" type="text" class="form-control" name="ort" placeholder="Ort">
+			<input id="strasse" type="text" class="form-control" name="strasse" placeholder="Strasse" readonly>
+			<input id="nummer" type="text" class="form-control" name="nummer" placeholder="Nummer" readonly>
+			<input id="plz" type="text" class="form-control" name="plz" placeholder="Postleitzahl" readonly>
+			<input id="ort" type="text" class="form-control" name="ort" placeholder="Ort" readonly>
 		</div>
 		<div id="mail_error_div" class="input-group" style="margin-bottom: 5px;">
 			<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-			<input id="email" type="text" class="form-control" name="email" placeholder="Email">
+			<input id="email" type="text" class="form-control" name="email" placeholder="Email" readonly>
 		</div>
 		
 		<button class="btn btn-default" onclick="registrieren();" style="width: 100%;">Bestellen</button>
 	</div>
 	<div class="col-sm-4">
-		<div class="card">
+		<div class="card hidden" id="jahres_abo">
 			<img src="/assets/pflanzenfreund/images/800x400_Jahresabo_lay.jpg" alt="Jahres-Abo" style="width:100%">
 			<div style="text-align: center;">
 				<p class="title">Ihr Jahres-Abonnement:</p>
@@ -97,6 +118,26 @@
 				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
 				<p class="second-text"style="padding: 10px;">Erhalten Sie 10 Ausgaben pünktlich zum Monatsbeginn.</p>
 				<a class="btn btn-primary order-btn btn-bot" href="#">Bestellen</a>
+			</div>
+		</div>
+		<div class="card hidden" id="probe_abo">
+			<img src="/assets/pflanzenfreund/images/800x400_Probeabo_lay-1.jpg" alt="Probe-Abo" style="width:100%">
+			<div style="text-align: center;">
+				<p class="title">Ihr Probe-Abonnement:</p>
+				<p class="price">CHF 14.-</p>
+				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
+				<p class="second-text"style="padding: 10px;">Erhalten Sie die nächsten 4 Ausgaben zum Reinschnuppern.</p>
+				<a class="btn btn-primary order-btn btn-bot" href="{% if hide_order %}/registration?abo_type=Probe-Abo{% else %}/neues-pflanzenfreund-abonnement?abo_type=Probe-Abo{% endif %}">Jetzt bestellen</a>
+			</div>
+		</div>
+		<div class="card hidden" id="geschenk_abo">
+			<img src="/assets/pflanzenfreund/images/800x400_Geschenkabo_lay.jpg" alt="Geschenk-Abo" style="width:100%">
+			<div style="text-align: center;">
+				<p class="title">Ihr Geschenk-Abonnement:</p>
+				<p class="price">CHF 42.-</p>
+				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
+				<p class="second-text"style="padding: 10px;">Verschenken Sie 10 Ausgaben als besonderes Geschenk.</p>
+				<a class="btn btn-primary order-btn btn-bot" href="{% if hide_order %}/registration?abo_type=Geschenk-Abo{% else %}/neues-pflanzenfreund-abonnement?abo_type=Geschenk-Abo{% endif %}">Jetzt bestellen</a>
 			</div>
 		</div>
 	</div>
