@@ -1,6 +1,7 @@
 var bestell_seite = location.search.substring(10);
-console.log(bestell_seite);
 set_abo_data(bestell_seite);
+set_user_data();
+console.log("{{ user_data.first_name }}");
 
 function set_abo_data(bestell_seite) {
 	if (bestell_seite == "Jahres-Abo") {
@@ -35,6 +36,21 @@ function set_abo_data(bestell_seite) {
 		var in_a_year_date = in_a_year.toISOString().slice(0,10);
 		document.getElementById("start").value = currentDate;
 		document.getElementById("ende").value = in_a_year_date;
+	}
+}
+
+function set_user_data() {
+	document.getElementById("vorname").value = "{{ user_data.first_name }}";
+	document.getElementById("nachname").value = "{{ user_data.last_name }}";
+	document.getElementById("strasse").value = "{{ address.address_line1 }}".split(" ")["{{ address.address_line1 }}".split.length - 2];
+	document.getElementById("nummer").value = "{{ address.address_line1 }}".split(" ")["{{ address.address_line1 }}".split.length - 1];
+	document.getElementById("plz").value = "{{ address.pincode }}";
+	document.getElementById("ort").value = "{{ address.city }}";
+	document.getElementById("email").value = "{{ user_data.email_id }}";
+	if ("{{ user_data.salutation }}" == "Herr") {
+		document.getElementById("herr").checked = true;
+	} else if ("{{ user_data.salutation }}" == "Frau") {
+		document.getElementById("frau").checked = true;
 	}
 }
 
