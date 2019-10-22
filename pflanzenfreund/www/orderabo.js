@@ -194,5 +194,63 @@ function change_start() {
 }
 
 function bestellung_platzieren() {
-	
+	var start = new Date(document.getElementById("start").value);
+	var ende = new Date(document.getElementById("ende").value);
+	if (bestell_seite != 'Geschenk-Abo') {
+		frappe.call({
+			method: 'pflanzenfreund.www.orderabo.place_abo_order',
+			args: {
+				"customer": "{{ customer }}",
+				"address": "{{ address.name }}",
+				"abo_type": bestell_seite,
+				"start_date": start.getFullYear() + "-" + (start.getMonth() + 1) + "-" + start.getDate(),
+				"end_date": ende.getFullYear() + "-" + (ende.getMonth() + 1) + "-" + ende.getDate(),
+				"winter": document.getElementById("winter").checked? 1 : 0,
+				"feb": document.getElementById("feb").checked? 1 : 0,
+				"mar": document.getElementById("mar").checked? 1 : 0,
+				"apr": document.getElementById("apr").checked? 1 : 0,
+				"may": document.getElementById("mai").checked? 1 : 0,
+				"jun": document.getElementById("jun").checked? 1 : 0,
+				"summer": document.getElementById("sommer").checked? 1 : 0,
+				"sept": document.getElementById("sept").checked? 1 : 0,
+				"oct": document.getElementById("okt").checked? 1 : 0,
+				"nov": document.getElementById("nov").checked? 1 : 0
+			},
+			freeze: true,
+			freeze_message: "Bitte warten bis die Abo-Bestellung abgeschlossen ist.",
+			callback: function(r) {
+				console.log(r.message);
+			}
+		});
+	} else {
+		frappe.call({
+			method: 'pflanzenfreund.www.orderabo.place_abo_order',
+			args: {
+				"customer": "{{ customer }}",
+				"address": "{{ address.name }}",
+				"abo_type": bestell_seite,
+				"start_date": start.getFullYear() + "-" + (start.getMonth() + 1) + "-" + start.getDate(),
+				"end_date": ende.getFullYear() + "-" + (ende.getMonth() + 1) + "-" + ende.getDate(),
+				"winter": document.getElementById("winter").checked? 1 : 0,
+				"feb": document.getElementById("feb").checked? 1 : 0,
+				"mar": document.getElementById("mar").checked? 1 : 0,
+				"apr": document.getElementById("apr").checked? 1 : 0,
+				"may": document.getElementById("mai").checked? 1 : 0,
+				"jun": document.getElementById("jun").checked? 1 : 0,
+				"summer": document.getElementById("sommer").checked? 1 : 0,
+				"sept": document.getElementById("sept").checked? 1 : 0,
+				"oct": document.getElementById("okt").checked? 1 : 0,
+				"nov": document.getElementById("nov").checked? 1 : 0,
+				"donee_name": document.getElementById("vorname_geschenk").value + " " + document.getElementById("nachname_geschenk").value,
+				"street": document.getElementById("strasse_geschenk").value + " " + document.getElementById("nummer_geschenk").value,
+				"pincode": document.getElementById("plz_geschenk").value,
+				"city": document.getElementById("ort_geschenk").value
+			},
+			freeze: true,
+			freeze_message: "Bitte warten bis die Abo-Bestellung abgeschlossen ist.",
+			callback: function(r) {
+				console.log(r.message);
+			}
+		});
+	}
 }

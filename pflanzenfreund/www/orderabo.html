@@ -22,66 +22,66 @@
 		<label for="ihre_ausgaben" id="ihre_ausgaben_label">Ihre Ausgaben</label>
 		<div class="input-group" id="ihre_ausgaben">
 			<span class="input-group-addon">
-				<input type="checkbox" id="winter" readonly>
+				<input type="checkbox" id="winter" readonly onclick="return false;">
 			</span>
 			<input type="text" class="form-control" value="Winter" readonly>
 			<span class="input-group-addon">
-				<input type="checkbox" id="feb" readonly>
+				<input type="checkbox" id="feb" readonly onclick="return false;">
 			</span>
 			<input type="text" class="form-control" value="Februar" readonly>
 			<span class="input-group-addon">
-				<input type="checkbox" id="mar" readonly>
+				<input type="checkbox" id="mar" readonly onclick="return false;">
 			</span>
 			<input type="text" class="form-control" value="März" readonly>
 			<span class="input-group-addon">
-				<input type="checkbox" id="apr" readonly>
+				<input type="checkbox" id="apr" readonly onclick="return false;">
 			</span>
 			<input type="text" class="form-control" value="April" readonly>
 			<span class="input-group-addon">
-				<input type="checkbox" id="mai" readonly>
+				<input type="checkbox" id="mai" readonly onclick="return false;">
 			</span>
 			<input type="text" class="form-control" value="Mai" readonly>
 		</div>
 		<div class="input-group" id="ihre_ausgaben">
 			<span class="input-group-addon">
-				<input type="checkbox" id="jun" readonly>
+				<input type="checkbox" id="jun" readonly onclick="return false;">
 			</span>
 			<input type="text" class="form-control" value="Juni" readonly>
 			<span class="input-group-addon">
-				<input type="checkbox" id="sommer" readonly>
+				<input type="checkbox" id="sommer" readonly onclick="return false;">
 			</span>
 			<input type="text" class="form-control" value="Sommer" readonly>
 			<span class="input-group-addon">
-				<input type="checkbox" id="sept" readonly>
+				<input type="checkbox" id="sept" readonly onclick="return false;">
 			</span>
 			<input type="text" class="form-control" value="September" readonly>
 			<span class="input-group-addon">
-				<input type="checkbox" id="okt" readonly>
+				<input type="checkbox" id="okt" readonly onclick="return false;">
 			</span>
 			<input type="text" class="form-control" value="Oktober" readonly>
 			<span class="input-group-addon">
-				<input type="checkbox" id="nov" readonly>
+				<input type="checkbox" id="nov" readonly onclick="return false;">
 			</span>
 			<input type="text" class="form-control" value="November" readonly>
 		</div>
 		
 		<div class="hidden" id="beschenkter">
 			<h3>Kontaktdaten Geschenk Empfänger</h3>
-			<div class="radio" style="padding-top: 0px; margin-top: 0px;">
+			<div class="radio" style="padding-top: 0px; margin-top: 0px;" required>
 			  <label><input type="radio" name="optradio_geschenk" id="frau_geschenk" checked>Frau</label>
 			  <label><input type="radio" name="optradio_geschenk" id="herr_geschenk">Herr</label>
 			</div>
 			<div class="input-group" style="margin-bottom: 5px;">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-				<input id="vorname_geschenk" type="text" class="form-control" name="vorname_geschenk" placeholder="Vorname">
-				<input id="nachname_geschenk" type="text" class="form-control" name="nachname_geschenk" placeholder="Nachname">
+				<input id="vorname_geschenk" type="text" class="form-control" name="vorname_geschenk" placeholder="Vorname" required>
+				<input id="nachname_geschenk" type="text" class="form-control" name="nachname_geschenk" placeholder="Nachname" required>
 			</div>
 			<div class="input-group" style="margin-bottom: 5px;">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-				<input id="strasse_geschenk" type="text" class="form-control" name="strasse_geschenk" placeholder="Strasse">
-				<input id="nummer_geschenk" type="text" class="form-control" name="nummer_geschenk" placeholder="Nummer">
-				<input id="plz_geschenk" type="text" class="form-control" name="plz_geschenk" placeholder="Postleitzahl">
-				<input id="ort_geschenk" type="text" class="form-control" name="ort_geschenk" placeholder="Ort">
+				<input id="strasse_geschenk" type="text" class="form-control" name="strasse_geschenk" placeholder="Strasse" required>
+				<input id="nummer_geschenk" type="text" class="form-control" name="nummer_geschenk" placeholder="Nummer" required>
+				<input id="plz_geschenk" type="text" class="form-control" name="plz_geschenk" placeholder="Postleitzahl" required>
+				<input id="ort_geschenk" type="text" class="form-control" name="ort_geschenk" placeholder="Ort" required>
 			</div>
 		</div>
 		
@@ -107,7 +107,7 @@
 			<input id="email" type="text" class="form-control" name="email" placeholder="Email" readonly>
 		</div>
 		
-		<button class="btn btn-default" onclick="registrieren();" style="width: 100%;">Bestellen</button>
+		<button class="btn btn-default" onclick="bestellung_platzieren();" style="width: 100%;">Bestellen</button>
 	</div>
 	<div class="col-sm-4">
 		<div class="card hidden" id="jahres_abo">
@@ -117,7 +117,7 @@
 				<p class="price">CHF 42.-</p>
 				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
 				<p class="second-text"style="padding: 10px;">Erhalten Sie 10 Ausgaben pünktlich zum Monatsbeginn.</p>
-				<a class="btn btn-primary order-btn btn-bot" href="#">Bestellen</a>
+				<a class="btn btn-primary order-btn btn-bot"  onclick="bestellung_platzieren();">Bestellen</a>
 			</div>
 		</div>
 		<div class="card hidden" id="probe_abo">
@@ -127,7 +127,7 @@
 				<p class="price">CHF 14.-</p>
 				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
 				<p class="second-text"style="padding: 10px;">Erhalten Sie die nächsten 4 Ausgaben zum Reinschnuppern.</p>
-				<a class="btn btn-primary order-btn btn-bot" href="{% if hide_order %}/registration?abo_type=Probe-Abo{% else %}/neues-pflanzenfreund-abonnement?abo_type=Probe-Abo{% endif %}">Jetzt bestellen</a>
+				<a class="btn btn-primary order-btn btn-bot"  onclick="bestellung_platzieren();">Jetzt bestellen</a>
 			</div>
 		</div>
 		<div class="card hidden" id="geschenk_abo">
@@ -137,7 +137,7 @@
 				<p class="price">CHF 42.-</p>
 				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
 				<p class="second-text"style="padding: 10px;">Verschenken Sie 10 Ausgaben als besonderes Geschenk.</p>
-				<a class="btn btn-primary order-btn btn-bot" href="{% if hide_order %}/registration?abo_type=Geschenk-Abo{% else %}/neues-pflanzenfreund-abonnement?abo_type=Geschenk-Abo{% endif %}">Jetzt bestellen</a>
+				<a class="btn btn-primary order-btn btn-bot"  onclick="bestellung_platzieren();">Jetzt bestellen</a>
 			</div>
 		</div>
 	</div>
