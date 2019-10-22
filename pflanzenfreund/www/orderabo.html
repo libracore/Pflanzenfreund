@@ -73,15 +73,15 @@
 			</div>
 			<div class="input-group" style="margin-bottom: 5px;">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-				<input id="vorname_geschenk" type="text" class="form-control" name="vorname_geschenk" placeholder="Vorname" required>
-				<input id="nachname_geschenk" type="text" class="form-control" name="nachname_geschenk" placeholder="Nachname" required>
+				<input id="vorname_geschenk" type="text" class="form-control pf-alert" name="vorname_geschenk" placeholder="Vorname" onchange="check_value(this);">
+				<input id="nachname_geschenk" type="text" class="form-control pf-alert" name="nachname_geschenk" placeholder="Nachname" onchange="check_value(this);">
 			</div>
 			<div class="input-group" style="margin-bottom: 5px;">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-				<input id="strasse_geschenk" type="text" class="form-control" name="strasse_geschenk" placeholder="Strasse" required>
-				<input id="nummer_geschenk" type="text" class="form-control" name="nummer_geschenk" placeholder="Nummer" required>
-				<input id="plz_geschenk" type="text" class="form-control" name="plz_geschenk" placeholder="Postleitzahl" required>
-				<input id="ort_geschenk" type="text" class="form-control" name="ort_geschenk" placeholder="Ort" required>
+				<input id="strasse_geschenk" type="text" class="form-control pf-alert" name="strasse_geschenk" placeholder="Strasse" onchange="check_value(this);">
+				<input id="nummer_geschenk" type="text" class="form-control pf-alert" name="nummer_geschenk" placeholder="Nummer" onchange="check_value(this);">
+				<input id="plz_geschenk" type="text" class="form-control pf-alert" name="plz_geschenk" placeholder="Postleitzahl" onchange="check_value(this);">
+				<input id="ort_geschenk" type="text" class="form-control pf-alert" name="ort_geschenk" placeholder="Ort" onchange="check_value(this);">
 			</div>
 		</div>
 		
@@ -107,7 +107,7 @@
 			<input id="email" type="text" class="form-control" name="email" placeholder="Email" readonly>
 		</div>
 		
-		<button class="btn btn-default" onclick="bestellung_platzieren();" style="width: 100%;">Bestellen</button>
+		<button class="btn btn-default" onclick="bestellung_popup();" style="width: 100%;">Bestellen</button>
 	</div>
 	<div class="col-sm-4">
 		<div class="card hidden" id="jahres_abo">
@@ -117,7 +117,7 @@
 				<p class="price">CHF 42.-</p>
 				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
 				<p class="second-text"style="padding: 10px;">Erhalten Sie 10 Ausgaben pünktlich zum Monatsbeginn.</p>
-				<a class="btn btn-primary order-btn btn-bot"  onclick="bestellung_platzieren();">Bestellen</a>
+				<a class="btn btn-primary order-btn btn-bot"  onclick="bestellung_popup();">Bestellen</a>
 			</div>
 		</div>
 		<div class="card hidden" id="probe_abo">
@@ -127,7 +127,7 @@
 				<p class="price">CHF 14.-</p>
 				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
 				<p class="second-text"style="padding: 10px;">Erhalten Sie die nächsten 4 Ausgaben zum Reinschnuppern.</p>
-				<a class="btn btn-primary order-btn btn-bot"  onclick="bestellung_platzieren();">Jetzt bestellen</a>
+				<a class="btn btn-primary order-btn btn-bot"  onclick="bestellung_popup();">Jetzt bestellen</a>
 			</div>
 		</div>
 		<div class="card hidden" id="geschenk_abo">
@@ -137,11 +137,12 @@
 				<p class="price">CHF 42.-</p>
 				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
 				<p class="second-text"style="padding: 10px;">Verschenken Sie 10 Ausgaben als besonderes Geschenk.</p>
-				<a class="btn btn-primary order-btn btn-bot"  onclick="bestellung_platzieren();">Jetzt bestellen</a>
+				<a class="btn btn-primary order-btn btn-bot"  onclick="bestellung_popup();">Jetzt bestellen</a>
 			</div>
 		</div>
 	</div>
 </div>
 <style>
 {% include "public/css/abonnieren.css" %}
+{% include "pflanzenfreund/www/orderabo.css" %}
 </style>
