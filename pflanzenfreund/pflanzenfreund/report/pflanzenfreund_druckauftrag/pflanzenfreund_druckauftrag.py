@@ -58,8 +58,12 @@ def execute(filters=None):
 		chart=get_chart_data(data, chart_data=chart_data_)
 	else:
 		edition = getEDcode(filters.edition)
-		mon_in_number = get_month_in_number(edition)
-		ref_date = get_last_day(str(year)+"-"+str(mon_in_number)+"-01 12:00:00")
+		#mon_in_number = get_month_in_number(edition)
+		start_mon_in_number = get_start_month_in_number(edition)
+		end_mon_in_number = get_end_month_in_number(edition)
+		#ref_date = get_last_day(str(year)+"-"+str(mon_in_number)+"-01 12:00:00")
+		ref_start_date = str(year)+"-"+str(start_mon_in_number)+"-15"
+		ref_end_date = str(year)+"-"+str(end_mon_in_number)+"-01"
 		data = frappe.db.sql("""SELECT
 				t1.`abo_type`,
 				t1.`start_date`,
@@ -85,12 +89,12 @@ def execute(filters=None):
 				LEFT JOIN `tabCustomer` AS t3 ON t1.`donee` = t3.`name`)
 				LEFT JOIN `tabAddress` AS t4 ON t1.`customer_address` = t4.`name`)
 				LEFT JOIN `tabAddress` AS t5 ON t1.`donee_address` = t5.`name`)
-				WHERE t1.`{0}` = '1'
+				WHERE t1.`{edition}` = '1'
 				AND t1.`docstatus` = '1'
-				AND (t1.`end_date` >= '{1}'
+				AND (t1.`end_date` >= '{ref_end_date}'
 				OR t1.`end_date` IS NULL)
-				AND t1.`start_date` <= '{1}'
-				AND t1.`abo_type` = '{2}'""".format(edition, ref_date, filters.abo_type), as_list = True)
+				AND t1.`start_date` <= '{ref_start_date}'
+				AND t1.`abo_type` = '{abo_type}'""".format(edition=edition, ref_start_date=ref_start_date, ref_end_date=ref_end_date, abo_type=filters.abo_type), as_list = True)
 				
 		_chart_data = {"Jahres-Abo":"", "Probe-Abo":"", "Geschenk-Abo":"", "Gratis-Abo":"", "VIP-Abo":"", "Kundenkarten-Abo (KK)":"", "Kunden-Abo (OK)":""}
 		for key in _chart_data:
@@ -164,9 +168,61 @@ def getYearFromString(raw_year):
 	dt = datetime.strptime(raw_year, '%Y-%m-%d')
 	return dt.year
 
-def get_month_in_number(edition):
-	if edition == "jan_ed":
+# def get_month_in_number(edition):
+	# if edition == "jan_ed":
+		# edition = "01"
+	# if edition == "feb_ed":
+		# edition = "02"
+	# if edition == "mar_ed":
+		# edition = "03"
+	# if edition == "apr_ed":
+		# edition = "04"
+	# if edition == "may_ed":
+		# edition = "05"
+	# if edition == "jun_ed":
+		# edition = "06"
+	# if edition == "jul_ed":
+		# edition = "07"
+	# if edition == "aug_ed":
+		# edition = "08"
+	# if edition == "sept_ed":
+		# edition = "09"
+	# if edition == "oct_ed":
+		# edition = "10"
+	# if edition == "nov_ed":
+		# edition = "11"
+	# if edition == "dec_ed":
+		# edition = "12"
+	# if edition == "winter_ed":
+		# edition = "01"
+	# if edition == "summer_ed":
+		# edition = "08"
+	# return edition
+	
+def get_start_month_in_number(edition):
+	if edition == "feb_ed":
 		edition = "01"
+	if edition == "mar_ed":
+		edition = "02"
+	if edition == "apr_ed":
+		edition = "03"
+	if edition == "may_ed":
+		edition = "04"
+	if edition == "jun_ed":
+		edition = "05"
+	if edition == "sept_ed":
+		edition = "08"
+	if edition == "oct_ed":
+		edition = "09"
+	if edition == "nov_ed":
+		edition = "10"
+	if edition == "winter_ed":
+		edition = "11"
+	if edition == "summer_ed":
+		edition = "06"
+	return edition
+	
+def get_end_month_in_number(edition):
 	if edition == "feb_ed":
 		edition = "02"
 	if edition == "mar_ed":
@@ -177,22 +233,16 @@ def get_month_in_number(edition):
 		edition = "05"
 	if edition == "jun_ed":
 		edition = "06"
-	if edition == "jul_ed":
-		edition = "07"
-	if edition == "aug_ed":
-		edition = "08"
 	if edition == "sept_ed":
 		edition = "09"
 	if edition == "oct_ed":
 		edition = "10"
 	if edition == "nov_ed":
 		edition = "11"
-	if edition == "dec_ed":
-		edition = "12"
 	if edition == "winter_ed":
-		edition = "01"
+		edition = "12"
 	if edition == "summer_ed":
-		edition = "08"
+		edition = "07"
 	return edition
 	
 def get_last_day(dt):
