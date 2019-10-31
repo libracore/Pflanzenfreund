@@ -99,15 +99,15 @@ def execute(filters=None):
 		_chart_data = {"Jahres-Abo":"", "Probe-Abo":"", "Geschenk-Abo":"", "Gratis-Abo":"", "VIP-Abo":"", "Kundenkarten-Abo (KK)":"", "Kunden-Abo (OK)":""}
 		for key in _chart_data:
 			_chart_data[key] = frappe.db.sql("""SELECT
-										COUNT(`{0}`)
+										COUNT(`{edition}`)
 										FROM `tabPflanzenfreund Abo`
-										WHERE (YEAR(`end_date`) >= {2} OR `end_date` IS NULL)
-										AND `{0}` = '1'
-										AND `abo_type` = '{1}'
+										WHERE (YEAR(`end_date`) >= {year} OR `end_date` IS NULL)
+										AND `{edition}` = '1'
+										AND `abo_type` = '{key}'
 										AND `docstatus` = '1'
-										AND (`end_date` >= '{3}'
+										AND (`end_date` >= '{ref_end_date}'
 										OR `end_date` IS NULL)
-										AND `start_date` <= '{3}'""".format(edition, key, year, ref_date), as_list = True)[0]
+										AND `start_date` <= '{ref_start_date}'""".format(edition=edition, key=key, year=year, ref_end_date=ref_end_date, ref_start_date=ref_start_date), as_list = True)[0]
 		chart=get_chart_data(data, filtered_chart_data=_chart_data)
 	return columns, data, None, chart
 
