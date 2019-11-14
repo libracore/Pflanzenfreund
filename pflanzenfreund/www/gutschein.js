@@ -18,7 +18,30 @@ function count() {
 }
 
 function vorschau() {
-	var url = 'http://localhost/api/method/frappe.utils.print_format.download_pdf?doctype=Pflanzenfreund%20Abo&name=ABO-0139397&format=Geschenk%20Brief&no_letterhead=0';
-	var win = window.open(url, '_blank');
-	win.focus();
+	var von = document.getElementById("of").value;
+	var fuer = document.getElementById("for").value;
+	var widmung = document.getElementById("comment").value;
+	var betrag = document.getElementById("sel1").value;
+	if (betrag != 'Eigener Betrag') {
+		betrag = betrag.split(" ")[1]
+	} else {
+		betrag = parseFloat(document.getElementById("betrag").value);
+	}
+	if (!betrag || betrag < 20 || betrag > 3000) {
+		frappe.msgprint("Bitte geben Sie einen korrekten Betrag zwischen CHF 20.00 und CHF 3'000 ein.", "Betrag fehlerhaft");
+	}
+	frappe.call({
+		method: 'pflanzenfreund.www.gutschein.vorschau',
+		args: {
+			"von": von,
+			"fuer": fuer,
+			"widmung": widmung,
+			"betrag": betrag
+		},
+		callback: function(r) {
+			var url = 'http://localhost/api/method/pflanzenfreund.www.gutschein.download_vorschau_pdf?';
+			var win = window.open(url, '_blank');
+			win.focus();
+		}
+	});
 }
