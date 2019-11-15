@@ -261,7 +261,7 @@ login.login_handlers = (function() {
 	var login_handlers = {
 		200: function(data) {
 			login.set_indicator("{{ _("Success") }}", 'green');
-			window.location.href = "neues-pflanzenfreund-abonnement" + bestell_seite;
+			window.location.href = "orderabo" + bestell_seite;
 		},
 		401: get_error_handler("{{ _("Invalid Login. Try again.") }}"),
 		417: get_error_handler("{{ _("Oops! Something went wrong") }}")

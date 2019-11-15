@@ -19,6 +19,7 @@ def create_address(vorname, nachname, mail, strasse, nummer, plz, ort, geschlech
 		"address_title": customer,
 		"address_line1": strasse + " " + nummer,
 		"plz": plz,
+		"pincode": plz,
 		"city": ort,
 		"country": "Schweiz",
 		"is_primary_address": 1,
