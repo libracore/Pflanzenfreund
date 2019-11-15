@@ -8,7 +8,7 @@ def vorschau(von='Kein von', fuer='Kein für', widmung='Keine Widmung', betrag=0
 	gutschein = frappe.get_doc("Gutschein Meier", 'fd5bf3155f')
 	gutschein.von = von
 	gutschein.fuer = fuer
-	gutschein.widmung = widmung
+	gutschein.widmung = widmung.replace("\n", "<br>")
 	gutschein.betrag = betrag
 	gutschein.save(ignore_permissions=True)
 	
@@ -18,7 +18,7 @@ def vorschau(von='Kein von', fuer='Kein für', widmung='Keine Widmung', betrag=0
 def download_vorschau_pdf():
 	doctype="Gutschein Meier"
 	name='fd5bf3155f'
-	format='Standard'
+	format='Vorschau'
 	doc=None
 	no_letterhead=0
 	html = frappe.get_print(doctype, name, format, doc=doc, no_letterhead=no_letterhead)

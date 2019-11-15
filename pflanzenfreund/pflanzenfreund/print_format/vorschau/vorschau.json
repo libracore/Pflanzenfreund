@@ -1,0 +1,23 @@
+{
+ "align_labels_right": 0, 
+ "creation": "2019-11-15 09:06:26.162860", 
+ "css": ".gutschein h1 {\n\tcolor: #94B600 !important;\n\tfont-size: 65px !important;\n}\n.gutschein h3 {\n\tmargin-top: 0px !important;\n\tfont-weight: normal !important;\n\tfont-size: 30px !important;\n}\n.gutschein h2 {\n\tcolor: #94B600 !important;\n\tfont-size: 30px !important;\n}\n\n", 
+ "custom_format": 1, 
+ "disabled": 0, 
+ "doc_type": "Gutschein Meier", 
+ "docstatus": 0, 
+ "doctype": "Print Format", 
+ "font": "Default", 
+ "html": "<img src=\"/assets/pflanzenfreund/images/800x400_Geschenkabo_lay.jpg\" alt=\"Jahres-Abo\" style=\"width:100%\">\n<div class=\"gutschein\" style=\"text-align: center;\">\n\t<h1>GUTSCHEIN</h1>\n\t<h3>im Wert von CHF {{ doc.betrag }}.-</h3>\n\t<p>Einl\u00f6sbar auf dem gesamten Sortiment, im Gesch\u00e4ft und Online.<br><br></p>\n\t<p>Wir freuen uns auf deinen Besuch und beraten dich gerne!<br><br></p>\n\t<p>Dein Team vom Gartencenter Meier<br><br></p>\n\t<h2>Gutschein f\u00fcr {{ doc.fuer }} von {{ doc.von }}</h2>\n\t<p>{{ doc.widmung }}</p>\n</div>", 
+ "idx": 0, 
+ "line_breaks": 0, 
+ "modified": "2019-11-15 09:46:29.747407", 
+ "modified_by": "Administrator", 
+ "module": "Pflanzenfreund", 
+ "name": "Vorschau", 
+ "owner": "Administrator", 
+ "print_format_builder": 1, 
+ "print_format_type": "Server", 
+ "show_section_headings": 0, 
+ "standard": "Yes"
+}

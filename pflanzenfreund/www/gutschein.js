@@ -45,3 +45,7 @@ function vorschau() {
 		}
 	});
 }
+
+function tbd() {
+	frappe.msgprint("Dies muss zuerst noch programmiert werden...", "Noch nicht Programmiert");
+}
