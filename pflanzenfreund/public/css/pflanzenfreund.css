@@ -10,6 +10,9 @@
 body {
   font-family: carraraRoman;
 }
+.navbar-brand {
+	padding: 0px !important;
+}
 .hero-and-content {
 	min-height: calc(100vh - 340px);
 }
@@ -36,8 +39,52 @@ body {
 	position: relative;
 	float: inline-end;
 }
+.page-container {
+	display: contents;
+}
 .GCM-Navbar-Top {
 	padding-top: 0px;
+	background: #f9fbf2;
+	height: 86px;
+	border: none;
+}
+.nav-div {
+	display: flex;
+	float: right;
+	background: white;
+	font-size: 20px;
+	margin-top: 60px;
+	height: 60px;
+	text-align: center;
+	line-height: 60px;
+}
+.nav-div div {
+	padding-left: 20px;
+	padding-right: 20px;
+	color: #7bb600;
+}
+.nav-div div:hover {
+	background: #7bb600;
+	color: white;
+	cursor: pointer;
+}
+.nav-div div.active {
+	background: #7bb600;
+	color: white;
+}
+
+.svg-logo {
+	width: 322px;
+	height: 64px;
+	margin-top: 10px;
+}
+
+.hero-and-content {
+	background: #f9fbf2;
+}
+
+.GCM-Navbar-Top-Container {
+	width: 1330px !important;
 }
 .GCM-Navbar-Top-1 {
 	padding-bottom: 15px;
