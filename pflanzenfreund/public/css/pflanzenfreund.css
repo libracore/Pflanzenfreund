@@ -67,10 +67,24 @@ body {
 	background: #7bb600;
 	color: white;
 	cursor: pointer;
+	text-decoration: none;
 }
 .nav-div div.active {
 	background: #7bb600;
 	color: white;
+}
+.nav-div a:hover {
+	text-decoration: none;
+}
+
+.page__title::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 60px;
+	height: 5px;
+	background: #cfff00;
 }
 
 .svg-logo {
@@ -78,8 +92,7 @@ body {
 	height: 64px;
 	margin-top: 10px;
 }
-
-.hero-and-content {
+.navbar {
 	background: #f9fbf2;
 }
 
