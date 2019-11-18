@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.utils.pdf import get_pdf
+from frappe.utils.data import nowdate, add_years
 
 @frappe.whitelist(allow_guest=True)
 def vorschau(von='Kein von', fuer='Kein für', widmung='Keine Widmung', betrag=0):
@@ -10,6 +11,9 @@ def vorschau(von='Kein von', fuer='Kein für', widmung='Keine Widmung', betrag=0
 	gutschein.fuer = fuer
 	gutschein.widmung = widmung.replace("\n", "<br>")
 	gutschein.betrag = betrag
+	gutschein.ausgestellt_am = nowdate()
+	gutschein.valid_till = add_years(nowdate(), 1)
+	
 	gutschein.save(ignore_permissions=True)
 	
 	return
