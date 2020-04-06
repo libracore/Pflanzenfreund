@@ -1,14 +1,16 @@
 @import url("/assets/frappe/js/lib/datepicker/datepicker.min.css");
 @font-face {
-    font-family: carraraRoman;
-    src: url('/assets/pflanzenfreund/font/378609_A_0.woff');
+    font-family: CeraPRO-Regular;
+    src: url('/assets/pflanzenfreund/font/39D13D_9_0.woff');
 }
-@font-face {
-    font-family: carraraBold;
-    src: url('/assets/pflanzenfreund/font/378609_4_0.woff');
-}
+/* @font-face {
+	font-family: 'CeraPRO-Regular';
+	src: url('webfonts/39D13D_9_0.eot');
+	src: url('webfonts/39D13D_9_0.eot?#iefix') format('embedded-opentype'),url('webfonts/39D13D_9_0.woff2') format('woff2'),url('webfonts/39D13D_9_0.woff') format('woff'),url('webfonts/39D13D_9_0.ttf') format('truetype');
+} */
+
 body {
-  font-family: carraraRoman;
+  font-family: CeraPRO-Regular;
 }
 .navbar-brand {
 	padding: 0px !important;
@@ -86,6 +88,10 @@ body {
 	height: 5px;
 	background: #cfff00;
 }
+
+/* .page__title {
+	font-family:Jubilat,sans-serif;
+} */
 
 .svg-logo {
 	width: 322px;

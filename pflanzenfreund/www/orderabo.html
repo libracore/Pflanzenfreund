@@ -66,7 +66,7 @@
 		</div>
 		
 		<div class="hidden" id="beschenkter">
-			<h3>Kontaktdaten Geschenk Empfänger</h3>
+			<h3>Kontaktdaten Geschenk-Empfänger</h3>
 			<div class="radio" style="padding-top: 0px; margin-top: 0px;" required>
 			  <label><input type="radio" name="optradio_geschenk" id="frau_geschenk" checked>Frau</label>
 			  <label><input type="radio" name="optradio_geschenk" id="herr_geschenk">Herr</label>
@@ -107,37 +107,87 @@
 			<input id="email" type="text" class="form-control" name="email" placeholder="Email" readonly>
 		</div>
 		
-		<button class="btn btn-default" onclick="bestellung_popup();" style="width: 100%;">Bestellen</button>
+		<button class="btn btn-default pull-right"  style="width: 10%;" onclick="bestellung_popup();">Weiter</button>
 	</div>
 	<div class="col-sm-4">
-		<div class="card hidden" id="jahres_abo">
+		<!-- <div class="card hidden" id="jahres_abo">
 			<img src="/assets/pflanzenfreund/images/800x400_Jahresabo_lay.jpg" alt="Jahres-Abo" style="width:100%">
 			<div style="text-align: center;">
 				<p class="title">Ihr Jahres-Abonnement:</p>
 				<p class="price">CHF 42.-</p>
 				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
 				<p class="second-text"style="padding: 10px;">Erhalten Sie 10 Ausgaben pünktlich zum Monatsbeginn.</p>
-				<a class="btn btn-primary order-btn btn-bot"  onclick="bestellung_popup();">Bestellen</a>
+			</div>
+		</div> -->
+		<div class="box hidden" id="jahres_abo">							
+			<div class="icon">
+				<div class="image"><img src="/assets/pflanzenfreund/images/Jahresabo_1.jpg" alt="Jahres-Abo" style="width:100%"></div>
+				<div class="info" style="overflow: hidden; text-align: left;">
+					<p class="title">Jahresabo</p>
+					<p class="second-text">
+						<ul>
+						<li>10 Ausgaben bequem per Post<br>
+						(Juli/Aug und Dez/Jan jeweils als Doppelausgabe)</li>
+						<li>Pünktlich zum Monatsbeginn im Briefkasten</li>
+						<li>Min. Laufzeit 12 Monat, jederzeit kündbar</li>
+						</ul>
+					</p>
+					<p class="price">CHF 42.-</p>
+					<p class="additional-text" style="padding-bottom: 30px;">(Versand nur innerhalb der Schweiz)</p>
+				</div>
 			</div>
 		</div>
-		<div class="card hidden" id="probe_abo">
+		<!-- <div class="card hidden" id="probe_abo">
 			<img src="/assets/pflanzenfreund/images/800x400_Probeabo_lay-1.jpg" alt="Probe-Abo" style="width:100%">
 			<div style="text-align: center;">
 				<p class="title">Ihr Probe-Abonnement:</p>
 				<p class="price">CHF 14.-</p>
 				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
 				<p class="second-text"style="padding: 10px;">Erhalten Sie die nächsten 4 Ausgaben zum Reinschnuppern.</p>
-				<a class="btn btn-primary order-btn btn-bot"  onclick="bestellung_popup();">Jetzt bestellen</a>
+			</div>
+		</div> -->
+		<div class="box hidden" id="probe_abo">							
+			<div class="icon">
+				<div class="image"><img src="/assets/pflanzenfreund/images/Probeabo_1.jpg" alt="Jahres-Abo" style="width:100%"></div>
+				<div class="info" style="overflow: hidden; text-align: left;">
+					<p class="title">Probeabo</p>
+					<p class="second-text">
+						<ul>
+						<li>Die 4 nächsten Ausgaben zum Reinschnuppern</li>
+						<li>Pünktlich zum Monatsbeginn im Briefkasten</li>
+						<li>Keine automatische Abo-Verlängerung<br><br></li>
+						</ul>
+					</p>
+					<p class="price">CHF 17.-</p>
+					<p class="additional-text" style="padding-bottom: 30px;">(Versand nur innerhalb der Schweiz)</p>
+				</div>
 			</div>
 		</div>
-		<div class="card hidden" id="geschenk_abo">
+		<!-- <div class="card hidden" id="geschenk_abo">
 			<img src="/assets/pflanzenfreund/images/800x400_Geschenkabo_lay.jpg" alt="Geschenk-Abo" style="width:100%">
 			<div style="text-align: center;">
 				<p class="title">Ihr Geschenk-Abonnement:</p>
 				<p class="price">CHF 42.-</p>
 				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
 				<p class="second-text"style="padding: 10px;">Verschenken Sie 10 Ausgaben als besonderes Geschenk.</p>
-				<a class="btn btn-primary order-btn btn-bot"  onclick="bestellung_popup();">Jetzt bestellen</a>
+			</div>
+		</div> -->
+		<div class="box hidden" id="geschenk_abo">							
+			<div class="icon">
+				<div class="image"><img src="/assets/pflanzenfreund/images/Geschenkabo_1.jpg" alt="Jahres-Abo" style="width:100%"></div>
+				<div class="info" style="overflow: hidden; text-align: left;">
+					<p class="title">Geschenkabo</p>
+					<p class="second-text">
+						<ul>
+						<li>10 Ausgaben als besonderes Geschenk<br>
+						(Juli/Aug und Dez/Jan jeweils als Doppelausgabe)</li>
+						<li>Pünktlich zum Monatsbeginn im Briefkasten</li>
+						<li>Min. Laufzeit 12 Monat, jederzeit kündbar</li>
+						</ul>
+					</p>
+					<p class="price">CHF 42.-</p>
+					<p class="additional-text" style="padding-bottom: 30px;">(Versand nur innerhalb der Schweiz)</p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -146,3 +196,24 @@
 {% include "public/css/abonnieren.css" %}
 {% include "pflanzenfreund/www/orderabo.css" %}
 </style>
+
+<!-- Modal -->
+<div id="bestelluebersicht" class="modal" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Ihre Bestellung im Überblick</h4>
+      </div>
+      <div class="modal-body">
+        <div id="bestelluebersicht_text"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" onclick="bestellung_storno();">Zurück</button>
+		<button type="button" class="btn btn-default" onclick="bestellung_platzieren();">Bestellung abschliessen</button>
+      </div>
+    </div>
+
+  </div>
+</div>

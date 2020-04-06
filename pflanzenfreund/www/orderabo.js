@@ -193,21 +193,58 @@ function change_start() {
 }
 
 function bestellung_popup() {
-	var confirm_txt = '<h3>Bestellübersicht</h3><br>' +
+	/* var confirm_txt = '<h3>Bestellübersicht</h3><br>' +
 		'Abonnement: ' + bestell_seite + '<br>' +
 		'Abo-Start: ' + new Date(document.getElementById("start").value).toISOString().slice(0,10) + '<br>' +
 		'Abo-Ende: ' + new Date(document.getElementById("ende").value).toISOString().slice(0,10) + '<br><br>' +
 		'<button class="btn btn-default" onclick="bestellung_platzieren();" style="width: 25%;">Bestellen</button><br><br>' +
 		'<button class="btn btn-default" onclick="bestellung_storno();" style="width: 25%;">Bestellung ändern</button>';
-	frappe.show_message(confirm_txt, 'fa fa-shopping-cart pf-icon');
+	frappe.show_message(confirm_txt, 'fa fa-shopping-cart pf-icon'); */
+	if (bestell_seite != "Probe-Abo") {
+		var preis = 'Fr. 42.-';
+	} else {
+		var preis = 'Fr. 17.-';
+	}
+	if (bestell_seite != "Geschenk-Abo") {
+		$("#bestelluebersicht_text").html('<p><b>Abo:</b><br>' + bestell_seite + '</p>' +
+			'<p><b>Adresse:</b><br>' +
+			'{{ user_data.salutation }}<br>' +
+			document.getElementById("vorname").value + ' ' + document.getElementById("nachname").value + '<br>' +
+			document.getElementById("strasse").value + ' ' + document.getElementById("nummer").value + '<br>' +
+			document.getElementById("plz").value + ' ' + document.getElementById("ort").value + '<br>' +
+			document.getElementById("email").value +
+			'<p><b>Preis:</b><br>' + preis);
+	} else {
+		if (document.getElementById("frau_geschenk").checked) {
+			var anrede_geschenk = 'Frau';
+		} else {
+			var anrede_geschenk = 'Herr';
+		}
+		$("#bestelluebersicht_text").html('<p><b>Abo:</b><br>' + bestell_seite + '</p>' +
+			'<p><b>Geschenk-Empfänger:</b><br>' +
+			anrede_geschenk + '<br>' +
+			document.getElementById("vorname_geschenk").value + ' ' + document.getElementById("nachname_geschenk").value + '<br>' +
+			document.getElementById("strasse_geschenk").value + ' ' + document.getElementById("nummer_geschenk").value + '<br>' +
+			document.getElementById("plz_geschenk").value + ' ' + document.getElementById("ort_geschenk").value +
+			'<p><b>Rechnungsadresse:</b><br>' +
+			'{{ user_data.salutation }}<br>' +
+			document.getElementById("vorname").value + ' ' + document.getElementById("nachname").value + '<br>' +
+			document.getElementById("strasse").value + ' ' + document.getElementById("nummer").value + '<br>' +
+			document.getElementById("plz").value + ' ' + document.getElementById("ort").value + '<br>' +
+			document.getElementById("email").value +
+			'<p><b>Preis:</b><br>' + preis);
+	}
+	$("#bestelluebersicht").css("display", "block");
 }
 
 function bestellung_storno() {
-	frappe.hide_message();
+	//frappe.hide_message();
+	$("#bestelluebersicht").css("display", "none");
 }
 
 function bestellung_platzieren() {
-	frappe.hide_message();
+	//frappe.hide_message();
+	$("#bestelluebersicht").css("display", "none");
 	var start = new Date(document.getElementById("start").value);
 	var ende = new Date(document.getElementById("ende").value);
 	if (bestell_seite != 'Geschenk-Abo') {
@@ -233,7 +270,8 @@ function bestellung_platzieren() {
 			freeze: true,
 			freeze_message: "Bitte warten bis die Abo-Bestellung abgeschlossen ist.",
 			callback: function(r) {
-				console.log(r.message);
+				//console.log(r.message);
+				window.open("/bestaetigung","_self")
 			}
 		});
 	} else {
@@ -267,7 +305,8 @@ function bestellung_platzieren() {
 				freeze: true,
 				freeze_message: "Bitte warten bis die Abo-Bestellung abgeschlossen ist.",
 				callback: function(r) {
-					console.log(r.message);
+					//console.log(r.message);
+					window.open("/bestaetigung","_self")
 				}
 			});
 		}
