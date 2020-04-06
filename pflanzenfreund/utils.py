@@ -881,7 +881,9 @@ def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bull
 				"sept_ed": 1,
 				"oct_ed": 1,
 				"nov_ed": 1,
-				"dec_ed": 1
+				"dec_ed": 1,
+				"winter_ed": 1,
+				"summer_ed": 1
 			})
 			new_abo.flags.ignore_mandatory = True
 			new_abo.save(ignore_permissions=True)
@@ -965,7 +967,9 @@ def _createNewInvoices_abo_rechnungslauf(start, end, abo_type, bullet_type, bull
 				"sept_ed": 1,
 				"oct_ed": 1,
 				"nov_ed": 1,
-				"dec_ed": 1
+				"dec_ed": 1,
+				"winter_ed": 1,
+				"summer_ed": 1
 			})
 			new_abo.flags.ignore_mandatory = True
 			new_abo.save(ignore_permissions=True)
