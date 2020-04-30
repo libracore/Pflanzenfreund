@@ -1,51 +1,91 @@
 {% set user = get_logged_in_user() %}
-<h1 style="font-size: 5rem; font-weight: 400;">Pflanzenfreund abonnieren</h1>
 <div class="row">
-	<div class="col-sm-12">
-		<p style="font-size: 1.5rem; font-weight: 400;">Abonnieren Sie jetzt den «Pflanzenfreund» mit den wesentlichen Informationen zum umweltgerechten Gärtnern, mit Hintergrundberichten und vernünftigen Produktempfehlungen. Als Probe- oder Jahresabonnement erhalten Sie jede Ausgabe bequem und pünktlich zur Saison.</p>
+	<div class="col-sm-4">
 	</div>
-	<!--<div class="col-sm-4">
-	</div>-->
+	<div class="col-sm-8" style="padding-left: 0px !important; margin-top: 30px;">
+		<h1 class="page__title" style="font-size: 5rem; font-weight: bold; color: #7bb600;">Der Pflanzenfreund im Abo</h1>
+	</div>
 </div>
 <div class="row">
 	<div class="col-sm-4">
-		<div class="card">
-			<img src="/assets/pflanzenfreund/images/800x400_Jahresabo_lay.jpg" alt="Jahres-Abo" style="width:100%">
-			<div style="text-align: center;">
-				<p class="title">Ihr Jahres-Abonnement:</p>
-				<p class="price">CHF 42.-</p>
-				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
-				<p class="second-text"style="padding: 10px;">Erhalten Sie 10 Ausgaben pünktlich zum Monatsbeginn.</p>
-				<a class="btn btn-primary order-btn btn-bot" href="{% if hide_order %}/registration?abo_type=Jahres-Abo{% else %}/neues-pflanzenfreund-abonnement?abo_type=Jahres-Abo{% endif %}">Jetzt bestellen</a>
+	</div>
+	<div class="col-sm-6" style="padding-left: 0px !important; margin-top: 30px;">
+		<p style="font-size: 1.5rem; font-weight: 400;">Abonnieren Sie jetzt den Pflanzenfreund und verpassen Sie keine Ausgabe mehr.</p>
+	</div>
+	<div class="col-sm-2">
+	</div>
+</div>
+<br><br>
+<div class="row">
+	<div class="col-sm-4">
+		<div class="box">							
+			<div class="icon">
+				<div class="image"><img src="/assets/pflanzenfreund/images/Jahresabo_1.jpg" alt="Jahres-Abo" style="width:100%"></div>
+				<div class="info" style="overflow: hidden; text-align: left;">
+					<p class="title">Jahresabo</p>
+					<p class="second-text">
+						<ul>
+						<li>10 Ausgaben bequem per Post<br>
+						(Juli/Aug und Dez/Jan jeweils als Doppelausgabe)</li>
+						<li>Pünktlich zum Monatsbeginn im Briefkasten</li>
+						<li>Min. Laufzeit 12 Monat, jederzeit kündbar</li>
+						</ul>
+					</p>
+					<p class="price">CHF 42.-</p>
+					<p class="additional-text" style="padding-bottom: 30px;">(Versand nur innerhalb der Schweiz)</p>
+					<a class="btn btn-primary order-btn btn-bot" href="{% if hide_order %}/registration?abo_type=Jahres-Abo{% else %}/orderabo?abo_type=Jahres-Abo{% endif %}">Jetzt bestellen</a>
+				</div>
 			</div>
 		</div>
 	</div>
 	<div class="col-sm-4">
-		<div class="card">
-			<img src="/assets/pflanzenfreund/images/800x400_Probeabo_lay-1.jpg" alt="Probe-Abo" style="width:100%">
-			<div style="text-align: center;">
-				<p class="title">Ihr Probe-Abonnement:</p>
-				<p class="price">CHF 17.-</p>
-				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
-				<p class="second-text"style="padding: 10px;">Erhalten Sie die nächsten 4 Ausgaben zum Reinschnuppern.</p>
-				<a class="btn btn-primary order-btn btn-bot" href="{% if hide_order %}/registration?abo_type=Probe-Abo{% else %}/neues-pflanzenfreund-abonnement?abo_type=Probe-Abo{% endif %}">Jetzt bestellen</a>
+		<div class="box">							
+			<div class="icon">
+				<div class="image"><img src="/assets/pflanzenfreund/images/Geschenkabo_1.jpg" alt="Jahres-Abo" style="width:100%"></div>
+				<div class="info" style="overflow: hidden; text-align: left;">
+					<p class="title">Geschenkabo</p>
+					<p class="second-text">
+						<ul>
+						<li>10 Ausgaben als besonderes Geschenk<br>
+						(Juli/Aug und Dez/Jan jeweils als Doppelausgabe)</li>
+						<li>Pünktlich zum Monatsbeginn im Briefkasten</li>
+						<li>Min. Laufzeit 12 Monat, jederzeit kündbar</li>
+						</ul>
+					</p>
+					<p class="price">CHF 42.-</p>
+					<p class="additional-text" style="padding-bottom: 30px;">(Versand nur innerhalb der Schweiz)</p>
+					<a class="btn btn-primary order-btn btn-bot" href="{% if hide_order %}/registration?abo_type=Geschenk-Abo{% else %}/orderabo?abo_type=Geschenk-Abo{% endif %}">Jetzt bestellen</a>
+				</div>
 			</div>
 		</div>
 	</div>
 	<div class="col-sm-4">
-		<div class="card">
-			<img src="/assets/pflanzenfreund/images/800x400_Geschenkabo_lay.jpg" alt="Geschenk-Abo" style="width:100%">
-			<div style="text-align: center;">
-				<p class="title">Ihr Geschenk-Abonnement:</p>
-				<p class="price">CHF 42.-</p>
-				<p class="additional-text">(Versand nur innerhalb der Schweiz)</p>
-				<p class="second-text"style="padding: 10px;">Verschenken Sie 10 Ausgaben als besonderes Geschenk.</p>
-				<a class="btn btn-primary order-btn btn-bot" href="{% if hide_order %}/registration?abo_type=Geschenk-Abo{% else %}/neues-pflanzenfreund-abonnement?abo_type=Geschenk-Abo{% endif %}">Jetzt bestellen</a>
+		<div class="box">							
+			<div class="icon">
+				<div class="image"><img src="/assets/pflanzenfreund/images/Probeabo_1.jpg" alt="Jahres-Abo" style="width:100%"></div>
+				<div class="info" style="overflow: hidden; text-align: left;">
+					<p class="title">Probeabo</p>
+					<p class="second-text">
+						<ul>
+						<li>Die 4 nächsten Ausgaben zum Reinschnuppern</li>
+						<li>Pünktlich zum Monatsbeginn im Briefkasten</li>
+						<li>Keine automatische Abo-Verlängerung<br><br></li>
+						</ul>
+					</p>
+					<p class="price">CHF 17.-</p>
+					<p class="additional-text" style="padding-bottom: 30px;">(Versand nur innerhalb der Schweiz)</p>
+					<a class="btn btn-primary order-btn btn-bot" href="{% if hide_order %}/registration?abo_type=Probe-Abo{% else %}/orderabo?abo_type=Probe-Abo{% endif %}">Jetzt bestellen</a>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
+<br><br><br>
 
 <style>
 {% include "public/css/abonnieren.css" %}
 </style>
+
+
+
+

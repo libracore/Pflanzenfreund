@@ -1,14 +1,19 @@
 @import url("/assets/frappe/js/lib/datepicker/datepicker.min.css");
 @font-face {
-    font-family: carraraRoman;
-    src: url('/assets/pflanzenfreund/font/378609_A_0.woff');
+    font-family: CeraPRO-Regular;
+    src: url('/assets/pflanzenfreund/font/39D13D_9_0.woff');
 }
-@font-face {
-    font-family: carraraBold;
-    src: url('/assets/pflanzenfreund/font/378609_4_0.woff');
-}
+/* @font-face {
+	font-family: 'CeraPRO-Regular';
+	src: url('webfonts/39D13D_9_0.eot');
+	src: url('webfonts/39D13D_9_0.eot?#iefix') format('embedded-opentype'),url('webfonts/39D13D_9_0.woff2') format('woff2'),url('webfonts/39D13D_9_0.woff') format('woff'),url('webfonts/39D13D_9_0.ttf') format('truetype');
+} */
+
 body {
-  font-family: carraraRoman;
+  font-family: CeraPRO-Regular;
+}
+.navbar-brand {
+	padding: 0px !important;
 }
 .hero-and-content {
 	min-height: calc(100vh - 340px);
@@ -36,8 +41,69 @@ body {
 	position: relative;
 	float: inline-end;
 }
+.page-container {
+	display: contents;
+}
 .GCM-Navbar-Top {
 	padding-top: 0px;
+	background: #f9fbf2;
+	height: 86px;
+	border: none;
+}
+.nav-div {
+	display: flex;
+	float: right;
+	background: white;
+	font-size: 20px;
+	margin-top: 60px;
+	height: 60px;
+	text-align: center;
+	line-height: 60px;
+}
+.nav-div div {
+	padding-left: 20px;
+	padding-right: 20px;
+	color: #7bb600;
+}
+.nav-div div:hover {
+	background: #7bb600;
+	color: white;
+	cursor: pointer;
+	text-decoration: none;
+}
+.nav-div div.active {
+	background: #7bb600;
+	color: white;
+}
+.nav-div a:hover {
+	text-decoration: none;
+}
+
+.page__title::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 60px;
+	height: 5px;
+	background: #cfff00;
+}
+
+/* .page__title {
+	font-family:Jubilat,sans-serif;
+} */
+
+.svg-logo {
+	width: 322px;
+	height: 64px;
+	margin-top: 10px;
+}
+.hero-and-content {
+	background: #f9fbf2;
+}
+
+.GCM-Navbar-Top-Container {
+	width: 1330px !important;
 }
 .GCM-Navbar-Top-1 {
 	padding-bottom: 15px;
@@ -165,21 +231,69 @@ body {
 .footer-social-3:hover {
 	color: black;
 }
+.box > .icon { text-align: center; position: relative; }
+.box > .icon > .image { position: relative; z-index: 2; margin: auto; width: 188px; height: 188px; border: 8px solid white; border-radius: 50%; }
+.box > .icon > .info { margin-top: -94px; background: white; padding: 100px 20px 10px 20px;}
+.box > .icon > .image > img {border-radius: 50%; vertical-align: baseline;}
 
+.footer__pflanzenfreund {
+	padding-bottom: 20px;
+    margin-bottom: 20px;
+    text-align: left;
+    border-bottom: 1px solid #bdda7f;
+}
 
+.web-footer {
+	background: #f9fbf2;
+	border: none;
+}
+.footer__logo svg {
+    width: 195px;
+}
+.footer__logomeier img {
+    width: 116px;
+}
+.footer__nav li {
+    display: inline-block;
+    margin-right: 25px;
+}
 
+.footer__nav {
+    list-style: none outside none;
+}
+.footer__nav li a {
+    padding-bottom: 2px;
+    border-bottom: 2px solid #cfff00;
+	color: #7bb600;
+	padding-right: 20px;
+}
+.footer__socials li a {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #7bb600;
+	color: #fff;
+    text-align: center;
+    display: inline-block;
+	margin-top: 20px;
+}
 
+.footer__socials {
+    margin-right: -16px;
+}
+.footer__socials {
+    list-style: none outside none;
+    margin: 0;
+    margin-right: 0px;
+    padding: 0;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+.footer__socials li {
+	line-height: 40px;
+}
+.footer__box h4 {
+	margin-top: 0px;
+}
+.footer__box p {
+	margin-top: 0px;
+}
