@@ -44,8 +44,8 @@ function set_main_setup(bestell_seite) {
 function set_user_data() {
 	document.getElementById("vorname").value = "{{ user_data.first_name }}";
 	document.getElementById("nachname").value = "{{ user_data.last_name }}";
-	document.getElementById("strasse").value = "{{ address.address_line1 }}".split(" ")["{{ address.address_line1 }}".split.length - 2];
-	document.getElementById("nummer").value = "{{ address.address_line1 }}".split(" ")["{{ address.address_line1 }}".split.length - 1];
+	document.getElementById("strasse").value = "{{ address.address_line1 }}".replace("{{ address.address_line1 }}".split(" ")["{{ address.address_line1 }}".split(" ").length - 1], "");
+	document.getElementById("nummer").value = "{{ address.address_line1 }}".split(" ")["{{ address.address_line1 }}".split(" ").length - 1];
 	document.getElementById("plz").value = "{{ address.pincode }}";
 	document.getElementById("ort").value = "{{ address.city }}";
 	document.getElementById("email").value = "{{ user_data.email_id }}";
