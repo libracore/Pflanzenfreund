@@ -187,9 +187,13 @@ function check_all_field_reg(gast, vorname, nachname, strasse, nummer, plz, ort,
 	
 	
 	if (mail.value != "") {
-		mail.parentNode.classList.remove("has-error");
-		mail = true;
-		
+		if (mail.value.includes("@")) {
+			mail.parentNode.classList.remove("has-error");
+			mail = true;
+		} else {
+			mail.parentNode.classList.add("has-error");
+			mail = false;
+		}
 	} else {
 		mail.parentNode.classList.add("has-error");
 		mail = false;
