@@ -54,12 +54,12 @@ function create_address(pwd) {
 	var plz = document.getElementById("plz").value;
 	var ort = document.getElementById("ort").value;
 	var mail = document.getElementById("email").value;
+	var geburtsdatum = document.getElementById("geburtsdatum").value;
 	if (document.getElementById("frau").checked == true) {
 		var geschlecht = "Frau";
 	} else {
 		var geschlecht = "Herr";
 	}
-	
 	frappe.call({
 	   method: "pflanzenfreund.www.registration.create_address",
 	   args: {
@@ -70,7 +70,8 @@ function create_address(pwd) {
 			"nummer": nummer,
 			"plz": plz,
 			"ort": ort,
-			"geschlecht": geschlecht
+			"geschlecht": geschlecht,
+			"geburtsdatum": geburtsdatum
 	   },
 	   callback: function(r) {
 			if (r.message == "OK") {
@@ -151,6 +152,7 @@ function registrieren() {
 	var ort = document.getElementById("ort");
 	var mail = document.getElementById("email");
 	var pwd = document.getElementById("password");
+	
 	if(document.getElementById("check").checked) {
 		if (check_all_field_reg(true, vorname, nachname, strasse, nummer, plz, ort, mail, pwd)) {
 		   frappe.show_message("Bitte warten, ein neues Gastkonto wird erstellt.");

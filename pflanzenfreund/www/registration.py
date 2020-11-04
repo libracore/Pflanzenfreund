@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import frappe
+from frappe.utils.data import getdate
 
 @frappe.whitelist(allow_guest=True)
 def check_if_user_exist(mail):
@@ -11,9 +12,9 @@ def check_if_user_exist(mail):
 		return "neu"
 
 @frappe.whitelist(allow_guest=True)
-def create_address(vorname, nachname, mail, strasse, nummer, plz, ort, geschlecht):
+def create_address(vorname, nachname, mail, strasse, nummer, plz, ort, geschlecht, geburtsdatum):
 	customer = create_customer(vorname, nachname, geschlecht)
-	contact = create_contact(vorname, nachname, mail, customer, geschlecht)
+	contact = create_contact(vorname, nachname, mail, customer, geschlecht, geburtsdatum)
 	address = frappe.get_doc({
 		"doctype": "Address",
 		"address_title": customer,
@@ -60,7 +61,7 @@ def create_customer(vorname, nachname, geschlecht):
 	
 	return customer.name
 	
-def create_contact(vorname, nachname, mail, customer, geschlecht):
+def create_contact(vorname, nachname, mail, customer, geschlecht, geburtsdatum):
 	if geschlecht == "Frau":
 		anrede = "Sehr geehrte Frau " + nachname
 	else:
@@ -72,7 +73,8 @@ def create_contact(vorname, nachname, mail, customer, geschlecht):
 		"email_id": mail,
 		"user": mail,
 		"salutation": geschlecht,
-		"letter_salutation": anrede
+		"letter_salutation": anrede,
+		"geburtsdatum": getdate(geburtsdatum)
 	}).insert(ignore_permissions = True)
 	
 	row = contact.append('links', {})
