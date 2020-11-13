@@ -201,7 +201,7 @@ function bestellung_popup() {
 		'<button class="btn btn-default" onclick="bestellung_storno();" style="width: 25%;">Bestellung ändern</button>';
 	frappe.show_message(confirm_txt, 'fa fa-shopping-cart pf-icon'); */
 	if (bestell_seite != "Probe-Abo") {
-		var preis = 'Fr. 42.-';
+		var preis = 'Fr. 48.-';
 	} else {
 		var preis = 'Fr. 17.-';
 	}
