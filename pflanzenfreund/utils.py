@@ -497,7 +497,9 @@ def place_order_abo(customer, shipping, billing, abo, donee):
 			"sept_ed": 1,
 			"oct_ed": 1,
 			"nov_ed": 1,
-			"dec_ed": 1
+			"dec_ed": 1,
+			"winter_ed": 1,
+			"summer_ed": 1
 		})
 	if abo == "Probe-Abo":
 		pflanzenfreund_abo.update({
@@ -518,7 +520,9 @@ def place_order_abo(customer, shipping, billing, abo, donee):
 			"sept_ed": 0,
 			"oct_ed": 0,
 			"nov_ed": 0,
-			"dec_ed": 0
+			"dec_ed": 0,
+			"winter_ed": 0,
+			"summer_ed": 0
 		})
 		add_editions_to_abo_based_on_act_month(pflanzenfreund_abo)
 	if abo == "Geschenk-Abo":
@@ -543,7 +547,9 @@ def place_order_abo(customer, shipping, billing, abo, donee):
 			"sept_ed": 1,
 			"oct_ed": 1,
 			"nov_ed": 1,
-			"dec_ed": 1
+			"dec_ed": 1,
+			"winter_ed": 1,
+			"summer_ed": 1
 		})
 	pflanzenfreund_abo.flags.ignore_mandatory = True
 	pflanzenfreund_abo.save(ignore_permissions=True)
@@ -564,10 +570,10 @@ def add_editions_to_abo_based_on_act_month(pflanzenfreund_abo):
 		start_month = start_month + 1
 	if start_month == 1:
 		pflanzenfreund_abo.update({
-			"jan_ed": 1,
 			"feb_ed": 1,
 			"mar_ed": 1,
-			"apr_ed": 1
+			"apr_ed": 1,
+			"may_ed": 1
 		})
 	if start_month == 2:
 		pflanzenfreund_abo.update({
@@ -588,63 +594,63 @@ def add_editions_to_abo_based_on_act_month(pflanzenfreund_abo):
 			"apr_ed": 1,
 			"may_ed": 1,
 			"jun_ed": 1,
-			"jul_ed": 1
+			"summer_ed": 1
 		})
 	if start_month == 5:
 		pflanzenfreund_abo.update({
 			"may_ed": 1,
 			"jun_ed": 1,
-			"jul_ed": 1,
-			"aug_ed": 1
+			"summer_ed": 1,
+			"sept_ed": 1
 		})
 	if start_month == 6:
 		pflanzenfreund_abo.update({
 			"jun_ed": 1,
-			"jul_ed": 1,
-			"aug_ed": 1,
-			"sept_ed": 1
-		})
-	if start_month == 7:
-		pflanzenfreund_abo.update({
-			"jul_ed": 1,
-			"aug_ed": 1,
+			"summer_ed": 1,
 			"sept_ed": 1,
 			"oct_ed": 1
 		})
-	if start_month == 8:
+	if start_month == 7:
 		pflanzenfreund_abo.update({
-			"aug_ed": 1,
 			"sept_ed": 1,
 			"oct_ed": 1,
-			"nov_ed": 1
+			"nov_ed": 1,
+			"winter_ed": 1
+		})
+	if start_month == 8:
+		pflanzenfreund_abo.update({
+			"sept_ed": 1,
+			"oct_ed": 1,
+			"nov_ed": 1,
+			"winter_ed": 1
 		})
 	if start_month == 9:
 		pflanzenfreund_abo.update({
 			"sept_ed": 1,
 			"oct_ed": 1,
 			"nov_ed": 1,
-			"dec_ed": 1
+			"winter_ed": 1
 		})
 	if start_month == 10:
 		pflanzenfreund_abo.update({
-			"jan_ed": 1,
+			"feb_ed": 1,
 			"oct_ed": 1,
 			"nov_ed": 1,
-			"dec_ed": 1
+			"winter_ed": 1
 		})
 	if start_month == 11:
 		pflanzenfreund_abo.update({
-			"jan_ed": 1,
 			"feb_ed": 1,
+			"mar_ed": 1,
 			"nov_ed": 1,
-			"dec_ed": 1
+			"winter_ed": 1
 		})
 	if start_month == 12:
 		pflanzenfreund_abo.update({
-			"jan_ed": 1,
 			"feb_ed": 1,
 			"mar_ed": 1,
-			"dec_ed": 1
+			"apr_ed": 1,
+			"may_ed": 1
 		})
 	return(pflanzenfreund_abo)
 	
@@ -1063,7 +1069,9 @@ def extend_abo(abo):
 		"sept_ed": old_abo.sept_ed,
 		"oct_ed": old_abo.oct_ed,
 		"nov_ed": old_abo.nov_ed,
-		"dec_ed": old_abo.dec_ed
+		"dec_ed": old_abo.dec_ed,
+		"winter_ed": old_abo.winter_ed,
+		"summer_ed": old_abo.summer_ed
 	})
 	new_abo.flags.ignore_mandatory = True
 	new_abo.save(ignore_permissions=True)
