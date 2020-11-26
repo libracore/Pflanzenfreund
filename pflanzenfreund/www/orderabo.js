@@ -203,7 +203,7 @@ function bestellung_popup() {
 	if (bestell_seite != "Probe-Abo") {
 		var preis = 'Fr. 48.-';
 	} else {
-		var preis = 'Fr. 17.-';
+		var preis = 'Fr. 19.20';
 	}
 	if (bestell_seite != "Geschenk-Abo") {
 		$("#bestelluebersicht_text").html('<p><b>Abo:</b><br>' + bestell_seite + '</p>' +
