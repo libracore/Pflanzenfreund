@@ -24,13 +24,12 @@ def create_address(vorname, nachname, mail, strasse, nummer, plz, ort, geschlech
 		"city": ort,
 		"country": "Schweiz",
 		"is_primary_address": 1,
-		"is_shipping_address": 1
+		"is_shipping_address": 1,
+		"links": [{
+			'link_doctype': "Customer",
+			'link_name': customer
+		}]
 	}).insert(ignore_permissions = True)
-	
-	row = address.append('links', {})
-	row.link_doctype = "Customer"
-	row.link_name = customer
-	address.save()
 	
 	return "OK"
 
@@ -74,12 +73,11 @@ def create_contact(vorname, nachname, mail, customer, geschlecht, geburtsdatum):
 		"user": mail,
 		"salutation": geschlecht,
 		"letter_salutation": anrede,
-		"geburtsdatum": getdate(geburtsdatum)
+		"geburtsdatum": getdate(geburtsdatum),
+		"links": [{
+			'link_doctype': "Customer",
+			'link_name': customer
+		}]
 	}).insert(ignore_permissions = True)
 	
-	row = contact.append('links', {})
-	row.link_doctype = "Customer"
-	row.link_name = customer
-	contact.save()
-
 	return contact.name
