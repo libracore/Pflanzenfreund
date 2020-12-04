@@ -12,15 +12,8 @@ def get_context(context):
 	else:
 		context.user_data = frappe.db.sql("""SELECT * FROM `tabContact` WHERE `email_id` = '{user}'""".format(user=frappe.session.user), as_dict=True)[0]
 		context.customer = frappe.db.sql("""SELECT `link_name` FROM `tabDynamic Link` WHERE `parent` = '{contact_name}'""".format(contact_name=context.user_data["name"]), as_list=True)[0][0]
-		address_names = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `parenttype` = 'Address' AND `link_doctype` = 'Customer' AND `link_name` = '{customer}'""".format(customer=context.customer), as_list=True)
-		context.address = False
-		for address_name in address_names:
-			if not context.address:
-				address = frappe.db.sql("""SELECT * FROM `tabAddress` WHERE `name` = '{address_name}' AND `is_primary_address` = 1 AND `address_type` != 'Geschenk'""".format(address_name=address_name[0]), as_dict=True)
-				if len(address) > 0:
-					context.address = address[0]
-		if not context.address:
-			context.address = frappe.db.sql("""SELECT * FROM `tabAddress` WHERE `name` = '{address_name}'""".format(address_name=address_names[0][0]), as_dict=True)[0]
+		address_name = frappe.db.sql("""SELECT `parent` FROM `tabDynamic Link` WHERE `parenttype` = 'Address' AND `link_doctype` = 'Customer' AND `link_name` = '{customer}' AND `idx` = '1'""".format(customer=context.customer), as_list=True)[0][0]
+		context.address = frappe.db.sql("""SELECT * FROM `tabAddress` WHERE `name` = '{address_name}'""".format(address_name=address_name), as_dict=True)[0]
 
 @frappe.whitelist(allow_guest=True)
 def place_abo_order(customer, address, abo_type, start_date, end_date, winter, feb, mar, apr, may, jun, summer, sept, oct, nov, donee_name=None, street=None, pincode=None, city=None):
