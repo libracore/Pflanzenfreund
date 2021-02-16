@@ -167,7 +167,7 @@ def zahlungserinnerung_print_bind(abos, format=None, dest=None):
 		return output
 	
 def _createSammelPDF(valuta, printformat):
-	sql_query = ("""SELECT `name` FROM `tabSales Invoice` WHERE `posting_date` = '{0}' AND `docstatus` = 1""".format(valuta))
+	sql_query = ("""SELECT `name` FROM `tabSales Invoice` WHERE `posting_date` = '{0}' AND `docstatus` = 1 AND `pflanzenfreund_abo` LIKE '%ABO-%'""".format(valuta))
 	sinvs = frappe.db.sql(sql_query, as_dict=True)
 	print_sinv = []
 	loop_controller = 1
